@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Schedule Dashboard</title>
+  
+  <!-- Web App capabilities for full-screen appearance -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Schedule">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Schedule%22,%22short_name%22:%22Schedule%22,%22display%22:%22standalone%22,%22background_color%22:%22#121212%22,%22theme_color%22:%22#121212%22}">
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
@@ -19,10 +26,15 @@
 
     body {
       background-color: var(--color-background-primary);
+      /* Prevents accidental pull-to-refresh gestures on mobile browsers */
+      overscroll-behavior-y: contain; 
     }
 
     .wrap { 
       padding: 1rem; 
+      /* viewport-fit=cover padding helper for modern phone notches/island areas */
+      padding-top: calc(1rem + env(safe-area-inset-top));
+      padding-bottom: calc(1rem + env(safe-area-inset-bottom));
       font-family: var(--font-sans); 
       color: var(--color-text-primary); 
       max-width: 1200px;
@@ -68,7 +80,7 @@
 
     /* Mobile Responsiveness Rules */
     @media (max-width: 600px) {
-      .wrap { padding: 0.75rem; }
+      .wrap { padding: 0.75rem; padding-top: calc(0.75rem + env(safe-area-inset-top)); padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
       .wknd-grid { grid-template-columns: 1fr; gap: 16px; }
       .col-head { padding-left: 0; margin-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); padding-bottom: 4px; }
       .month-grid { grid-template-columns: 1fr; gap: 6px; }
