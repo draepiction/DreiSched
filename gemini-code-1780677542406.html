@@ -1,0 +1,223 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  /* Fallback CSS variables set to Dark Mode defaults */
+  :root {
+    --font-sans: system-ui, -apple-system, sans-serif;
+    --color-background-primary: #121212;
+    --color-background-secondary: #1e1e1e;
+    --color-text-primary: #e0e0e0;
+    --color-text-secondary: #a0a0a0;
+    --color-border-tertiary: #2d2d2d;
+  }
+
+  .wrap { 
+    padding: 1rem; 
+    font-family: var(--font-sans); 
+    background-color: var(--color-background-primary); 
+    color: var(--color-text-primary); 
+  }
+  
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  
+  .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin: 1.25rem 0 0.5rem; }
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1rem 0; }
+  
+  .timeline { display: grid; grid-template-columns: 68px 1fr; gap: 0; }
+  .tl-time { font-size: 11px; color: var(--color-text-secondary); padding: 7px 8px 0 0; text-align: right; line-height: 1.2; }
+  .tl-block { border-radius: 6px; padding: 6px 9px; font-size: 12px; font-weight: 500; margin-bottom: 4px; line-height: 1.35; }
+  .tl-gap { height: 4px; }
+
+  /* Dark mode schedule blocks */
+  .t-morning { background: #412402; color: #FAC775; }
+  .t-school  { background: #042C53; color: #B5D4F4; }
+  .t-free    { background: #2C2C2A; color: #D3D1C7; }
+  .t-teach   { background: #26215C; color: #CECBF6; }
+  .t-pets    { background: #04342C; color: #9FE1CB; }
+  .t-chores  { background: #042C53; color: #85B7EB; }
+  .t-night   { background: #4B1528; color: #F4C0D1; }
+  .t-sleep   { background: #173404; color: #C0DD97; }
+
+  /* Menu Item Colors */
+  .c-teal   { color: #9FE1CB; }
+  .c-blue   { color: #B5D4F4; }
+  .c-pink   { color: #F4C0D1; }
+  .c-purple { color: #CECBF6; }
+
+  .month-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; }
+  .month-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 8px 10px; }
+  .month-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .month-item { font-size: 12px; padding: 2px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  
+  .wknd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wknd-col { }
+  .col-head { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+</style>
+
+<div class="wrap">
+  <h2 style="position:absolute;width:1px;height:1px;overflow:hidden;">Full weekly schedule</h2>
+
+  <div class="legend">
+    <span class="leg"><span class="dot" style="background:#FAC775;"></span>Morning</span>
+    <span class="leg"><span class="dot" style="background:#B5D4F4;"></span>School / commute</span>
+    <span class="leg"><span class="dot" style="background:#D3D1C7;"></span>Free time</span>
+    <span class="leg"><span class="dot" style="background:#CECBF6;"></span>PalFish</span>
+    <span class="leg"><span class="dot" style="background:#9FE1CB;"></span>Pets</span>
+    <span class="leg"><span class="dot" style="background:#F4C0D1;"></span>Night</span>
+  </div>
+
+  <!-- WEEKDAY -->
+  <div class="section-label">Monday – Friday</div>
+  <div class="timeline">
+
+    <div class="tl-time">4:30 AM</div>
+    <div class="tl-block t-morning">Wake up · sofa → bed · desk + chair · boil water</div>
+
+    <div class="tl-time"></div>
+    <div class="tl-block t-morning">Shower + morning skincare</div>
+
+    <div class="tl-time"></div>
+    <div class="tl-block t-pets">Feed Koichi + clean bowls</div>
+
+    <div class="tl-time">5:30 AM</div>
+    <div class="tl-block t-school">Commute to school</div>
+
+    <div class="tl-time">6:30 AM</div>
+    <div class="tl-block t-school">Settle in + prep</div>
+
+    <div class="tl-time">6:45 AM</div>
+    <div class="tl-block t-school" style="padding: 10px 9px;">School</div>
+
+    <div class="tl-time">12:00 PM</div>
+    <div class="tl-block t-school">Commute home</div>
+
+    <div class="tl-time">1:00 PM</div>
+    <div class="tl-block t-chores">Clean litter box</div>
+
+    <div class="tl-time"></div>
+    <div class="tl-block t-free">Free time
+      <div style="font-size:10px; font-weight:400; margin-top:2px; opacity:0.6;">laundry · organize · sweep · mop here if needed</div>
+    </div>
+
+    <div class="tl-time">6:00 PM</div>
+    <div class="tl-block t-teach">PalFish — active teaching</div>
+
+    <div class="tl-time">7:30 PM</div>
+    <div class="tl-block t-free">Free time</div>
+
+    <div class="tl-time">~11:30 PM</div>
+    <div class="tl-block t-night">Night skincare</div>
+
+    <div class="tl-time">12:00 AM</div>
+    <div class="tl-block t-sleep">Sleep</div>
+  </div>
+
+  <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-secondary); display:flex; align-items:center; gap:5px;">
+    <i class="ti ti-scissors" style="font-size:13px;" aria-hidden="true"></i>
+    Brush Cotton/Snow/Casper/Powder if fur looks unkempt
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- WEEKEND -->
+  <div class="section-label">Weekend</div>
+  <div class="wknd-grid">
+    <div class="wknd-col">
+      <div class="col-head">Saturday</div>
+      <div class="timeline">
+        <div class="tl-time">Free</div>
+        <div class="tl-block t-morning">Wake up (any time) · sofa → bed</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-morning">Shower + morning skincare</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-pets">Feed Koichi + clean bowls</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-chores">Clean litter box</div>
+        <div class="tl-time">Daytime</div>
+        <div class="tl-block t-chores">Laundry + sweep/mop</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-free">Free / rest</div>
+        <div class="tl-time">Night</div>
+        <div class="tl-block t-night">Night skincare → sleep</div>
+      </div>
+    </div>
+    <div class="wknd-col">
+      <div class="col-head">Sunday</div>
+      <div class="timeline">
+        <div class="tl-time">7:00 AM</div>
+        <div class="tl-block t-morning">Wake up · sofa → bed</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-morning">Shower + morning skincare</div>
+        <div class="tl-time">9:00 AM</div>
+        <div class="tl-block t-school" style="background: #26215C; color: #CECBF6;">Church (9:00 AM – 11:00 AM)</div>
+        <div class="tl-time">11:00 AM</div>
+        <div class="tl-block t-pets">Feed Koichi + clean bowls (before out)</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-free">Free time outside</div>
+        <div class="tl-time">4:00 PM</div>
+        <div class="tl-block t-pets">Feed Koichi + clean bowls (after return)</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-chores">Clean litter box + take out trash</div>
+        <div class="tl-time"></div>
+        <div class="tl-block t-free">Free / rest</div>
+        <div class="tl-time">Night</div>
+        <div class="tl-block t-night">Night skincare → sleep</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Monthly -->
+  <div class="section-label">As-needed menu — observe and pick cards during any allocated free time</div>
+  <div class="month-grid">
+    <div class="month-card">
+      <div class="month-title">Pets</div>
+      <div class="month-item c-teal">Dog nail trimming</div>
+      <div class="month-item c-teal">Flea/tick preventatives</div>
+      <div class="month-item c-teal">Litter box deep clean</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Bedding</div>
+      <div class="month-item c-purple">
+        <span>Wash bedsheets/pillowcases</span>
+        <span style="font-size:10px; opacity:0.5; font-weight:400;">Suggested once a week done with laundry</span>
+      </div>
+      <div class="month-item c-purple" style="margin-top: 2px;">Wash blankets</div>
+      <div class="month-item c-purple">Wash pillow inserts</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Kitchen</div>
+      <div class="month-item c-pink">Appliance upkeep (microwave/stove/airfryer)</div>
+      <div class="month-item c-pink">Shelves & stock reorganization</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Wardrobe</div>
+      <div class="month-item c-purple">Closet declutter & re-fold</div>
+      <div class="month-item c-purple">Shoe cleaning</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Room & Desk</div>
+      <div class="month-item c-blue">Aircon cleaning</div>
+      <div class="month-item c-blue">Window cleaning</div>
+      <div class="month-item c-blue">Sofabed cleaning</div>
+      <div class="month-item c-blue">Keyboard & mouse wipe-down</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Tech & Workspace</div>
+      <div class="month-item c-blue">Screen cleaning</div>
+      <div class="month-item c-blue">Digital file purge & organization (inc. photos)</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Decor</div>
+      <div class="month-item c-purple">Figure + shelf dusting</div>
+    </div>
+    <div class="month-card">
+      <div class="month-title">Deep cleans</div>
+      <div class="month-item c-pink">Bathroom deep clean</div>
+      <div class="month-item c-pink">Fridge clean-out</div>
+    </div>
+  </div>
+</div>
