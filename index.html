@@ -5,16 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Schedule Dashboard</title>
   
-  <!-- Web App capabilities for full-screen appearance -->
+  <!-- Web App capabilities -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Schedule">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Schedule%22,%22short_name%22:%22Schedule%22,%22display%22:%22standalone%22,%22background_color%22:%22#121212%22,%22theme_color%22:%22#121212%22}">
+  
+  <!-- Link to the app manifest -->
+  <link rel="manifest" href="manifest.json">
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* Fallback CSS variables set to Dark Mode defaults */
     :root {
       --font-sans: system-ui, -apple-system, sans-serif;
       --color-background-primary: #121212;
@@ -26,13 +27,11 @@
 
     body {
       background-color: var(--color-background-primary);
-      /* Prevents accidental pull-to-refresh gestures on mobile browsers */
       overscroll-behavior-y: contain; 
     }
 
     .wrap { 
       padding: 1rem; 
-      /* viewport-fit=cover padding helper for modern phone notches/island areas */
       padding-top: calc(1rem + env(safe-area-inset-top));
       padding-bottom: calc(1rem + env(safe-area-inset-bottom));
       font-family: var(--font-sans); 
@@ -78,7 +77,6 @@
     .wknd-col { }
     .col-head { font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px; padding-left: 68px; }
 
-    /* Mobile Responsiveness Rules */
     @media (max-width: 600px) {
       .wrap { padding: 0.75rem; padding-top: calc(0.75rem + env(safe-area-inset-top)); padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
       .wknd-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -106,45 +104,32 @@
   <!-- WEEKDAY -->
   <div class="section-label">Monday – Friday</div>
   <div class="timeline">
-
     <div class="tl-time">4:30 AM</div>
     <div class="tl-block t-morning">Wake up · sofa → bed · desk + chair · boil water</div>
-
     <div class="tl-time"></div>
     <div class="tl-block t-morning">Shower + morning skincare</div>
-
     <div class="tl-time"></div>
     <div class="tl-block t-pets">Feed Koichi + clean bowls</div>
-
     <div class="tl-time">5:30 AM</div>
     <div class="tl-block t-school">Commute to school</div>
-
     <div class="tl-time">6:30 AM</div>
     <div class="tl-block t-school">Settle in + prep</div>
-
     <div class="tl-time">6:45 AM</div>
     <div class="tl-block t-school" style="padding: 10px 9px;">School</div>
-
     <div class="tl-time">12:00 PM</div>
     <div class="tl-block t-school">Commute home</div>
-
     <div class="tl-time">1:00 PM</div>
     <div class="tl-block t-chores">Clean litter box</div>
-
     <div class="tl-time"></div>
     <div class="tl-block t-free">Free time
       <div style="font-size:10px; font-weight:400; margin-top:2px; opacity:0.6;">laundry · organize · sweep · mop here if needed</div>
     </div>
-
     <div class="tl-time">6:00 PM</div>
     <div class="tl-block t-teach">PalFish — active teaching</div>
-
     <div class="tl-time">7:30 PM</div>
     <div class="tl-block t-free">Free time</div>
-
     <div class="tl-time">~11:30 PM</div>
     <div class="tl-block t-night">Night skincare</div>
-
     <div class="tl-time">12:00 AM</div>
     <div class="tl-block t-sleep">Sleep</div>
   </div>
@@ -205,7 +190,7 @@
 
   <div class="divider"></div>
 
-  <!-- Monthly / As-Needed Menu -->
+  <!-- Menu Layout -->
   <div class="section-label">As-needed menu — observe and pick cards during any allocated free time</div>
   <div class="month-grid">
     <div class="month-card">
@@ -257,5 +242,11 @@
   </div>
 </div>
 
+<script>
+  // Registers the mini Service Worker required for PWA installation features
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+</script>
 </body>
 </html>
