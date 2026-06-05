@@ -1,60 +1,83 @@
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  /* Fallback CSS variables set to Dark Mode defaults */
-  :root {
-    --font-sans: system-ui, -apple-system, sans-serif;
-    --color-background-primary: #121212;
-    --color-background-secondary: #1e1e1e;
-    --color-text-primary: #e0e0e0;
-    --color-text-secondary: #a0a0a0;
-    --color-border-tertiary: #2d2d2d;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    /* Fallback CSS variables set to Dark Mode defaults */
+    :root {
+      --font-sans: system-ui, -apple-system, sans-serif;
+      --color-background-primary: #121212;
+      --color-background-secondary: #1e1e1e;
+      --color-text-primary: #e0e0e0;
+      --color-text-secondary: #a0a0a0;
+      --color-border-tertiary: #2d2d2d;
+    }
 
-  .wrap { 
-    padding: 1rem; 
-    font-family: var(--font-sans); 
-    background-color: var(--color-background-primary); 
-    color: var(--color-text-primary); 
-  }
-  
-  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem; }
-  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  
-  .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin: 1.25rem 0 0.5rem; }
-  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1rem 0; }
-  
-  .timeline { display: grid; grid-template-columns: 68px 1fr; gap: 0; }
-  .tl-time { font-size: 11px; color: var(--color-text-secondary); padding: 7px 8px 0 0; text-align: right; line-height: 1.2; }
-  .tl-block { border-radius: 6px; padding: 6px 9px; font-size: 12px; font-weight: 500; margin-bottom: 4px; line-height: 1.35; }
-  .tl-gap { height: 4px; }
+    body {
+      background-color: var(--color-background-primary);
+    }
 
-  /* Dark mode schedule blocks */
-  .t-morning { background: #412402; color: #FAC775; }
-  .t-school  { background: #042C53; color: #B5D4F4; }
-  .t-free    { background: #2C2C2A; color: #D3D1C7; }
-  .t-teach   { background: #26215C; color: #CECBF6; }
-  .t-pets    { background: #04342C; color: #9FE1CB; }
-  .t-chores  { background: #042C53; color: #85B7EB; }
-  .t-night   { background: #4B1528; color: #F4C0D1; }
-  .t-sleep   { background: #173404; color: #C0DD97; }
+    .wrap { 
+      padding: 1rem; 
+      font-family: var(--font-sans); 
+      color: var(--color-text-primary); 
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1.25rem; }
+    .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-text-secondary); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    
+    .section-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin: 1.25rem 0 0.5rem; }
+    .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1rem 0; }
+    
+    .timeline { display: grid; grid-template-columns: 68px 1fr; gap: 0; }
+    .tl-time { font-size: 11px; color: var(--color-text-secondary); padding: 7px 8px 0 0; text-align: right; line-height: 1.2; }
+    .tl-block { border-radius: 6px; padding: 6px 9px; font-size: 12px; font-weight: 500; margin-bottom: 4px; line-height: 1.35; }
+    .tl-gap { height: 4px; }
 
-  /* Menu Item Colors */
-  .c-teal   { color: #9FE1CB; }
-  .c-blue   { color: #B5D4F4; }
-  .c-pink   { color: #F4C0D1; }
-  .c-purple { color: #CECBF6; }
+    /* Dark mode schedule blocks */
+    .t-morning { background: #412402; color: #FAC775; }
+    .t-school  { background: #042C53; color: #B5D4F4; }
+    .t-free    { background: #2C2C2A; color: #D3D1C7; }
+    .t-teach   { background: #26215C; color: #CECBF6; }
+    .t-pets    { background: #04342C; color: #9FE1CB; }
+    .t-chores  { background: #042C53; color: #85B7EB; }
+    .t-night   { background: #4B1528; color: #F4C0D1; }
+    .t-sleep   { background: #173404; color: #C0DD97; }
 
-  .month-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; }
-  .month-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 8px 10px; }
-  .month-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 4px; }
-  .month-item { font-size: 12px; padding: 2px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
-  
-  .wknd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .wknd-col { }
-  .col-head { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
-</style>
+    /* Menu Item Colors */
+    .c-teal   { color: #9FE1CB; }
+    .c-blue   { color: #B5D4F4; }
+    .c-pink   { color: #F4C0D1; }
+    .c-purple { color: #CECBF6; }
+
+    .month-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+    .month-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 10px 12px; }
+    .month-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .month-item { font-size: 12px; padding: 3px 0; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.4; }
+    
+    .wknd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .wknd-col { }
+    .col-head { font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px; padding-left: 68px; }
+
+    /* Mobile Responsiveness Rules */
+    @media (max-width: 600px) {
+      .wrap { padding: 0.75rem; }
+      .wknd-grid { grid-template-columns: 1fr; gap: 16px; }
+      .col-head { padding-left: 0; margin-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); padding-bottom: 4px; }
+      .month-grid { grid-template-columns: 1fr; gap: 6px; }
+      .timeline { grid-template-columns: 60px 1fr; }
+      .tl-time { padding-right: 6px; font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
 
 <div class="wrap">
   <h2 style="position:absolute;width:1px;height:1px;overflow:hidden;">Full weekly schedule</h2>
@@ -114,8 +137,8 @@
     <div class="tl-block t-sleep">Sleep</div>
   </div>
 
-  <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-secondary); display:flex; align-items:center; gap:5px;">
-    <i class="ti ti-scissors" style="font-size:13px;" aria-hidden="true"></i>
+  <div style="margin-top: 8px; font-size: 11px; color: var(--color-text-secondary); display:flex; align-items:center; gap:5px; padding-left: 68px;">
+    <span style="font-size:13px;" aria-hidden="true">✂️</span>
     Brush Cotton/Snow/Casper/Powder if fur looks unkempt
   </div>
 
@@ -170,7 +193,7 @@
 
   <div class="divider"></div>
 
-  <!-- Monthly -->
+  <!-- Monthly / As-Needed Menu -->
   <div class="section-label">As-needed menu — observe and pick cards during any allocated free time</div>
   <div class="month-grid">
     <div class="month-card">
@@ -221,3 +244,6 @@
     </div>
   </div>
 </div>
+
+</body>
+</html>
