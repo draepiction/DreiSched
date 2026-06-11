@@ -513,6 +513,7 @@
       border: 0.5px solid var(--border);
       border-radius: 8px;
       padding: 12px 14px;
+      position: relative;
     }
     .menu-card-title {
       font-size: 9.5px;
@@ -523,10 +524,14 @@
       margin-bottom: 8px;
       padding-bottom: 6px;
       border-bottom: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .menu-item-group {
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     .menu-item {
       font-size: 11.5px;
@@ -571,6 +576,7 @@
       flex-direction: column;
       gap: 1px;
       transition: opacity 0.2s ease, transform 0.2s ease;
+      width: 100%;
     }
     .menu-item .hint { font-size: 9.5px; opacity: 0.45; font-weight: 300; }
     .menu-item.checked .label-text { opacity: 0.25; text-decoration: line-through; text-decoration-color: var(--muted); }
@@ -601,6 +607,39 @@
     .c-pink   { color: #f0aec8; }
     .c-purple { color: #b8b4f5; }
     .c-amber  { color: #f0c07a; }
+
+    /* Completion Info */
+    .last-completed {
+      font-size: 8.5px;
+      color: var(--accent);
+      margin-top: 2px;
+      opacity: 0.8;
+      display: none;
+    }
+    .menu-item.checked .last-completed { display: block; }
+
+    /* Inline Menu Editing */
+    .menu-edit-tools {
+      display: none;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    body.edit-mode-active .menu-edit-tools { display: flex; }
+    
+    .edit-item-btn, .del-item-btn {
+      font-size: 9px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      margin-left: auto;
+      padding: 2px;
+      display: none;
+    }
+    body.edit-mode-active .edit-item-btn, 
+    body.edit-mode-active .del-item-btn { display: inline-block; }
+    .edit-item-btn:hover { color: var(--accent); }
+    .del-item-btn:hover { color: #ff5555; }
 
     /* ── Sleep note ── */
     .sleep-note {
@@ -643,6 +682,8 @@
       max-width: 460px;
       padding: 1.5rem;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .modal-title {
       font-family: var(--font-display);
@@ -798,7 +839,7 @@
           <span class="habit-pip" data-index="3"></span>
         </div>
       </div>
-      </div>
+    </div>
   </div>
 
   <div class="legend">
@@ -911,160 +952,10 @@
     <div id="progress-bar-fill" class="progress-bar"></div>
   </div>
 
-  <div class="menu-grid">
-    <div class="menu-card">
-      <div class="menu-card-title">Pets</div>
-      <div class="menu-item-group">
-        <label class="menu-item c-teal">
-          <input type="checkbox" id="pet-brush">
-          <span class="label-text">Groom & brush dogs<span class="hint">4–6 PM preferred window</span></span>
-        </label>
-        <div class="sub-selector">
-          <span class="pill" data-val="cotton">Cotton</span>
-          <span class="pill" data-val="snow">Snow</span>
-          <span class="pill" data-val="casper">Casper</span>
-          <span class="pill" data-val="powder">Powder</span>
-        </div>
-      </div>
-      <div class="menu-item-group">
-        <label class="menu-item c-teal">
-          <input type="checkbox" id="pet-nails">
-          <span class="label-text">Dog nail trimming</span>
-        </label>
-        <div class="sub-selector">
-          <span class="pill" data-val="cotton">Cotton</span>
-          <span class="pill" data-val="snow">Snow</span>
-          <span class="pill" data-val="casper">Casper</span>
-          <span class="pill" data-val="powder">Powder</span>
-        </div>
-      </div>
-      <div class="menu-item-group">
-        <label class="menu-item c-teal">
-          <input type="checkbox" id="pet-flea">
-          <span class="label-text">Flea / tick preventatives</span>
-        </label>
-        <div class="sub-selector">
-          <span class="pill" data-val="cotton">Cotton</span>
-          <span class="pill" data-val="snow">Snow</span>
-          <span class="pill" data-val="casper">Casper</span>
-          <span class="pill" data-val="powder">Powder</span>
-        </div>
-      </div>
-      <div class="menu-item-group">
-        <label class="menu-item c-teal">
-          <input type="checkbox" id="pet-bath">
-          <span class="label-text">Bathing the dogs</span>
-        </label>
-        <div class="sub-selector">
-          <span class="pill" data-val="cotton">Cotton</span>
-          <span class="pill" data-val="snow">Snow</span>
-          <span class="pill" data-val="casper">Casper</span>
-          <span class="pill" data-val="powder">Powder</span>
-        </div>
-      </div>
-      <div class="menu-item-group">
-        <label class="menu-item c-teal">
-          <input type="checkbox" id="pet-litter">
-          <span class="label-text">Litter box deep clean</span>
-        </label>
-        <div class="sub-selector">
-          <span class="pill" data-val="jiji">Jiji</span>
-          <span class="pill" data-val="koichi">Koichi</span>
-        </div>
-      </div>
-    </div>
+  <div class="menu-grid" id="dynamic-menu-grid"></div>
 
-    <div class="menu-card">
-      <div class="menu-card-title">Bedding</div>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="bed-sheets">
-        <span class="label-text">Wash bedsheets + pillowcases<span class="hint">Suggested weekly</span></span>
-      </label>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="bed-blankets">
-        <span class="label-text">Wash blankets</span>
-      </label>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="bed-inserts">
-        <span class="label-text">Wash pillow inserts</span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Kitchen</div>
-      <label class="menu-item c-pink">
-        <input type="checkbox" id="kit-appliances">
-        <span class="label-text">Appliance upkeep<span class="hint">microwave · stove · air fryer</span></span>
-      </label>
-      <label class="menu-item c-pink">
-        <input type="checkbox" id="kit-shelves">
-        <span class="label-text">Shelves + stock reorganization</span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Wardrobe</div>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="ward-closet">
-        <span class="label-text">Closet declutter + re-fold</span>
-      </label>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="ward-shoes">
-        <span class="label-text">Shoe cleaning</span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Room & Desk</div>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="room-aircon">
-        <span class="label-text">Aircon cleaning</span>
-      </label>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="room-windows">
-        <span class="label-text">Window cleaning</span>
-      </label>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="room-sofabed">
-        <span class="label-text">Sofabed cleaning</span>
-      </label>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="room-peripherals">
-        <span class="label-text">Keyboard + mouse wipe-down</span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Tech & Workspace</div>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="tech-screens">
-        <span class="label-text">Screen cleaning</span>
-      </label>
-      <label class="menu-item c-blue">
-        <input type="checkbox" id="tech-files">
-        <span class="label-text">Digital file purge + organization<span class="hint">including photos</span></span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Decor</div>
-      <label class="menu-item c-purple">
-        <input type="checkbox" id="decor-dusting">
-        <span class="label-text">Figure + shelf dusting</span>
-      </label>
-    </div>
-
-    <div class="menu-card">
-      <div class="menu-card-title">Deep Cleans</div>
-      <label class="menu-item c-pink">
-        <input type="checkbox" id="deep-bathroom">
-        <span class="label-text">Bathroom deep clean</span>
-      </label>
-      <label class="menu-item c-pink">
-        <input type="checkbox" id="deep-fridge">
-        <span class="label-text">Fridge clean-out</span>
-      </label>
-    </div>
+  <div style="margin-top:1rem; text-align:right;">
+    <button class="add-habit-btn" id="btn-add-as-needed-category" style="display:none; padding:4px 10px;">+ Add Menu Category</button>
   </div>
 
   <div class="divider"></div>
@@ -1191,8 +1082,7 @@
       How should the schedule timeline adjust to fill the gap left behind by this removed block?
     </p>
     <div class="modal-field">
-      <select id="delete-strategy-selection">
-        </select>
+      <select id="delete-strategy-selection"></select>
     </div>
     <div class="modal-actions">
       <button class="reset-btn" id="btn-del-strat-cancel">Cancel</button>
@@ -1215,11 +1105,60 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-edit-category">
+  <div class="modal-card">
+    <div class="modal-title" id="cat-modal-title">Add Menu Category</div>
+    <input type="hidden" id="edit-cat-id">
+    <div class="modal-field">
+      <label>Category Name</label>
+      <input type="text" id="edit-cat-name" placeholder="e.g., Garden, Maintenance">
+    </div>
+    <div class="modal-actions">
+      <button class="reset-btn" id="btn-cat-cancel">Cancel</button>
+      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-cat-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-task">
+  <div class="modal-card">
+    <div class="modal-title" id="task-modal-title">Edit Task</div>
+    <input type="hidden" id="edit-task-cat-id">
+    <input type="hidden" id="edit-task-id">
+    <div class="modal-field">
+      <label>Task Name</label>
+      <input type="text" id="edit-task-name" placeholder="e.g., Clean fridge">
+    </div>
+    <div class="modal-field">
+      <label>Hint (Optional)</label>
+      <input type="text" id="edit-task-hint" placeholder="e.g., Check expiration dates">
+    </div>
+    <div class="modal-field">
+      <label>Color Accent</label>
+      <select id="edit-task-color">
+        <option value="c-teal">Teal (Pets)</option>
+        <option value="c-blue">Blue (Room/Tech)</option>
+        <option value="c-pink">Pink (Kitchen/Deep)</option>
+        <option value="c-purple">Purple (Bedding/Decor)</option>
+        <option value="c-amber">Amber (General)</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Sub-Selectors / Pills (Comma Separated)</label>
+      <input type="text" id="edit-task-pills" placeholder="e.g., Cotton, Snow, Casper">
+      <span style="font-size:9px; color:var(--muted); margin-top:2px;">Leave blank for none.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="reset-btn" id="btn-task-cancel">Cancel</button>
+      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-task-save">Save Task</button>
+    </div>
+  </div>
+</div>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
     // ── 1. HARDCODED SCHEDULING ENGINES STATIC LAYOUT DEFINITIONS ──
-    // The original "School's Out" itinerary is the permanent structural foundation for the "Default Mode"
     const BASE_DEFAULT_ROUTINE = [
       { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-morning" },
       { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-pets" },
@@ -1231,7 +1170,6 @@
       { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-night" }
     ];
 
-    // School Mode data mapping structure
     const STATIC_SCHOOL_NORMAL = [
       { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-morning" },
       { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-pets" },
@@ -1261,27 +1199,95 @@
       { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-night" }
     ];
 
+    // As Needed Menu Default Data
+    const DEFAULT_AS_NEEDED = [
+      {
+        id: "cat_pets", title: "Pets",
+        items: [
+          { id: "pet-brush", text: "Groom & brush dogs", hint: "4–6 PM preferred window", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-nails", text: "Dog nail trimming", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-flea", text: "Flea / tick preventatives", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-bath", text: "Bathing the dogs", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-litter", text: "Litter box deep clean", hint: "", color: "c-teal", pills: ["Jiji", "Koichi"] }
+        ]
+      },
+      {
+        id: "cat_bedding", title: "Bedding",
+        items: [
+          { id: "bed-sheets", text: "Wash bedsheets + pillowcases", hint: "Suggested weekly", color: "c-purple", pills: [] },
+          { id: "bed-blankets", text: "Wash blankets", hint: "", color: "c-purple", pills: [] },
+          { id: "bed-inserts", text: "Wash pillow inserts", hint: "", color: "c-purple", pills: [] }
+        ]
+      },
+      {
+        id: "cat_kitchen", title: "Kitchen",
+        items: [
+          { id: "kit-appliances", text: "Appliance upkeep", hint: "microwave · stove · air fryer", color: "c-pink", pills: [] },
+          { id: "kit-shelves", text: "Shelves + stock reorganization", hint: "", color: "c-pink", pills: [] }
+        ]
+      },
+      {
+        id: "cat_wardrobe", title: "Wardrobe",
+        items: [
+          { id: "ward-closet", text: "Closet declutter + re-fold", hint: "", color: "c-purple", pills: [] },
+          { id: "ward-shoes", text: "Shoe cleaning", hint: "", color: "c-purple", pills: [] }
+        ]
+      },
+      {
+        id: "cat_room", title: "Room & Desk",
+        items: [
+          { id: "room-aircon", text: "Aircon cleaning", hint: "", color: "c-blue", pills: [] },
+          { id: "room-windows", text: "Window cleaning", hint: "", color: "c-blue", pills: [] },
+          { id: "room-sofabed", text: "Sofabed cleaning", hint: "", color: "c-blue", pills: [] },
+          { id: "room-peripherals", text: "Keyboard + mouse wipe-down", hint: "", color: "c-blue", pills: [] }
+        ]
+      },
+      {
+        id: "cat_tech", title: "Tech & Workspace",
+        items: [
+          { id: "tech-screens", text: "Screen cleaning", hint: "", color: "c-blue", pills: [] },
+          { id: "tech-files", text: "Digital file purge + organization", hint: "including photos", color: "c-blue", pills: [] }
+        ]
+      },
+      {
+        id: "cat_decor", title: "Decor",
+        items: [
+          { id: "decor-dusting", text: "Figure + shelf dusting", hint: "", color: "c-purple", pills: [] }
+        ]
+      },
+      {
+        id: "cat_deep", title: "Deep Cleans",
+        items: [
+          { id: "deep-bathroom", text: "Bathroom deep clean", hint: "", color: "c-pink", pills: [] },
+          { id: "deep-fridge", text: "Fridge clean-out", hint: "", color: "c-pink", pills: [] }
+        ]
+      }
+    ];
+
 
     // ── 2. APPLICATION GLOBAL STATE VARIABLES ──
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
     let isEditModeActive = false;
     let isHalfDayChecked = localStorage.getItem('db_half_day_toggle') === 'true';
 
-    // Editable Dynamic Timelines Cache (Default track can be modified dynamically)
     let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules')) || {
       default: { dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)) }
     };
 
-    // Habits tracking ledger variables
     let habitCustomList = JSON.parse(localStorage.getItem('db_habit_custom_list')) || []; 
     const todayStr = new Date().toISOString().split('T')[0];
     let habitActivityLog = JSON.parse(localStorage.getItem('db_habit_activity_log')) || { date: todayStr, checks: {} };
 
-    // Midnight habit state log flush
     if (habitActivityLog.date !== todayStr) {
       habitActivityLog = { date: todayStr, checks: {} };
       localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
     }
+
+    // Dynamic As Needed Engine State
+    let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
+    let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
+    let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
+    let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
 
 
     // ── 3. INTERNAL ENGINE HELPER FUNCTIONS (TIME PROCESSING) ──
@@ -1301,6 +1307,24 @@
       return (h * 60) + m;
     }
 
+    function getRelativeTime(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      // Remove time portions for strictly day calculation
+      date.setHours(0,0,0,0);
+      now.setHours(0,0,0,0);
+      const diffTime = Math.abs(now - date);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays === 0) return "Today";
+      if (diffDays === 1) return "1 day ago";
+      return `${diffDays} days ago`;
+    }
+
+    function getFormattedDate(dateString) {
+      const d = new Date(dateString);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
 
     // ── 4. TIMELINE STRUCTURAL RECALCULATION & RENDERING ENGINE ──
     function getGapsForSchedule(scheduleObj) {
@@ -1328,7 +1352,6 @@
       let activeTrackData = [];
       let isCurrentTrackEditable = false;
 
-      // Extract context track profile definitions
       if (currentActiveCategory === 'default') {
         activeTrackData = dynamicSchedules.default.blocks;
         isCurrentTrackEditable = true;
@@ -1340,22 +1363,15 @@
         isCurrentTrackEditable = true;
       }
 
-      // Merge user blocks with dynamically derived free-time fillers
       let dayStartLimit = 330; 
       if (currentActiveCategory !== 'default' && currentActiveCategory !== 'school' && dynamicSchedules[currentActiveCategory]) {
         dayStartLimit = dynamicSchedules[currentActiveCategory].dayStart;
       }
 
-      let timelineSequence = [];
-      activeTrackData.forEach(b => {
-        timelineSequence.push({ ...b, isFreeFiller: false });
-      });
-
-      // Inject accurate calculated Free Blocks into blank spaces up until midnight
+      let mergedSequence = [];
       let currentProgress = dayStartLimit;
       let sortedBlocks = [...activeTrackData].sort((a, b) => a.start - b.start);
       
-      let mergedSequence = [];
       sortedBlocks.forEach(b => {
         if (b.start > currentProgress) {
           mergedSequence.push({
@@ -1382,10 +1398,8 @@
         });
       }
 
-      // Sort chronological sequence
       mergedSequence.sort((a, b) => a.start - b.start);
 
-      // Render items to standard UI nodes
       mergedSequence.forEach((block, idx) => {
         const timeNode = document.createElement('div');
         timeNode.className = 'tl-time';
@@ -1397,21 +1411,16 @@
         const contentNode = document.createElement('div');
         contentNode.className = `tl-block ${block.style}`;
         
-        // Dynamic analytical attributes mapping configuration hooks
         if (!block.isFreeFiller) {
           contentNode.setAttribute('data-start', block.start);
           contentNode.setAttribute('data-end', block.end);
         }
 
         let innerContent = `${block.name}`;
-        if (block.sub) {
-          innerContent += `<span class="sub">${block.sub}</span>`;
-        }
+        if (block.sub) innerContent += `<span class="sub">${block.sub}</span>`;
 
-        // Context check-in conditional generation of dynamic workspace inline operations
         if (isCurrentTrackEditable) {
           let controlsHTML = `<div class="tl-inline-ctrls">`;
-          
           if (block.isFreeFiller) {
             controlsHTML += `<button class="inline-action-btn add-btn" data-start="${block.start}" data-end="${block.end}">+ Add Block</button>`;
           } else {
@@ -1428,16 +1437,11 @@
 
         contentNode.innerHTML = innerContent;
         blockContainer.appendChild(contentNode);
-
         container.appendChild(timeNode);
         container.appendChild(blockContainer);
       });
 
-      // Bind functional dynamic listeners inside the generated interactive modules
-      if (isCurrentTrackEditable) {
-        bindEditableBlockListeners(mergedSequence);
-      }
-      
+      if (isCurrentTrackEditable) bindEditableBlockListeners(mergedSequence);
       executeLiveTimelineTrackingUpdates();
     }
 
@@ -1447,24 +1451,21 @@
     let currentTargetEditingBlockStart = null; 
 
     function bindEditableBlockListeners(fullTimelineSequence) {
-      // Dynamic operational hooks to handle "+ Add Block" inside any free filler block
       document.querySelectorAll('.inline-action-btn.add-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const start = parseInt(btn.getAttribute('data-start'));
           const end = parseInt(btn.getAttribute('data-end'));
           selectedGapContext = { start, end };
-          currentTargetEditingBlockStart = null; // Denotes fresh insertion mode
+          currentTargetEditingBlockStart = null;
           openBlockEditorModal("Create Dynamic Block", start, end);
         });
       });
 
-      // Inline action handler for "Edit"
       document.querySelectorAll('.inline-action-btn.edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const startVal = parseInt(btn.getAttribute('data-start'));
           const activeSched = dynamicSchedules[currentActiveCategory];
           const targetBlock = activeSched.blocks.find(b => b.start === startVal);
-          
           if (targetBlock) {
             selectedGapContext = null;
             currentTargetEditingBlockStart = startVal;
@@ -1473,7 +1474,6 @@
         });
       });
 
-      // Dynamic action handler for "Delete" with overlap prevention strategy modal routing
       document.querySelectorAll('.inline-action-btn.del-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const startVal = parseInt(btn.getAttribute('data-start'));
@@ -1481,57 +1481,40 @@
         });
       });
 
-      // Chronological order transformation handler "Move Up"
       document.querySelectorAll('.inline-action-btn.up-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          executeChronologicalShift(startVal, -1);
-        });
+        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), -1));
       });
 
-      // Chronological order transformation handler "Move Down"
       document.querySelectorAll('.inline-action-btn.down-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          executeChronologicalShift(startVal, 1);
-        });
+        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), 1));
       });
     }
 
     function openBlockEditorModal(titleText, gapStart, gapEnd, blockData = null) {
       document.getElementById('block-modal-header-title').textContent = titleText;
-      
       const selectGapField = document.getElementById('smart-gap-picker-field');
       const selectGapDropdown = document.getElementById('block-smart-gap-select');
       selectGapDropdown.innerHTML = '';
 
       if (blockData) {
-        // Hides gap-selector in strict edit mode to avoid visual clutter
         selectGapField.style.display = 'none';
         document.getElementById('block-input-title').value = blockData.name;
         document.getElementById('block-input-sub').value = blockData.sub;
         document.getElementById('block-input-color').value = blockData.style;
-        
         document.getElementById('block-input-start').value = convertMinutesTo24hInput(blockData.start);
         document.getElementById('block-input-end').value = convertMinutesTo24hInput(blockData.end);
       } else {
-        // Add fresh item context configuration layout map
         selectGapField.style.display = 'flex';
         document.getElementById('block-input-title').value = '';
         document.getElementById('block-input-sub').value = '';
         document.getElementById('block-input-color').value = 't-custom';
 
-        // Load Smart Gap Recognition options
-        const activeSched = dynamicSchedules[currentActiveCategory];
-        const gaps = getGapsForSchedule(activeSched);
-        
+        const gaps = getGapsForSchedule(dynamicSchedules[currentActiveCategory]);
         gaps.forEach(g => {
           const opt = document.createElement('option');
           opt.value = `${g.start}-${g.end}`;
           opt.textContent = `${parseMinutesToTimeStr(g.start)} – ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
-          if (g.start === gapStart && g.end === gapEnd) {
-            opt.selected = true;
-          }
+          if (g.start === gapStart && g.end === gapEnd) opt.selected = true;
           selectGapDropdown.appendChild(opt);
         });
 
@@ -1555,7 +1538,6 @@
       document.getElementById('modal-block-editor').style.display = 'none';
     });
 
-    // Check configuration changes to toggle radio buttons for allocation tracking
     document.querySelectorAll('input[name="allocation-method"]').forEach(radio => {
       radio.addEventListener('change', (e) => {
         if (e.target.value === 'duration') {
@@ -1575,95 +1557,61 @@
       const styleClass = document.getElementById('block-input-color').value;
       const allocationMethod = document.querySelector('input[name="allocation-method"]:checked').value;
 
-      let finalStart = 0;
-      let finalEnd = 0;
+      let finalStart = 0, finalEnd = 0;
 
       if (currentTargetEditingBlockStart !== null) {
-        // Direct mutation adjustment save routine logic
         if (allocationMethod === 'duration') {
-          const durationVal = parseInt(document.getElementById('block-input-duration').value);
           finalStart = currentTargetEditingBlockStart;
-          finalEnd = finalStart + durationVal;
+          finalEnd = finalStart + parseInt(document.getElementById('block-input-duration').value);
         } else {
           finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
           finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
         }
 
-        if (finalEnd <= finalStart || finalEnd > 1440) {
-          alert("Layout Error: Out of bounds tracking window detected. Check limits.");
-          return;
-        }
+        if (finalEnd <= finalStart || finalEnd > 1440) return alert("Layout Error: Out of bounds tracking window detected.");
 
-        // Process strict sorting and index detection to bypass self-collision checks
-        let filteredBlocks = activeSched.blocks.filter(b => b.start !== currentTargetEditingBlockStart);
-        let overlapFound = filteredBlocks.some(b => (finalStart < b.end && finalEnd > b.start));
-        if (overlapFound) {
-          alert("Overlap Prevention Block: Requested time constraints collide with another block.");
-          return;
-        }
+        let overlapFound = activeSched.blocks.filter(b => b.start !== currentTargetEditingBlockStart).some(b => (finalStart < b.end && finalEnd > b.start));
+        if (overlapFound) return alert("Overlap Prevention Block: Requested time constraints collide with another block.");
 
         let idx = activeSched.blocks.findIndex(b => b.start === currentTargetEditingBlockStart);
         activeSched.blocks[idx] = { start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass };
       } else {
-        // Fresh block configuration placement tracking
-        const currentSelectedGapVal = document.getElementById('block-smart-gap-select').value;
-        const [gStart, gEnd] = currentSelectedGapVal.split('-').map(Number);
+        const [gStart, gEnd] = document.getElementById('block-smart-gap-select').value.split('-').map(Number);
 
         if (allocationMethod === 'duration') {
           const durationVal = parseInt(document.getElementById('block-input-duration').value);
           finalStart = gStart;
           finalEnd = finalStart + durationVal;
-          if (finalEnd > gEnd) {
-            alert(`Smart Cap Adjustment Alert: Requested duration (${durationVal}m) exceeds selected free window space limits.`);
-            return;
-          }
+          if (finalEnd > gEnd) return alert(`Smart Cap Adjustment Alert: Requested duration (${durationVal}m) exceeds window.`);
         } else {
           finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
           finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
-          if (finalStart < gStart || finalEnd > gEnd || finalEnd <= finalStart) {
-            alert("Boundary Violation: Assigned block mapping must remain within selected free coordinates.");
-            return;
-          }
+          if (finalStart < gStart || finalEnd > gEnd || finalEnd <= finalStart) return alert("Boundary Violation.");
         }
 
         activeSched.blocks.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
       }
 
-      // Re-sort core blocks data array metrics
       activeSched.blocks.sort((a, b) => a.start - b.start);
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-      
       document.getElementById('modal-block-editor').style.display = 'none';
       autoRebuildTimelineTrack();
     });
 
-    // Strategy options definitions handling on target element deletion routing
     let targetDeleteBlockStartVal = null;
-
     function openDeleteStrategyDispatcher(startVal, fullSequence) {
       targetDeleteBlockStartVal = startVal;
       const selectDropdown = document.getElementById('delete-strategy-selection');
       selectDropdown.innerHTML = '';
-
-      const activeSched = dynamicSchedules[currentActiveCategory];
       const targetBlockIdx = fullSequence.findIndex(b => b.start === startVal);
-      const targetBlock = fullSequence[targetBlockIdx];
 
-      // Absolute baseline core defaults option option definition tracking
       const optFree = document.createElement('option');
       optFree.value = "revert_free";
       optFree.textContent = "Convert space back into an open Free time block slot";
       selectDropdown.appendChild(optFree);
 
-      // Check left anchor availability parameters
       let prevBlock = null;
-      for (let i = targetBlockIdx - 1; i >= 0; i--) {
-        if (!fullSequence[i].isFreeFiller) {
-          prevBlock = fullSequence[i];
-          break;
-        }
-      }
-
+      for (let i = targetBlockIdx - 1; i >= 0; i--) { if (!fullSequence[i].isFreeFiller) { prevBlock = fullSequence[i]; break; } }
       if (prevBlock) {
         const optPrev = document.createElement('option');
         optPrev.value = `extend_prev-${prevBlock.start}`;
@@ -1671,25 +1619,13 @@
         selectDropdown.appendChild(optPrev);
       }
 
-      // Check right anchor availability parameters
       let nextBlock = null;
-      for (let i = targetBlockIdx + 1; i < fullSequence.length; i++) {
-        if (!fullSequence[i].isFreeFiller) {
-          nextBlock = fullSequence[i];
-          break;
-        }
-      }
-
+      for (let i = targetBlockIdx + 1; i < fullSequence.length; i++) { if (!fullSequence[i].isFreeFiller) { nextBlock = fullSequence[i]; break; } }
       if (nextBlock) {
         const optNext = document.createElement('option');
         optNext.value = `extend_next-${nextBlock.start}`;
         optNext.textContent = `Extend next activity block ("${nextBlock.name.substring(0,20)}...") backward`;
         selectDropdown.appendChild(optNext);
-      }
-
-      // Fallback instruction requirement check: If no previous track block window is found, default option is next block consumption
-      if (!prevBlock && nextBlock) {
-        optFree.textContent = "Convert to Free block slot (Option context fallback enabled)";
       }
 
       document.getElementById('modal-delete-strategy').style.display = 'flex';
@@ -1707,27 +1643,19 @@
       if (!targetBlock) return;
 
       if (strategySelection === 'revert_free') {
-        // Pure extraction deletion tracking routing pattern
         activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
       } else if (strategySelection.startsWith('extend_prev')) {
-        const prevStartVal = parseInt(strategySelection.split('-')[1]);
-        let prevBlockObj = activeSched.blocks.find(b => b.start === prevStartVal);
-        if (prevBlockObj) {
-          prevBlockObj.end = targetBlock.end; // Consume the space
-        }
+        let prevBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
+        if (prevBlockObj) prevBlockObj.end = targetBlock.end; 
         activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
       } else if (strategySelection.startsWith('extend_next')) {
-        const nextStartVal = parseInt(strategySelection.split('-')[1]);
-        let nextBlockObj = activeSched.blocks.find(b => b.start === nextStartVal);
-        if (nextBlockObj) {
-          nextBlockObj.start = targetBlock.start; // Pull backward to consume space
-        }
+        let nextBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
+        if (nextBlockObj) nextBlockObj.start = targetBlock.start;
         activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
       }
 
       activeSched.blocks.sort((a, b) => a.start - b.start);
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-      
       document.getElementById('modal-delete-strategy').style.display = 'none';
       autoRebuildTimelineTrack();
     });
@@ -1739,45 +1667,33 @@
 
       let targetIdx = idx + directionOffset;
       if (targetIdx >= 0 && targetIdx < activeSched.blocks.length) {
-        // Safe spatial translation swapping optimization algorithm routine logic
-        let tempStart = activeSched.blocks[idx].start;
-        let tempEnd = activeSched.blocks[idx].end;
-
-        // Perform temporal shift bounds checks assignment optimization profiles
         let targetBlock = activeSched.blocks[targetIdx];
         let currentBlock = activeSched.blocks[idx];
-
-        // Shift timestamps directly without changing task sizes to maintain structure
         let currentDuration = currentBlock.end - currentBlock.start;
         let targetDuration = targetBlock.end - targetBlock.start;
 
         if (directionOffset === -1) {
-          // Shifting upstream past previous block configuration rules boundaries
           currentBlock.start = targetBlock.start;
           currentBlock.end = currentBlock.start + currentDuration;
           targetBlock.start = currentBlock.end;
           targetBlock.end = targetBlock.start + targetDuration;
         } else {
-          // Shifting downstream past next block configuration rules boundaries
           targetBlock.start = currentBlock.start;
           targetBlock.end = targetBlock.start + targetDuration;
           currentBlock.start = targetBlock.end;
           currentBlock.end = currentBlock.start + currentDuration;
         }
-
         activeSched.blocks.sort((a, b) => a.start - b.start);
         localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
         autoRebuildTimelineTrack();
       }
     }
 
-
     // ── 7. MUTUAL EXCLUSION CATEGORY SELECTOR UI TRACK MATRIX OPERATIONS ──
     function drawCategorySelectorsLayoutButtons() {
       const trackAnchor = document.getElementById('category-track-anchor');
       trackAnchor.innerHTML = '';
 
-      // Standard Base Core Default Options
       const defaultBtn = document.createElement('button');
       defaultBtn.className = `cat-btn ${currentActiveCategory === 'default' ? 'active' : ''}`;
       defaultBtn.textContent = "Default";
@@ -1790,10 +1706,8 @@
       schoolBtn.addEventListener('click', () => updateActiveCategoryContextState('school'));
       trackAnchor.appendChild(schoolBtn);
 
-      // Programmatic injection map loop for dynamic categories
       Object.keys(dynamicSchedules).forEach(key => {
-        if (key === 'default') return; // Skip internal reservation key identifier
-        
+        if (key === 'default') return;
         const customBtn = document.createElement('button');
         customBtn.className = `cat-btn ${currentActiveCategory === key ? 'active' : ''}`;
         customBtn.innerHTML = `${dynamicSchedules[key].name} <span class="del-cat" data-target="${key}">×</span>`;
@@ -1801,9 +1715,9 @@
         customBtn.addEventListener('click', (e) => {
           if (e.target.classList.contains('del-cat')) {
             e.stopPropagation();
-            const targetDeletionKey = e.target.getAttribute('data-target');
-            if (confirm(`Remove the custom schedule category track "${dynamicSchedules[targetDeletionKey].name}" permanently?`)) {
-              delete dynamicSchedules[targetDeletionKey];
+            const targetKey = e.target.getAttribute('data-target');
+            if (confirm(`Remove the custom schedule category track "${dynamicSchedules[targetKey].name}" permanently?`)) {
+              delete dynamicSchedules[targetKey];
               localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
               updateActiveCategoryContextState('default');
             }
@@ -1816,25 +1730,10 @@
     }
 
     function updateActiveCategoryContextState(targetCategoryKey) {
-      if (currentActiveCategory === targetCategoryKey) {
-        // Toggle action logic: Re-clicking active selection falls back to Default schedule
-        currentActiveCategory = 'default';
-      } else {
-        currentActiveCategory = targetCategoryKey;
-      }
-      
+      currentActiveCategory = currentActiveCategory === targetCategoryKey ? 'default' : targetCategoryKey;
       localStorage.setItem('db_active_category', currentActiveCategory);
       
-      // Toggle visibility controls matrix configuration definitions
-      const hdWrapper = document.getElementById('half-day-toggle-wrapper');
-      const addSchedBtn = document.getElementById('custom-add-cat-btn');
-
-      if (currentActiveCategory === 'school') {
-        hdWrapper.style.display = 'flex';
-      } else {
-        hdWrapper.style.display = 'none';
-      }
-
+      document.getElementById('half-day-toggle-wrapper').style.display = (currentActiveCategory === 'school') ? 'flex' : 'none';
       drawCategorySelectorsLayoutButtons();
       autoRebuildTimelineTrack();
     }
@@ -1844,18 +1743,14 @@
     const editModeToggleBtn = document.getElementById('edit-mode-toggle');
     editModeToggleBtn.addEventListener('click', () => {
       isEditModeActive = !isEditModeActive;
-      if (isEditModeActive) {
-        editModeToggleBtn.classList.add('active');
-        document.body.classList.add('edit-mode-active');
-        document.getElementById('custom-add-cat-btn').style.display = 'inline-block';
-      } else {
-        editModeToggleBtn.classList.remove('active');
-        document.body.classList.remove('edit-mode-active');
-        document.getElementById('custom-add-cat-btn').style.display = 'none';
-      }
-      // Trigger updates and redraw habit layout matrices
+      editModeToggleBtn.classList.toggle('active');
+      document.body.classList.toggle('edit-mode-active');
+      document.getElementById('custom-add-cat-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
+      document.getElementById('btn-add-as-needed-category').style.display = isEditModeActive ? 'inline-block' : 'none';
+      
       autoRebuildTimelineTrack();
       renderHabitsMatrixInterfaceTrack();
+      renderAsNeededMenu();
     });
 
 
@@ -1864,44 +1759,25 @@
       document.getElementById('new-sched-name').value = '';
       document.getElementById('modal-add-schedule').style.display = 'flex';
     });
-
     document.getElementById('btn-cancel-sched').addEventListener('click', () => {
       document.getElementById('modal-add-schedule').style.display = 'none';
     });
-
     document.getElementById('btn-save-sched').addEventListener('click', () => {
       const nameInput = document.getElementById('new-sched-name').value.trim();
       const startTimeInput = document.getElementById('new-sched-start').value;
 
-      if (!nameInput) {
-        alert("Configuration Error: Schedule category label title required.");
-        return;
-      }
-
+      if (!nameInput) return alert("Schedule category label title required.");
       const totalStartMin = parseTimeStrToMinutes(startTimeInput);
-      
-      // Explicit range limit check: 12:00 AM (0 min) to 3:00 PM (900 min)
-      if (totalStartMin < 0 || totalStartMin > 900) {
-        alert("Boundary Restriction: Schedule start must be set within the 12:00 AM to 3:00 PM window.");
-        return;
-      }
+      if (totalStartMin < 0 || totalStartMin > 900) return alert("Boundary Restriction: Start must be between 12:00 AM and 3:00 PM.");
 
       const unifiedKeyId = 'cat_' + Date.now();
-      
-      // Initialize layout structure configuration footprint data properties
-      dynamicSchedules[unifiedKeyId] = {
-        name: nameInput,
-        dayStart: totalStartMin,
-        blocks: [] // Automatically generated as one large free block filled dynamically by the layout routine engine
-      };
+      dynamicSchedules[unifiedKeyId] = { name: nameInput, dayStart: totalStartMin, blocks: [] };
 
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
       document.getElementById('modal-add-schedule').style.display = 'none';
-      
       updateActiveCategoryContextState(unifiedKeyId);
     });
 
-    // School Half-day configuration change tracking interface attachment link
     const hdToggleInput = document.getElementById('half-day-toggle');
     hdToggleInput.checked = isHalfDayChecked;
     hdToggleInput.addEventListener('change', (e) => {
@@ -1910,19 +1786,26 @@
       autoRebuildTimelineTrack();
     });
 
+    // ── 10. DAILY MINI-CHECKLIST DYNAMIC PIP SECTOR ENGINE COORDS (Rating Style) ──
+    function handlePipInteraction(groupName, clickedIdx, totalPips) {
+      for (let i = 0; i < totalPips; i++) {
+        const cacheKey = `${groupName}-${i}`;
+        if (i <= clickedIdx) {
+          habitActivityLog.checks[cacheKey] = true;
+        } else {
+          delete habitActivityLog.checks[cacheKey];
+        }
+      }
+      localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
+      renderHabitsMatrixInterfaceTrack();
+    }
 
-    // ── 10. DAILY MINI-CHECKLIST DYNAMIC PIP SECTOR ENGINE COORDS ──
     function renderHabitsMatrixInterfaceTrack() {
       const container = document.getElementById('habit-container-matrix');
-      
-      // Purge old custom categories to avoid duplication artifacts
       document.querySelectorAll('.habit-group[data-fixed="false"]').forEach(el => el.remove());
-      
-      // Remove stale add-buttons
       const existingAddBtn = document.getElementById('action-trigger-habit-modal');
       if (existingAddBtn) existingAddBtn.remove();
 
-      // Loop map rendering configuration block rules for custom habits
       habitCustomList.forEach((habit, hIdx) => {
         const groupWrap = document.createElement('div');
         groupWrap.className = 'habit-group';
@@ -1942,49 +1825,26 @@
           pipNode.className = `habit-pip ${habitActivityLog.checks[`${habit.id}-${i}`] ? 'active' : ''}`;
           pipNode.setAttribute('data-index', i);
           
-          pipNode.addEventListener('click', () => {
-            const cacheKey = `${habit.id}-${i}`;
-            if (pipNode.classList.contains('active')) {
-              pipNode.classList.remove('active');
-              delete habitActivityLog.checks[cacheKey];
-            } else {
-              pipNode.classList.add('active');
-              habitActivityLog.checks[cacheKey] = true;
-            }
-            localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
-          });
+          pipNode.addEventListener('click', () => handlePipInteraction(habit.id, i, habit.pipsCount));
           pipsWrap.appendChild(pipNode);
         }
         groupWrap.appendChild(pipsWrap);
 
-        // Append non-persistent calculation modification interfaces if edit mode state profile permits
         if (isEditModeActive) {
-          const minusBtn = document.createElement('button');
-          minusBtn.className = 'habit-ctrl-btn';
-          minusBtn.textContent = '−';
+          const minusBtn = document.createElement('button'); minusBtn.className = 'habit-ctrl-btn'; minusBtn.textContent = '−';
           minusBtn.addEventListener('click', () => modifyHabitPipBounds(hIdx, -1));
-
-          const plusBtn = document.createElement('button');
-          plusBtn.className = 'habit-ctrl-btn';
-          plusBtn.textContent = '+';
+          const plusBtn = document.createElement('button'); plusBtn.className = 'habit-ctrl-btn'; plusBtn.textContent = '+';
           plusBtn.addEventListener('click', () => modifyHabitPipBounds(hIdx, 1));
-
-          const delBtn = document.createElement('button');
-          delBtn.className = 'habit-ctrl-btn';
-          delBtn.style.color = '#ff5555';
-          delBtn.style.marginLeft = '4px';
-          delBtn.textContent = '×';
+          const delBtn = document.createElement('button'); delBtn.className = 'habit-ctrl-btn'; delBtn.style.color = '#ff5555'; delBtn.style.marginLeft = '4px'; delBtn.textContent = '×';
           delBtn.addEventListener('click', () => purgeHabitEntirely(hIdx));
 
           groupWrap.appendChild(minusBtn);
           groupWrap.appendChild(plusBtn);
           groupWrap.appendChild(delBtn);
         }
-
         container.appendChild(groupWrap);
       });
 
-      // Show structural dynamic add option toggle button link inside setup configuration matrices
       if (isEditModeActive) {
         const addNewHabitActionBtn = document.createElement('button');
         addNewHabitActionBtn.className = 'add-habit-btn';
@@ -1997,52 +1857,33 @@
         container.appendChild(addNewHabitActionBtn);
       }
 
-      // Bind functional click properties back to the core fixed elements structures tracking matrix
-      document.querySelectorAll('.habit-group[data-fixed="true"] .habit-pip').forEach(pip => {
-        const groupName = pip.closest('.habit-group').getAttribute('data-habit');
-        const pipIdx = pip.getAttribute('data-index');
-        const storageKey = `${groupName}-${pipIdx}`;
-
-        // Sync visual configuration logging arrays mapping properties
-        if (habitActivityLog.checks[storageKey]) {
-          pip.classList.add('active');
-        } else {
-          pip.classList.remove('active');
-        }
-
-        // Wipe duplicate attachments links down paths
-        pip.replaceWith(pip.cloneNode(true));
-      });
-
-      // Re-attach fresh click handlers down targets path mapping profiles definitions
-      document.querySelectorAll('.habit-group[data-fixed="true"] .habit-pip').forEach(pip => {
-        pip.addEventListener('click', () => {
-          const groupName = pip.closest('.habit-group').getAttribute('data-habit');
-          const pipIdx = pip.getAttribute('data-index');
+      // Rebind Fixed Habit Logic (Rating Style)
+      document.querySelectorAll('.habit-group[data-fixed="true"]').forEach(groupWrap => {
+        const groupName = groupWrap.getAttribute('data-habit');
+        const pips = groupWrap.querySelectorAll('.habit-pip');
+        
+        pips.forEach(pip => {
+          // Visual Sync
+          const pipIdx = parseInt(pip.getAttribute('data-index'));
           const storageKey = `${groupName}-${pipIdx}`;
-
-          pip.classList.toggle('active');
-          if (pip.classList.contains('active')) {
-            habitActivityLog.checks[storageKey] = true;
-          } else {
-            delete habitActivityLog.checks[storageKey];
-          }
-          localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
+          if (habitActivityLog.checks[storageKey]) { pip.classList.add('active'); } 
+          else { pip.classList.remove('active'); }
+          
+          // Clear old listeners
+          const newPip = pip.cloneNode(true);
+          pip.replaceWith(newPip);
+          
+          newPip.addEventListener('click', () => handlePipInteraction(groupName, pipIdx, pips.length));
         });
       });
     }
 
     function modifyHabitPipBounds(index, deltaDirection) {
-      let targetHabit = habitCustomList[index];
-      let updatedTotal = targetHabit.pipsCount + deltaDirection;
-      
-      // Hardcapped constraints parameters framework rule boundary guidelines configuration: Minimum 1 pip, Maximum 5 pips
+      let updatedTotal = habitCustomList[index].pipsCount + deltaDirection;
       if (updatedTotal >= 1 && updatedTotal <= 5) {
-        targetHabit.pipsCount = updatedTotal;
+        habitCustomList[index].pipsCount = updatedTotal;
         localStorage.setItem('db_habit_custom_list', JSON.stringify(habitCustomList));
         renderHabitsMatrixInterfaceTrack();
-      } else {
-        alert("Pip Limit Error: Custom habits are restricted between 1 and 5 checked indicators.");
       }
     }
 
@@ -2054,87 +1895,259 @@
       }
     }
 
-    document.getElementById('btn-habit-cancel').addEventListener('click', () => {
-      document.getElementById('modal-add-habit').style.display = 'none';
-    });
-
+    document.getElementById('btn-habit-cancel').addEventListener('click', () => { document.getElementById('modal-add-habit').style.display = 'none'; });
     document.getElementById('btn-habit-save').addEventListener('click', () => {
       const nameInput = document.getElementById('habit-input-name').value.trim();
-      if (!nameInput) {
-        alert("Naming constraint parameter mismatch error verification.");
-        return;
-      }
-      
-      const newHabitId = 'custom_hb_' + Date.now();
-      habitCustomList.push({ id: newHabitId, name: nameInput, pipsCount: 1 });
-      
+      if (!nameInput) return;
+      habitCustomList.push({ id: 'custom_hb_' + Date.now(), name: nameInput, pipsCount: 1 });
       localStorage.setItem('db_habit_custom_list', JSON.stringify(habitCustomList));
       document.getElementById('modal-add-habit').style.display = 'none';
       renderHabitsMatrixInterfaceTrack();
     });
 
 
-    // ── 11. LEGACY RETAINED UI MODULE FEATURES (PALFISH LEDGER, CHECKBOXES) ──
-    const savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
-    const savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
-    const checkboxes = document.querySelectorAll('.menu-item input[type="checkbox"]');
-    
-    function updateProgressBar() {
-      const total = checkboxes.length;
-      const checked = document.querySelectorAll('.menu-item input[type="checkbox"]:checked').length;
+    // ── 11. DYNAMIC AS NEEDED MENU ENGINE (Creation, Editing, Persistence, Last Completed) ──
+    function renderAsNeededMenu() {
+      const grid = document.getElementById('dynamic-menu-grid');
+      grid.innerHTML = '';
+      let totalTasks = 0, checkedTasks = 0;
+
+      asNeededData.forEach((category, catIdx) => {
+        const card = document.createElement('div');
+        card.className = 'menu-card';
+        
+        // Title Row
+        const titleRow = document.createElement('div');
+        titleRow.className = 'menu-card-title';
+        titleRow.innerHTML = `<span>${category.title}</span>`;
+        
+        if (isEditModeActive) {
+          const catCtrls = document.createElement('div');
+          catCtrls.innerHTML = `
+            <button class="edit-item-btn" title="Edit Category" data-cat-idx="${catIdx}">✏️</button>
+            <button class="del-item-btn" title="Delete Category" data-cat-idx="${catIdx}">×</button>
+          `;
+          titleRow.appendChild(catCtrls);
+        }
+        card.appendChild(titleRow);
+
+        // Tasks
+        category.items.forEach((item, itemIdx) => {
+          totalTasks++;
+          const group = document.createElement('div');
+          group.className = 'menu-item-group';
+          
+          const isChecked = !!savedStates[item.id];
+          if (isChecked) checkedTasks++;
+
+          let completionHTML = '';
+          if (completedDates[item.id]) {
+            completionHTML = `<span class="last-completed">Last Completed: ${getFormattedDate(completedDates[item.id])} (${getRelativeTime(completedDates[item.id])})</span>`;
+          }
+
+          const label = document.createElement('label');
+          label.className = `menu-item ${item.color} ${isChecked ? 'checked' : ''}`;
+          label.innerHTML = `
+            <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''}>
+            <span class="label-text">
+              ${item.text}
+              ${item.hint ? `<span class="hint">${item.hint}</span>` : ''}
+              ${completionHTML}
+            </span>
+          `;
+          
+          // Checkbox Event
+          const cb = label.querySelector('input');
+          cb.addEventListener('change', (e) => {
+            if (e.target.checked) {
+              label.classList.add('checked');
+              savedStates[item.id] = true;
+              completedDates[item.id] = new Date().toISOString();
+            } else {
+              label.classList.remove('checked');
+              delete savedStates[item.id];
+            }
+            localStorage.setItem('dashboardCheckboxes', JSON.stringify(savedStates));
+            localStorage.setItem('dashboardLastCompleted', JSON.stringify(completedDates));
+            renderAsNeededMenu(); // Re-render to update progress/dates
+          });
+          
+          group.appendChild(label);
+
+          // Edit Controls for Task
+          if (isEditModeActive) {
+            const taskCtrls = document.createElement('div');
+            taskCtrls.className = 'menu-edit-tools';
+            taskCtrls.innerHTML = `
+              <button class="edit-item-btn task-edit-btn" data-cat-id="${category.id}" data-task-id="${item.id}">Edit Task</button>
+              <button class="del-item-btn task-del-btn" data-cat-id="${category.id}" data-task-id="${item.id}">Delete</button>
+            `;
+            group.appendChild(taskCtrls);
+          }
+
+          // Sub-selectors (Pills)
+          if (item.pills && item.pills.length > 0) {
+            const sub = document.createElement('div');
+            sub.className = 'sub-selector';
+            sub.style.display = isChecked ? 'flex' : 'none';
+            
+            item.pills.forEach(pillText => {
+              const pillVal = pillText.toLowerCase().replace(/[^a-z0-9]/g, '');
+              const cacheKey = `${item.id}-${pillVal}`;
+              const pill = document.createElement('span');
+              pill.className = `pill ${savedPills[cacheKey] ? 'active' : ''}`;
+              pill.textContent = pillText;
+              
+              pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+                if (pill.classList.contains('active')) savedPills[cacheKey] = true;
+                else delete savedPills[cacheKey];
+                localStorage.setItem('dashboardSubPills', JSON.stringify(savedPills));
+              });
+              sub.appendChild(pill);
+            });
+            group.appendChild(sub);
+          }
+
+          card.appendChild(group);
+        });
+
+        // Add Task Button
+        if (isEditModeActive) {
+          const addTaskBtn = document.createElement('button');
+          addTaskBtn.className = 'add-habit-btn';
+          addTaskBtn.style.marginTop = '10px';
+          addTaskBtn.textContent = '+ Add Task';
+          addTaskBtn.addEventListener('click', () => openTaskEditor(category.id, null));
+          card.appendChild(addTaskBtn);
+        }
+
+        grid.appendChild(card);
+      });
+
+      updateProgressBarFromCounts(totalTasks, checkedTasks);
+      bindAsNeededEditListeners();
+    }
+
+    function updateProgressBarFromCounts(total, checked) {
       const percentage = total > 0 ? (checked / total) * 100 : 0;
       document.getElementById('progress-bar-fill').style.width = `${percentage}%`;
     }
 
-    checkboxes.forEach(cb => {
-      const parentLabel = cb.closest('.menu-item');
-      const group = cb.closest('.menu-item-group');
-      const subSelector = group ? group.querySelector('.sub-selector') : null;
-
-      if (savedStates[cb.id]) {
-        cb.checked = true;
-        parentLabel.classList.add('checked');
-      }
-
-      function toggleSubVisibility() {
-        if (subSelector) subSelector.style.display = cb.checked ? 'flex' : 'none';
-      }
-      toggleSubVisibility();
-
-      cb.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          parentLabel.classList.add('checked');
-          savedStates[cb.id] = true;
-        } else {
-          parentLabel.classList.remove('checked');
-          delete savedStates[cb.id];
-        }
-        localStorage.setItem('dashboardCheckboxes', JSON.stringify(savedStates));
-        toggleSubVisibility();
-        updateProgressBar();
+    // Modal Binding for As Needed
+    function bindAsNeededEditListeners() {
+      document.querySelectorAll('.edit-item-btn[data-cat-idx]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.currentTarget.getAttribute('data-cat-idx');
+          document.getElementById('cat-modal-title').textContent = 'Edit Menu Category';
+          document.getElementById('edit-cat-id').value = asNeededData[idx].id;
+          document.getElementById('edit-cat-name').value = asNeededData[idx].title;
+          document.getElementById('modal-edit-category').style.display = 'flex';
+        });
       });
 
-      if (subSelector) {
-        const pills = subSelector.querySelectorAll('.pill');
-        pills.forEach(pill => {
-          const val = pill.getAttribute('data-val');
-          const cacheKey = `${cb.id}-${val}`;
-
-          if (savedPills[cacheKey]) pill.classList.add('active');
-
-          pill.addEventListener('click', () => {
-            pill.classList.toggle('active');
-            if (pill.classList.contains('active')) {
-              savedPills[cacheKey] = true;
-            } else {
-              delete savedPills[cacheKey];
-            }
-            localStorage.setItem('dashboardSubPills', JSON.stringify(savedPills));
-          });
+      document.querySelectorAll('.del-item-btn[data-cat-idx]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.currentTarget.getAttribute('data-cat-idx');
+          if(confirm(`Delete category '${asNeededData[idx].title}' and all its tasks?`)) {
+            asNeededData.splice(idx, 1);
+            saveAsNeeded();
+          }
         });
-      }
+      });
+
+      document.querySelectorAll('.task-edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          openTaskEditor(e.currentTarget.getAttribute('data-cat-id'), e.currentTarget.getAttribute('data-task-id'));
+        });
+      });
+
+      document.querySelectorAll('.task-del-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const catId = e.currentTarget.getAttribute('data-cat-id');
+          const taskId = e.currentTarget.getAttribute('data-task-id');
+          if(confirm(`Delete this task?`)) {
+            const cat = asNeededData.find(c => c.id === catId);
+            cat.items = cat.items.filter(i => i.id !== taskId);
+            saveAsNeeded();
+          }
+        });
+      });
+    }
+
+    document.getElementById('btn-add-as-needed-category').addEventListener('click', () => {
+      document.getElementById('cat-modal-title').textContent = 'Add Menu Category';
+      document.getElementById('edit-cat-id').value = '';
+      document.getElementById('edit-cat-name').value = '';
+      document.getElementById('modal-edit-category').style.display = 'flex';
     });
 
+    document.getElementById('btn-cat-cancel').addEventListener('click', () => document.getElementById('modal-edit-category').style.display = 'none');
+    document.getElementById('btn-cat-save').addEventListener('click', () => {
+      const name = document.getElementById('edit-cat-name').value.trim();
+      const id = document.getElementById('edit-cat-id').value;
+      if (!name) return;
+
+      if (id) {
+        asNeededData.find(c => c.id === id).title = name;
+      } else {
+        asNeededData.push({ id: 'cat_' + Date.now(), title: name, items: [] });
+      }
+      saveAsNeeded();
+      document.getElementById('modal-edit-category').style.display = 'none';
+    });
+
+    function openTaskEditor(catId, taskId) {
+      document.getElementById('edit-task-cat-id').value = catId;
+      if (taskId) {
+        document.getElementById('task-modal-title').textContent = 'Edit Task';
+        const cat = asNeededData.find(c => c.id === catId);
+        const task = cat.items.find(i => i.id === taskId);
+        document.getElementById('edit-task-id').value = task.id;
+        document.getElementById('edit-task-name').value = task.text;
+        document.getElementById('edit-task-hint').value = task.hint;
+        document.getElementById('edit-task-color').value = task.color;
+        document.getElementById('edit-task-pills').value = task.pills.join(', ');
+      } else {
+        document.getElementById('task-modal-title').textContent = 'Add Task';
+        document.getElementById('edit-task-id').value = '';
+        document.getElementById('edit-task-name').value = '';
+        document.getElementById('edit-task-hint').value = '';
+        document.getElementById('edit-task-color').value = 'c-teal';
+        document.getElementById('edit-task-pills').value = '';
+      }
+      document.getElementById('modal-edit-task').style.display = 'flex';
+    }
+
+    document.getElementById('btn-task-cancel').addEventListener('click', () => document.getElementById('modal-edit-task').style.display = 'none');
+    document.getElementById('btn-task-save').addEventListener('click', () => {
+      const catId = document.getElementById('edit-task-cat-id').value;
+      const taskId = document.getElementById('edit-task-id').value;
+      const text = document.getElementById('edit-task-name').value.trim();
+      const hint = document.getElementById('edit-task-hint').value.trim();
+      const color = document.getElementById('edit-task-color').value;
+      const pillsRaw = document.getElementById('edit-task-pills').value;
+      const pills = pillsRaw.split(',').map(s => s.trim()).filter(s => s);
+
+      if (!text) return;
+
+      const cat = asNeededData.find(c => c.id === catId);
+      if (taskId) {
+        const task = cat.items.find(i => i.id === taskId);
+        task.text = text; task.hint = hint; task.color = color; task.pills = pills;
+      } else {
+        cat.items.push({ id: 'task_' + Date.now(), text, hint, color, pills });
+      }
+      saveAsNeeded();
+      document.getElementById('modal-edit-task').style.display = 'none';
+    });
+
+    function saveAsNeeded() {
+      localStorage.setItem('db_as_needed', JSON.stringify(asNeededData));
+      renderAsNeededMenu();
+    }
+
+    // Ledger Logic
     let pfClassCount = parseInt(localStorage.getItem('palfishClassCount')) || 0;
     const pfCountEl = document.getElementById('pf-count');
     const pfEarningsEl = document.getElementById('pf-earnings');
@@ -2145,46 +2158,23 @@
     }
 
     document.getElementById('pf-plus').addEventListener('click', () => {
-      pfClassCount++;
-      localStorage.setItem('palfishClassCount', pfClassCount);
-      renderPalFishLedger();
+      pfClassCount++; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger();
     });
 
     document.getElementById('pf-minus').addEventListener('click', () => {
-      if (pfClassCount > 0) {
-        pfClassCount--;
-        localStorage.setItem('palfishClassCount', pfClassCount);
-        renderPalFishLedger();
-      }
+      if (pfClassCount > 0) { pfClassCount--; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger(); }
     });
 
+    // Reset Week
     document.getElementById('reset-week-btn').addEventListener('click', () => {
-      if (confirm('Clear all tasks, ledger metrics, and active pet selections for the new week?')) {
+      if (confirm('Clear all task selections, completed dates, ledger metrics, and pet pills for the new week?')) {
+        savedStates = {}; savedPills = {}; completedDates = {};
         localStorage.removeItem('dashboardCheckboxes');
         localStorage.removeItem('dashboardSubPills');
+        localStorage.removeItem('dashboardLastCompleted');
         localStorage.removeItem('palfishClassCount');
-        
-        pfClassCount = 0;
-        renderPalFishLedger();
-
-        checkboxes.forEach(cb => {
-          cb.checked = false;
-          cb.closest('.menu-item').classList.remove('checked');
-          const group = cb.closest('.menu-item-group');
-          if (group && group.querySelector('.sub-selector')) {
-            group.querySelector('.sub-selector').style.display = 'none';
-          }
-          delete savedStates[cb.id];
-        });
-
-        document.querySelectorAll('.sub-selector .pill').forEach(pill => {
-          pill.classList.remove('active');
-          const val = pill.getAttribute('data-val');
-          const cbId = pill.closest('.menu-item-group').querySelector('input[type="checkbox"]').id;
-          delete savedPills[`${cbId}-${val}`];
-        });
-
-        updateProgressBar();
+        pfClassCount = 0; renderPalFishLedger();
+        renderAsNeededMenu(); // Redraws empty states
       }
     });
 
@@ -2203,20 +2193,11 @@
       const satSection = document.querySelector('[data-section="saturday"]');
       const sunSection = document.querySelector('[data-section="sunday"]');
 
-      weekdaySection.classList.remove('dimmed');
-      satSection.classList.remove('dimmed');
-      sunSection.classList.remove('dimmed');
+      weekdaySection.classList.remove('dimmed'); satSection.classList.remove('dimmed'); sunSection.classList.remove('dimmed');
 
-      if (currentDay >= 1 && currentDay <= 5) {
-        satSection.classList.add('dimmed');
-        sunSection.classList.add('dimmed');
-      } else if (currentDay === 6) {
-        weekdaySection.classList.add('dimmed');
-        sunSection.classList.add('dimmed');
-      } else if (currentDay === 0) {
-        weekdaySection.classList.add('dimmed');
-        satSection.classList.add('dimmed');
-      }
+      if (currentDay >= 1 && currentDay <= 5) { satSection.classList.add('dimmed'); sunSection.classList.add('dimmed'); } 
+      else if (currentDay === 6) { weekdaySection.classList.add('dimmed'); sunSection.classList.add('dimmed'); } 
+      else if (currentDay === 0) { weekdaySection.classList.add('dimmed'); satSection.classList.add('dimmed'); }
     }
 
 
@@ -2226,10 +2207,8 @@
       const currentDay = now.getDay();
       const currentMinutes = (now.getHours() * 60) + now.getMinutes();
 
-      // Clear layout elements tracking pulse tags
       document.querySelectorAll('.tl-block.live-current').forEach(el => el.classList.remove('live-current'));
 
-      // Scan live active blocks parsing metrics elements targets
       const blockElements = document.querySelectorAll('#master-timeline-track .tl-block[data-start][data-end]');
       let todayBlocks = [];
 
@@ -2240,15 +2219,12 @@
         const sub = cleanNode.querySelector('.sub');
         if (sub) sub.remove();
         const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('—')[0].trim();
-
         todayBlocks.push({ element: el, name: parsedTitle, start, end });
       });
 
       todayBlocks.sort((a, b) => a.start - b.start);
 
-      let activeBlock = null;
-      let nextBlock = null;
-
+      let activeBlock = null; let nextBlock = null;
       for (let i = 0; i < todayBlocks.length; i++) {
         const b = todayBlocks[i];
         if (currentMinutes >= b.start && currentMinutes < b.end) {
@@ -2261,31 +2237,16 @@
 
       if (!activeBlock) {
         for (let i = 0; i < todayBlocks.length; i++) {
-          if (todayBlocks[i].start > currentMinutes) {
-            nextBlock = todayBlocks[i];
-            break;
-          }
+          if (todayBlocks[i].start > currentMinutes) { nextBlock = todayBlocks[i]; break; }
         }
       }
 
-      let calculatedDiff = 0;
-      if (nextBlock) {
-        calculatedDiff = nextBlock.start - currentMinutes;
-      }
-
+      let calculatedDiff = nextBlock ? nextBlock.start - currentMinutes : 0;
       const dockTitle = document.getElementById('next-dock-title');
       const dockTimer = document.getElementById('next-dock-timer');
 
-      // Only track sticky footer alerts on standard execution days (Mon-Fri)
       if (currentDay >= 1 && currentDay <= 5 && nextBlock) {
-        let timeStr = '';
-        if (calculatedDiff >= 60) {
-          const hrs = Math.floor(calculatedDiff / 60);
-          const mins = calculatedDiff % 60;
-          timeStr = `in ${hrs}h ${mins}m`;
-        } else {
-          timeStr = `in ${calculatedDiff}m`;
-        }
+        let timeStr = calculatedDiff >= 60 ? `in ${Math.floor(calculatedDiff / 60)}h ${calculatedDiff % 60}m` : `in ${calculatedDiff}m`;
         dockTitle.textContent = nextBlock.name;
         dockTimer.textContent = timeStr;
       } else {
@@ -2304,6 +2265,8 @@
       const backupData = {
         dashboardCheckboxes: JSON.parse(localStorage.getItem('dashboardCheckboxes')),
         dashboardSubPills: JSON.parse(localStorage.getItem('dashboardSubPills')),
+        dashboardLastCompleted: JSON.parse(localStorage.getItem('dashboardLastCompleted')),
+        db_as_needed: JSON.parse(localStorage.getItem('db_as_needed')),
         palfishClassCount: localStorage.getItem('palfishClassCount'),
         db_dynamic_schedules: JSON.parse(localStorage.getItem('db_dynamic_schedules')),
         db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
@@ -2317,8 +2280,7 @@
       downloadAnchor.setAttribute("href", dataStr);
       downloadAnchor.setAttribute("download", `dashboard_master_backup_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      downloadAnchor.click(); downloadAnchor.remove();
     });
 
     importBtn.addEventListener('click', () => importFileInput.click());
@@ -2332,6 +2294,8 @@
           const importedData = JSON.parse(event.target.result);
           if (importedData.dashboardCheckboxes) localStorage.setItem('dashboardCheckboxes', JSON.stringify(importedData.dashboardCheckboxes));
           if (importedData.dashboardSubPills) localStorage.setItem('dashboardSubPills', JSON.stringify(importedData.dashboardSubPills));
+          if (importedData.dashboardLastCompleted) localStorage.setItem('dashboardLastCompleted', JSON.stringify(importedData.dashboardLastCompleted));
+          if (importedData.db_as_needed) localStorage.setItem('db_as_needed', JSON.stringify(importedData.db_as_needed));
           if (importedData.palfishClassCount !== null) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
           if (importedData.db_dynamic_schedules) localStorage.setItem('db_dynamic_schedules', JSON.stringify(importedData.db_dynamic_schedules));
           if (importedData.db_habit_custom_list) localStorage.setItem('db_habit_custom_list', JSON.stringify(importedData.db_habit_custom_list));
@@ -2341,26 +2305,21 @@
 
           alert('Data metrics imported successfully! Updating your workspace dashboard...');
           window.location.reload();
-        } catch (err) {
-          alert('Could not parse layout data. Validation tracking checksum failure.');
-        }
+        } catch (err) { alert('Could not parse layout data. Validation tracking checksum failure.'); }
       };
       reader.readAsText(file);
     });
 
-
     // ── 15. CORES INITIALIZATION PIPELINE ──
     updateClock();
     applySmartDimming();
-    updateProgressBar();
     renderPalFishLedger();
     
-    // Core Layout Engine Initial Drawings
     drawCategorySelectorsLayoutButtons();
     autoRebuildTimelineTrack();
     renderHabitsMatrixInterfaceTrack();
+    renderAsNeededMenu();
 
-    // Internal loop timer clock threads
     setInterval(updateClock, 1000);
     setInterval(applySmartDimming, 60000);
     setInterval(executeLiveTimelineTrackingUpdates, 20000);
