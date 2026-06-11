@@ -488,20 +488,6 @@
       100% { box-shadow: 0 0 8px color-mix(in srgb, currentColor 15%, transparent), inset 0 0 0 0.5px color-mix(in srgb, currentColor 10%, transparent); }
     }
 
-    /* ── Weekend ── */
-    .wknd-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    .col-head {
-      font-family: var(--font-display);
-      font-size: 1.1rem;
-      color: var(--text);
-      margin-bottom: 10px;
-      font-style: italic;
-    }
-
     /* ── Menu / As-needed Bespoke Checkboxes ── */
     .menu-grid {
       display: grid;
@@ -805,7 +791,6 @@
     /* ── Mobile ── */
     @media (max-width: 600px) {
       .wrap { padding: 1.25rem 1rem; padding-top: calc(1.25rem + env(safe-area-inset-top)); }
-      .wknd-grid { grid-template-columns: 1fr; gap: 1.25rem; }
       .menu-grid { grid-template-columns: 1fr; }
       .timeline { grid-template-columns: 90px 1fr; }
       .tl-time { font-size: 9.5px; padding-right: 7px; }
@@ -878,57 +863,6 @@
 
   <div class="divider"></div>
 
-  <div class="section-label" style="margin-bottom:0.5rem;">Weekend Routine</div>
-  <div class="wknd-grid">
-
-    <div class="wknd-col" data-section="saturday">
-      <div class="col-head">Saturday</div>
-      <div class="timeline">
-        <div class="tl-time">Late</div>
-        <div class="tl-block t-morning">Wake up (flexible · late Clara night)</div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-morning">Morning skincare</div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-pets">Feed cats</div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-chores">Clean litter box</div>
-        <div class="tl-time">Daytime</div>
-        <div class="tl-block t-chores">Laundry + sweep / mop<span class="sub">fit around Clara window</span></div>
-        <div class="tl-time">2:00 PM</div>
-        <div class="tl-block t-free">Clara window<span class="sub">2:00 – 6:00 PM</span></div>
-        <div class="tl-time">Night</div>
-        <div class="tl-block t-free">Free / Clara<span class="sub">late sleep · Clara night</span></div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-night">Shower + night skincare → sleep</div>
-      </div>
-    </div>
-
-    <div class="wknd-col" data-section="sunday">
-      <div class="col-head">Sunday</div>
-      <div class="timeline">
-        <div class="tl-time">7:00 AM</div>
-        <div class="tl-block t-morning">Wake up · sofa → bed · morning skincare</div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-pets">Feed cats</div>
-        <div class="tl-time">9:00 AM</div>
-        <div class="tl-block t-church">Church (9:00 – 11:00 AM)</div>
-        <div class="tl-time">11:00 AM</div>
-        <div class="tl-block t-free">Return home · rest</div>
-        <div class="tl-time">2:00 PM</div>
-        <div class="tl-block t-free">Clara window<span class="sub">2:00 – 6:00 PM</span></div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-chores">Clean litter box + take out trash</div>
-        <div class="tl-time"></div>
-        <div class="tl-block t-free">Free / rest</div>
-        <div class="tl-time">Night</div>
-        <div class="tl-block t-night">Shower + night skincare → sleep</div>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="divider"></div>
-
   <div class="palfish-ledger">
     <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
     <div class="ledger-row">
@@ -954,8 +888,25 @@
 
   <div class="menu-grid" id="dynamic-menu-grid"></div>
 
-  <div style="margin-top:1rem; text-align:right;">
+  <div style="margin-top:1rem; text-align:right; margin-bottom: 1.5rem;">
     <button class="add-habit-btn" id="btn-add-as-needed-category" style="display:none; padding:4px 10px;">+ Add Menu Category</button>
+  </div>
+
+  <!-- New Hobbies Section Below As Needed Section -->
+  <div class="divider"></div>
+  
+  <div class="menu-header-row" style="margin-top: 0.5rem;">
+    <div class="section-label">Hobbies & Media Menu</div>
+  </div>
+  
+  <div class="progress-container">
+    <div id="hobbies-progress-bar-fill" class="progress-bar" style="background: var(--accent);"></div>
+  </div>
+
+  <div class="menu-grid" id="dynamic-hobbies-grid"></div>
+
+  <div style="margin-top:1rem; text-align:right;">
+    <button class="add-habit-btn" id="btn-add-hobbies-category" style="display:none; padding:4px 10px;">+ Add Hobby Category</button>
   </div>
 
   <div class="divider"></div>
@@ -1109,6 +1060,7 @@
   <div class="modal-card">
     <div class="modal-title" id="cat-modal-title">Add Menu Category</div>
     <input type="hidden" id="edit-cat-id">
+    <input type="hidden" id="edit-cat-section-context" value="as_needed">
     <div class="modal-field">
       <label>Category Name</label>
       <input type="text" id="edit-cat-name" placeholder="e.g., Garden, Maintenance">
@@ -1125,6 +1077,7 @@
     <div class="modal-title" id="task-modal-title">Edit Task</div>
     <input type="hidden" id="edit-task-cat-id">
     <input type="hidden" id="edit-task-id">
+    <input type="hidden" id="edit-task-section-context" value="as_needed">
     <div class="modal-field">
       <label>Task Name</label>
       <input type="text" id="edit-task-name" placeholder="e.g., Clean fridge">
@@ -1136,10 +1089,10 @@
     <div class="modal-field">
       <label>Color Accent</label>
       <select id="edit-task-color">
-        <option value="c-teal">Teal (Pets)</option>
-        <option value="c-blue">Blue (Room/Tech)</option>
-        <option value="c-pink">Pink (Kitchen/Deep)</option>
-        <option value="c-purple">Purple (Bedding/Decor)</option>
+        <option value="c-teal">Teal (Pets / Leisure)</option>
+        <option value="c-blue">Blue (Room / Tech / Entertainment)</option>
+        <option value="c-pink">Pink (Kitchen / Deep / Music)</option>
+        <option value="c-purple">Purple (Bedding / Decor / Listening)</option>
         <option value="c-amber">Amber (General)</option>
       </select>
     </div>
@@ -1264,6 +1217,38 @@
       }
     ];
 
+    // Default Hobbies and Media Data
+    const DEFAULT_HOBBIES = [
+      {
+        id: "cat_music", title: "Music",
+        items: [
+          { id: "hobby-music-playlist", text: "Curate & update discovery feeds", hint: "Sort new tracks into layout stacks", color: "c-pink", pills: [] },
+          { id: "hobby-music-session", text: "Focused album listening window", hint: "High-fidelity playthrough zero-distractions", color: "c-pink", pills: [] }
+        ]
+      },
+      {
+        id: "cat_entertainment", title: "Entertainment",
+        items: [
+          { id: "hobby-ent-watchlist", text: "Catch up on queued series entries", hint: "Check seasonal rotation releases", color: "c-blue", pills: [] },
+          { id: "hobby-ent-gaming", text: "Bespoke sandbox / strategy session", hint: "Casual structural pacing limits applied", color: "c-blue", pills: [] }
+        ]
+      },
+      {
+        id: "cat_leisure", title: "Leisure",
+        items: [
+          { id: "hobby-leisure-read", text: "Deep fiction / analytical reading", hint: "Track structural subplots or worldbuilding templates", color: "c-teal", pills: [] },
+          { id: "hobby-leisure-study", text: "Aesthetic mapping research logs", hint: "Analyze layout components or district world concepts", color: "c-teal", pills: [] }
+        ]
+      },
+      {
+        id: "cat_listening", title: "Listening",
+        items: [
+          { id: "hobby-listen-podcast", text: "Queue up commentary backlogs", hint: "Run in parallel focus background slots", color: "c-purple", pills: [] },
+          { id: "hobby-listen-audiobook", text: "Progress through active narrative chapters", hint: "Sync with manual low-stress tasks", color: "c-purple", pills: [] }
+        ]
+      }
+    ];
+
 
     // ── 2. APPLICATION GLOBAL STATE VARIABLES ──
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
@@ -1285,6 +1270,10 @@
 
     // Dynamic As Needed Engine State
     let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
+    
+    // Dynamic Hobbies Engine State
+    let hobbiesData = JSON.parse(localStorage.getItem('db_hobbies')) || DEFAULT_HOBBIES;
+
     let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
     let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
     let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
@@ -1310,7 +1299,6 @@
     function getRelativeTime(dateString) {
       const date = new Date(dateString);
       const now = new Date();
-      // Remove time portions for strictly day calculation
       date.setHours(0,0,0,0);
       now.setHours(0,0,0,0);
       const diffTime = Math.abs(now - date);
@@ -1747,10 +1735,12 @@
       document.body.classList.toggle('edit-mode-active');
       document.getElementById('custom-add-cat-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
       document.getElementById('btn-add-as-needed-category').style.display = isEditModeActive ? 'inline-block' : 'none';
+      document.getElementById('btn-add-hobbies-category').style.display = isEditModeActive ? 'inline-block' : 'none';
       
       autoRebuildTimelineTrack();
       renderHabitsMatrixInterfaceTrack();
       renderAsNeededMenu();
+      renderHobbiesMenu();
     });
 
 
@@ -1786,14 +1776,22 @@
       autoRebuildTimelineTrack();
     });
 
-    // ── 10. DAILY MINI-CHECKLIST DYNAMIC PIP SECTOR ENGINE COORDS (Rating Style) ──
+    // ── 10. DAILY MINI-CHECKLIST DYNAMIC PIP SECTOR ENGINE COORDS (Rating Style with Zero Setting Support) ──
     function handlePipInteraction(groupName, clickedIdx, totalPips) {
-      for (let i = 0; i < totalPips; i++) {
-        const cacheKey = `${groupName}-${i}`;
-        if (i <= clickedIdx) {
-          habitActivityLog.checks[cacheKey] = true;
-        } else {
-          delete habitActivityLog.checks[cacheKey];
+      const firstKey = `${groupName}-0`;
+      const secondKey = `${groupName}-1`;
+      
+      // Zero Out Logic: If clicking the 1st pip and it's active but the 2nd pip isn't, toggle it to zero.
+      if (clickedIdx === 0 && habitActivityLog.checks[firstKey] && !habitActivityLog.checks[secondKey]) {
+        delete habitActivityLog.checks[firstKey];
+      } else {
+        for (let i = 0; i < totalPips; i++) {
+          const cacheKey = `${groupName}-${i}`;
+          if (i <= clickedIdx) {
+            habitActivityLog.checks[cacheKey] = true;
+          } else {
+            delete habitActivityLog.checks[cacheKey];
+          }
         }
       }
       localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
@@ -1863,13 +1861,11 @@
         const pips = groupWrap.querySelectorAll('.habit-pip');
         
         pips.forEach(pip => {
-          // Visual Sync
           const pipIdx = parseInt(pip.getAttribute('data-index'));
           const storageKey = `${groupName}-${pipIdx}`;
           if (habitActivityLog.checks[storageKey]) { pip.classList.add('active'); } 
           else { pip.classList.remove('active'); }
           
-          // Clear old listeners
           const newPip = pip.cloneNode(true);
           pip.replaceWith(newPip);
           
@@ -1906,17 +1902,16 @@
     });
 
 
-    // ── 11. DYNAMIC AS NEEDED MENU ENGINE (Creation, Editing, Persistence, Last Completed) ──
-    function renderAsNeededMenu() {
-      const grid = document.getElementById('dynamic-menu-grid');
+    // ── 11. DYNAMIC AS NEEDED & HOBBIES MENU ENGINES (Universal Generator Function) ──
+    function buildFlexibleMenuEngine(targetDataArray, targetGridId, progressFillId, contextSectionToken) {
+      const grid = document.getElementById(targetGridId);
       grid.innerHTML = '';
       let totalTasks = 0, checkedTasks = 0;
 
-      asNeededData.forEach((category, catIdx) => {
+      targetDataArray.forEach((category, catIdx) => {
         const card = document.createElement('div');
         card.className = 'menu-card';
         
-        // Title Row
         const titleRow = document.createElement('div');
         titleRow.className = 'menu-card-title';
         titleRow.innerHTML = `<span>${category.title}</span>`;
@@ -1924,14 +1919,13 @@
         if (isEditModeActive) {
           const catCtrls = document.createElement('div');
           catCtrls.innerHTML = `
-            <button class="edit-item-btn" title="Edit Category" data-cat-idx="${catIdx}">✏️</button>
-            <button class="del-item-btn" title="Delete Category" data-cat-idx="${catIdx}">×</button>
+            <button class="edit-item-btn context-cat-edit" title="Edit Category" data-context="${contextSectionToken}" data-cat-idx="${catIdx}">✏️</button>
+            <button class="del-item-btn context-cat-del" title="Delete Category" data-context="${contextSectionToken}" data-cat-idx="${catIdx}">×</button>
           `;
           titleRow.appendChild(catCtrls);
         }
         card.appendChild(titleRow);
 
-        // Tasks
         category.items.forEach((item, itemIdx) => {
           totalTasks++;
           const group = document.createElement('div');
@@ -1956,7 +1950,6 @@
             </span>
           `;
           
-          // Checkbox Event
           const cb = label.querySelector('input');
           cb.addEventListener('change', (e) => {
             if (e.target.checked) {
@@ -1969,23 +1962,23 @@
             }
             localStorage.setItem('dashboardCheckboxes', JSON.stringify(savedStates));
             localStorage.setItem('dashboardLastCompleted', JSON.stringify(completedDates));
-            renderAsNeededMenu(); // Re-render to update progress/dates
+            
+            if (contextSectionToken === 'as_needed') renderAsNeededMenu();
+            else renderHobbiesMenu();
           });
           
           group.appendChild(label);
 
-          // Edit Controls for Task
           if (isEditModeActive) {
             const taskCtrls = document.createElement('div');
             taskCtrls.className = 'menu-edit-tools';
             taskCtrls.innerHTML = `
-              <button class="edit-item-btn task-edit-btn" data-cat-id="${category.id}" data-task-id="${item.id}">Edit Task</button>
-              <button class="del-item-btn task-del-btn" data-cat-id="${category.id}" data-task-id="${item.id}">Delete</button>
+              <button class="edit-item-btn context-task-edit" data-context="${contextSectionToken}" data-cat-id="${category.id}" data-task-id="${item.id}">Edit Task</button>
+              <button class="del-item-btn context-task-del" data-context="${contextSectionToken}" data-cat-id="${category.id}" data-task-id="${item.id}">Delete</button>
             `;
             group.appendChild(taskCtrls);
           }
 
-          // Sub-selectors (Pills)
           if (item.pills && item.pills.length > 0) {
             const sub = document.createElement('div');
             sub.className = 'sub-selector';
@@ -2012,96 +2005,123 @@
           card.appendChild(group);
         });
 
-        // Add Task Button
         if (isEditModeActive) {
           const addTaskBtn = document.createElement('button');
           addTaskBtn.className = 'add-habit-btn';
           addTaskBtn.style.marginTop = '10px';
           addTaskBtn.textContent = '+ Add Task';
-          addTaskBtn.addEventListener('click', () => openTaskEditor(category.id, null));
+          addTaskBtn.addEventListener('click', () => openTaskEditor(category.id, null, contextSectionToken));
           card.appendChild(addTaskBtn);
         }
 
         grid.appendChild(card);
       });
 
-      updateProgressBarFromCounts(totalTasks, checkedTasks);
-      bindAsNeededEditListeners();
+      const percentage = totalTasks > 0 ? (checkedTasks / totalTasks) * 100 : 0;
+      document.getElementById(progressFillId).style.width = `${percentage}%`;
+      
+      bindUniversalContextListeners();
     }
 
-    function updateProgressBarFromCounts(total, checked) {
-      const percentage = total > 0 ? (checked / total) * 100 : 0;
-      document.getElementById('progress-bar-fill').style.width = `${percentage}%`;
+    function renderAsNeededMenu() {
+      buildFlexibleMenuEngine(asNeededData, 'dynamic-menu-grid', 'progress-bar-fill', 'as_needed');
     }
 
-    // Modal Binding for As Needed
-    function bindAsNeededEditListeners() {
-      document.querySelectorAll('.edit-item-btn[data-cat-idx]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    function renderHobbiesMenu() {
+      buildFlexibleMenuEngine(hobbiesData, 'dynamic-hobbies-grid', 'hobbies-progress-bar-fill', 'hobbies');
+    }
+
+    function bindUniversalContextListeners() {
+      document.querySelectorAll('.edit-item-btn.context-cat-edit').forEach(btn => {
+        btn.onclick = (e) => {
+          const context = e.currentTarget.getAttribute('data-context');
           const idx = e.currentTarget.getAttribute('data-cat-idx');
-          document.getElementById('cat-modal-title').textContent = 'Edit Menu Category';
-          document.getElementById('edit-cat-id').value = asNeededData[idx].id;
-          document.getElementById('edit-cat-name').value = asNeededData[idx].title;
+          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
+          
+          document.getElementById('cat-modal-title').textContent = context === 'as_needed' ? 'Edit Menu Category' : 'Edit Hobby Category';
+          document.getElementById('edit-cat-section-context').value = context;
+          document.getElementById('edit-cat-id').value = dataset[idx].id;
+          document.getElementById('edit-cat-name').value = dataset[idx].title;
           document.getElementById('modal-edit-category').style.display = 'flex';
-        });
+        };
       });
 
-      document.querySelectorAll('.del-item-btn[data-cat-idx]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.del-item-btn.context-cat-del').forEach(btn => {
+        btn.onclick = (e) => {
+          const context = e.currentTarget.getAttribute('data-context');
           const idx = e.currentTarget.getAttribute('data-cat-idx');
-          if(confirm(`Delete category '${asNeededData[idx].title}' and all its tasks?`)) {
-            asNeededData.splice(idx, 1);
-            saveAsNeeded();
+          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
+          
+          if(confirm(`Delete category '${dataset[idx].title}' and all its tasks?`)) {
+            dataset.splice(idx, 1);
+            saveDataEngineContext(context);
           }
-        });
+        };
       });
 
-      document.querySelectorAll('.task-edit-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          openTaskEditor(e.currentTarget.getAttribute('data-cat-id'), e.currentTarget.getAttribute('data-task-id'));
-        });
+      document.querySelectorAll('.context-task-edit').forEach(btn => {
+        btn.onclick = (e) => {
+          openTaskEditor(e.currentTarget.getAttribute('data-cat-id'), e.currentTarget.getAttribute('data-task-id'), e.currentTarget.getAttribute('data-context'));
+        };
       });
 
-      document.querySelectorAll('.task-del-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.context-task-del').forEach(btn => {
+        btn.onclick = (e) => {
+          const context = e.currentTarget.getAttribute('data-context');
           const catId = e.currentTarget.getAttribute('data-cat-id');
           const taskId = e.currentTarget.getAttribute('data-task-id');
+          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
+          
           if(confirm(`Delete this task?`)) {
-            const cat = asNeededData.find(c => c.id === catId);
+            const cat = dataset.find(c => c.id === catId);
             cat.items = cat.items.filter(i => i.id !== taskId);
-            saveAsNeeded();
+            saveDataEngineContext(context);
           }
-        });
+        };
       });
     }
 
-    document.getElementById('btn-add-as-needed-category').addEventListener('click', () => {
+    document.getElementById('btn-add-as-needed-category').onclick = () => {
       document.getElementById('cat-modal-title').textContent = 'Add Menu Category';
+      document.getElementById('edit-cat-section-context').value = 'as_needed';
       document.getElementById('edit-cat-id').value = '';
       document.getElementById('edit-cat-name').value = '';
       document.getElementById('modal-edit-category').style.display = 'flex';
-    });
+    };
+
+    document.getElementById('btn-add-hobbies-category').onclick = () => {
+      document.getElementById('cat-modal-title').textContent = 'Add Hobby Category';
+      document.getElementById('edit-cat-section-context').value = 'hobbies';
+      document.getElementById('edit-cat-id').value = '';
+      document.getElementById('edit-cat-name').value = '';
+      document.getElementById('modal-edit-category').style.display = 'flex';
+    };
 
     document.getElementById('btn-cat-cancel').addEventListener('click', () => document.getElementById('modal-edit-category').style.display = 'none');
     document.getElementById('btn-cat-save').addEventListener('click', () => {
       const name = document.getElementById('edit-cat-name').value.trim();
       const id = document.getElementById('edit-cat-id').value;
+      const context = document.getElementById('edit-cat-section-context').value;
+      const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
       if (!name) return;
 
       if (id) {
-        asNeededData.find(c => c.id === id).title = name;
+        dataset.find(c => c.id === id).title = name;
       } else {
-        asNeededData.push({ id: 'cat_' + Date.now(), title: name, items: [] });
+        dataset.push({ id: 'cat_' + Date.now(), title: name, items: [] });
       }
-      saveAsNeeded();
+      saveDataEngineContext(context);
       document.getElementById('modal-edit-category').style.display = 'none';
     });
 
-    function openTaskEditor(catId, taskId) {
+    function openTaskEditor(catId, taskId, contextSectionToken) {
       document.getElementById('edit-task-cat-id').value = catId;
+      document.getElementById('edit-task-section-context').value = contextSectionToken;
+      const dataset = contextSectionToken === 'as_needed' ? asNeededData : hobbiesData;
+      
       if (taskId) {
         document.getElementById('task-modal-title').textContent = 'Edit Task';
-        const cat = asNeededData.find(c => c.id === catId);
+        const cat = dataset.find(c => c.id === catId);
         const task = cat.items.find(i => i.id === taskId);
         document.getElementById('edit-task-id').value = task.id;
         document.getElementById('edit-task-name').value = task.text;
@@ -2123,6 +2143,7 @@
     document.getElementById('btn-task-save').addEventListener('click', () => {
       const catId = document.getElementById('edit-task-cat-id').value;
       const taskId = document.getElementById('edit-task-id').value;
+      const context = document.getElementById('edit-task-section-context').value;
       const text = document.getElementById('edit-task-name').value.trim();
       const hint = document.getElementById('edit-task-hint').value.trim();
       const color = document.getElementById('edit-task-color').value;
@@ -2131,20 +2152,26 @@
 
       if (!text) return;
 
-      const cat = asNeededData.find(c => c.id === catId);
+      const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
+      const cat = dataset.find(c => c.id === catId);
       if (taskId) {
         const task = cat.items.find(i => i.id === taskId);
         task.text = text; task.hint = hint; task.color = color; task.pills = pills;
       } else {
         cat.items.push({ id: 'task_' + Date.now(), text, hint, color, pills });
       }
-      saveAsNeeded();
+      saveDataEngineContext(context);
       document.getElementById('modal-edit-task').style.display = 'none';
     });
 
-    function saveAsNeeded() {
-      localStorage.setItem('db_as_needed', JSON.stringify(asNeededData));
-      renderAsNeededMenu();
+    function saveDataEngineContext(contextSectionToken) {
+      if (contextSectionToken === 'as_needed') {
+        localStorage.setItem('db_as_needed', JSON.stringify(asNeededData));
+        renderAsNeededMenu();
+      } else {
+        localStorage.setItem('db_hobbies', JSON.stringify(hobbiesData));
+        renderHobbiesMenu();
+      }
     }
 
     // Ledger Logic
@@ -2174,30 +2201,18 @@
         localStorage.removeItem('dashboardLastCompleted');
         localStorage.removeItem('palfishClassCount');
         pfClassCount = 0; renderPalFishLedger();
-        renderAsNeededMenu(); // Redraws empty states
+        renderAsNeededMenu();
+        renderHobbiesMenu();
       }
     });
 
 
-    // ── 12. RUNTIME CLOCK MATRIX & SMART DAY FOCUS DIMMING TRACK ──
+    // ── 12. RUNTIME CLOCK MATRIX ──
     function updateClock() {
       const now = new Date();
       const optionsDay = { weekday: 'long' };
       const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
       document.getElementById('live-header-meta').textContent = `Drei · ${now.toLocaleDateString('en-US', optionsDay)} · ${now.toLocaleTimeString('en-US', optionsTime)}`;
-    }
-
-    function applySmartDimming() {
-      const currentDay = new Date().getDay(); 
-      const weekdaySection = document.querySelector('[data-section="weekday"]');
-      const satSection = document.querySelector('[data-section="saturday"]');
-      const sunSection = document.querySelector('[data-section="sunday"]');
-
-      weekdaySection.classList.remove('dimmed'); satSection.classList.remove('dimmed'); sunSection.classList.remove('dimmed');
-
-      if (currentDay >= 1 && currentDay <= 5) { satSection.classList.add('dimmed'); sunSection.classList.add('dimmed'); } 
-      else if (currentDay === 6) { weekdaySection.classList.add('dimmed'); sunSection.classList.add('dimmed'); } 
-      else if (currentDay === 0) { weekdaySection.classList.add('dimmed'); satSection.classList.add('dimmed'); }
     }
 
 
@@ -2267,6 +2282,7 @@
         dashboardSubPills: JSON.parse(localStorage.getItem('dashboardSubPills')),
         dashboardLastCompleted: JSON.parse(localStorage.getItem('dashboardLastCompleted')),
         db_as_needed: JSON.parse(localStorage.getItem('db_as_needed')),
+        db_hobbies: JSON.parse(localStorage.getItem('db_hobbies')),
         palfishClassCount: localStorage.getItem('palfishClassCount'),
         db_dynamic_schedules: JSON.parse(localStorage.getItem('db_dynamic_schedules')),
         db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
@@ -2296,6 +2312,7 @@
           if (importedData.dashboardSubPills) localStorage.setItem('dashboardSubPills', JSON.stringify(importedData.dashboardSubPills));
           if (importedData.dashboardLastCompleted) localStorage.setItem('dashboardLastCompleted', JSON.stringify(importedData.dashboardLastCompleted));
           if (importedData.db_as_needed) localStorage.setItem('db_as_needed', JSON.stringify(importedData.db_as_needed));
+          if (importedData.db_hobbies) localStorage.setItem('db_hobbies', JSON.stringify(importedData.db_hobbies));
           if (importedData.palfishClassCount !== null) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
           if (importedData.db_dynamic_schedules) localStorage.setItem('db_dynamic_schedules', JSON.stringify(importedData.db_dynamic_schedules));
           if (importedData.db_habit_custom_list) localStorage.setItem('db_habit_custom_list', JSON.stringify(importedData.db_habit_custom_list));
@@ -2312,16 +2329,15 @@
 
     // ── 15. CORES INITIALIZATION PIPELINE ──
     updateClock();
-    applySmartDimming();
     renderPalFishLedger();
     
     drawCategorySelectorsLayoutButtons();
     autoRebuildTimelineTrack();
     renderHabitsMatrixInterfaceTrack();
     renderAsNeededMenu();
+    renderHobbiesMenu();
 
     setInterval(updateClock, 1000);
-    setInterval(applySmartDimming, 60000);
     setInterval(executeLiveTimelineTrackingUpdates, 20000);
   });
 </script>
