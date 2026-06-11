@@ -217,7 +217,7 @@
       color: var(--text);
     }
 
-    /* ── PalFish Ledger Card UI ── */
+    /* ── PalFish Ledger Card UI & Inline Counters ── */
     .palfish-ledger {
       background: var(--bg2);
       border: 0.5px solid var(--border);
@@ -262,7 +262,7 @@
     .ledger-btn:active {
       transform: scale(0.95);
     }
-    #pf-count {
+    #pf-count, #so-count {
       font-weight: 500;
       font-size: 13px;
       min-width: 18px;
@@ -272,6 +272,29 @@
       font-size: 11.5px;
       color: var(--muted);
       letter-spacing: 0.02em;
+    }
+
+    /* Inline Context Counter Adjustment */
+    .inline-counter {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--muted);
+      border-left: 0.5px solid var(--border);
+      padding-left: 10px;
+      margin-left: 2px;
+    }
+    .inline-counter .ledger-btn {
+      width: 16px;
+      height: 16px;
+      font-size: 9px;
+      border-radius: 3px;
+    }
+    #so-count {
+      font-size: 11px;
+      min-width: 12px;
+      color: var(--accent);
     }
 
     /* ── Completion Progress Bar ── */
@@ -622,6 +645,7 @@
     <div class="header-title">Weekly <em>Schedule</em></div>
     <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
     
+    <!-- Daily Habit Pips Matrix -->
     <div class="habit-container">
       <div class="habit-group" data-habit="skincare">
         <span class="habit-label">Skincare</span>
@@ -651,16 +675,25 @@
     <span class="leg"><span class="dot" style="background:#902050;"></span>Night</span>
   </div>
 
+  <!-- ── WEEKDAY SECTION ── -->
   <div class="schedule-section" data-section="weekday">
     <div class="section-label-row">
       <div class="section-label">Monday – Friday</div>
-      <div style="display: flex; gap: 14px; align-items: center;">
+      <div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
         <label class="hd-toggle-label">
           <input type="checkbox" id="half-day-toggle"> Half-Day Mode
         </label>
-        <label class="hd-toggle-label">
-          <input type="checkbox" id="schools-out-toggle"> School's Out
-        </label>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label class="hd-toggle-label">
+            <input type="checkbox" id="schools-out-toggle"> School's Out
+          </label>
+          <!-- Dynamic Break Duration Counter Module -->
+          <div id="so-counter-wrap" class="inline-counter">
+            <button class="ledger-btn" id="so-minus">−</button>
+            <span id="so-count">1</span>d break
+            <button class="ledger-btn" id="so-plus">+</button>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -672,23 +705,27 @@
       <div class="tl-time"></div>
       <div class="tl-block t-pets" data-days="1,2,3,4,5" data-start="05:45" data-end="06:00">Feed cats</div>
 
+      <!-- SCHOOL IS OUT REPLACEMENT TRACK -->
       <div class="tl-time" data-so="only">6:00 AM<br>– 4:00 PM</div>
       <div class="tl-block t-free" data-so="only" data-days="1,2,3,4,5" data-start="06:00" data-end="16:00">Bonus Day Off
         <span class="sub">School is out · complete freedom to rest, tackle projects, or sleep in</span>
       </div>
 
+      <!-- STANDARD RUN TRACK (Hides entirely when School's Out is Active) -->
       <div class="tl-time" data-so="normal">6:00 AM</div>
       <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="06:00" data-end="07:00">Commute to school</div>
 
       <div class="tl-time" data-so="normal">7:00 AM</div>
       <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="07:00" data-end="07:15">Arrive + settle in</div>
 
+      <!-- NORMAL RUN SUB-TRACK: Full School Day -->
       <div class="tl-time" data-hd="normal" data-so="normal">7:00 AM<br>– 3:00 PM</div>
       <div class="tl-block t-school" data-hd="normal" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="15:00">School</div>
 
       <div class="tl-time" data-hd="normal" data-so="normal">3:00 PM</div>
       <div class="tl-block t-school" data-hd="normal" data-so="normal" data-days="1,2,3,4,5" data-start="15:00" data-end="16:00">Commute home</div>
 
+      <!-- HALF DAY RUN SUB-TRACK: Dismissal & Bonus Windows -->
       <div class="tl-time" data-hd="only" data-so="normal">7:00 AM<br>– 11:30 AM</div>
       <div class="tl-block t-school" data-hd="only" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="11:30">School (Half-Day)</div>
 
@@ -700,6 +737,7 @@
         <span class="sub">Extra Clara window · rest · tackle as-needed list early</span>
       </div>
 
+      <!-- Resynchronized Schedule Anchor -->
       <div class="tl-time">4:00 PM</div>
       <div class="tl-block t-chores" data-days="1,2,3,4,5" data-start="16:00" data-end="16:15">Clean litter box</div>
 
@@ -734,6 +772,7 @@
 
   <div class="divider"></div>
 
+  <!-- ── WEEKEND SECTIONS ── -->
   <div class="section-label" style="margin-bottom:0.5rem;">Weekend</div>
   <div class="wknd-grid">
 
@@ -807,6 +846,7 @@
 
   <div class="divider"></div>
 
+  <!-- ── PALFISH LEDGER SECTOR ── -->
   <div class="palfish-ledger">
     <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
     <div class="ledger-row">
@@ -821,6 +861,7 @@
     </div>
   </div>
 
+  <!-- ── AS-NEEDED MENU ── -->
   <div class="menu-header-row">
     <div class="section-label">As-needed menu · pick from any free window</div>
     <button id="reset-week-btn" class="reset-btn">Reset Week</button>
@@ -1002,6 +1043,7 @@
 
   </div>
 
+  <!-- ── DATA MANAGEMENT (VERY BOTTOM) ── -->
   <div class="divider"></div>
   <div class="backup-section">
     <div class="section-label" style="margin-bottom: 0.6rem;">Data Management</div>
@@ -1014,6 +1056,7 @@
 
 </div>
 
+<!-- ── Persistent Sticky Dock ── -->
 <div id="next-up-dock">
   <div class="next-dock-inner">
     <div class="next-dock-meta">
@@ -1152,11 +1195,16 @@
 
     // 6. Ephemeral Daily Habits Tracking Module + Engine States
     const todayStr = new Date().toISOString().split('T')[0];
-    let habitData = JSON.parse(localStorage.getItem('dashboardHabits')) || { date: todayStr, pips: {}, halfDay: false, schoolsOut: false };
+    let habitData = JSON.parse(localStorage.getItem('dashboardHabits')) || { date: todayStr, pips: {}, halfDay: false, schoolsOut: false, schoolsOutDays: 1 };
     
+    // Fallback setting if loaded from an older object structure missing the field
+    if (habitData.schoolsOutDays === undefined) {
+      habitData.schoolsOutDays = 1;
+    }
+
     // Auto-wipe configuration if cross-boundary midnight condition occurs
     if (habitData.date !== todayStr) {
-      habitData = { date: todayStr, pips: {}, halfDay: false, schoolsOut: false };
+      habitData = { date: todayStr, pips: {}, halfDay: false, schoolsOut: false, schoolsOutDays: 1 };
       localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
     }
 
@@ -1174,18 +1222,42 @@
       parseAndUpdateSchedule(false); // Instantly recalculate current track
     });
 
-    // Initialize School's Out Checkbox State
+    // Initialize School's Out & Duration Counter Track Engine
     const soToggle = document.getElementById('schools-out-toggle');
+    const soCounterWrap = document.getElementById('so-counter-wrap');
+    const soCountEl = document.getElementById('so-count');
+
     soToggle.checked = !!habitData.schoolsOut;
     if (soToggle.checked) {
       document.body.classList.add('schools-out-active');
     }
 
+    function renderSchoolsOutDays() {
+      soCountEl.textContent = habitData.schoolsOutDays;
+      soCounterWrap.style.display = soToggle.checked ? 'inline-flex' : 'none';
+    }
+    renderSchoolsOutDays();
+
     soToggle.addEventListener('change', (e) => {
       habitData.schoolsOut = e.target.checked;
       localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
       document.body.classList.toggle('schools-out-active', e.target.checked);
+      renderSchoolsOutDays();
       parseAndUpdateSchedule(false); // Instantly recalculate current track
+    });
+
+    document.getElementById('so-plus').addEventListener('click', () => {
+      habitData.schoolsOutDays++;
+      localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+      renderSchoolsOutDays();
+    });
+
+    document.getElementById('so-minus').addEventListener('click', () => {
+      if (habitData.schoolsOutDays > 1) {
+        habitData.schoolsOutDays--;
+        localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+        renderSchoolsOutDays();
+      }
     });
 
     document.querySelectorAll('.habit-pip').forEach(pip => {
