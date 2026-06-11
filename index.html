@@ -49,7 +49,7 @@
       margin: 0 auto;
       padding: 2rem 1.25rem;
       padding-top: calc(2rem + env(safe-area-inset-top));
-      padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+      padding-bottom: calc(5rem + env(safe-area-inset-bottom)); /* Clearance for sticky dock */
     }
 
     /* ── Header ── */
@@ -138,8 +138,6 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.5rem;
-      flex-wrap: wrap;
-      gap: 12px;
     }
     .menu-header-row {
       display: flex;
@@ -155,20 +153,7 @@
       text-transform: uppercase;
     }
     
-    /* ── Controls Layout ── */
-    .controls-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .control-cluster {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    /* ── Engine Toggle Inputs ── */
     .hd-toggle-label {
       font-size: 9.5px;
       color: var(--muted);
@@ -200,41 +185,6 @@
       background: var(--accent);
       border-color: var(--accent);
       box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 40%, transparent);
-    }
-
-    /* ── Multi-Day Counter Sub-Component ── */
-    .duration-counter {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      padding: 2px 4px;
-      border-radius: 4px;
-    }
-    .duration-input {
-      width: 22px;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      text-align: center;
-      -moz-appearance: textfield;
-    }
-    .duration-input::-webkit-outer-spin-button,
-    .duration-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .duration-input:focus {
-      outline: none;
-    }
-    .duration-unit {
-      font-size: 9px;
-      color: var(--muted);
-      padding-right: 2px;
-      user-select: none;
     }
 
     /* ── Morphing Timeline Display Engine ── */
@@ -444,7 +394,7 @@
       font-style: italic;
     }
 
-    /* ── Menu Layout ── */
+    /* ── Menu / As-needed Bespoke Checkboxes ── */
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -538,6 +488,32 @@
     
     .menu-item.checked input[type="checkbox"] {
       opacity: 0.4;
+    }
+
+    /* ── Reusable Sub-Selector Layout Track ── */
+    .sub-selector {
+      display: none;
+      gap: 4px;
+      padding-left: 22px;
+      margin-bottom: 8px;
+      margin-top: -2px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 9.5px;
+      padding: 2px 6px;
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .pill.active {
+      background: var(--pets-bg);
+      color: var(--pets-fg);
+      border-color: var(--pets-fg);
     }
 
     .c-teal   { color: #7ddcb8; }
@@ -637,6 +613,7 @@
     <div class="header-title">Weekly <em>Schedule</em></div>
     <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
     
+    <!-- Daily Habit Pips Matrix -->
     <div class="habit-container">
       <div class="habit-group" data-habit="skincare">
         <span class="habit-label">Skincare</span>
@@ -666,38 +643,44 @@
     <span class="leg"><span class="dot" style="background:#902050;"></span>Night</span>
   </div>
 
+  <!-- ── WEEKDAY SECTION ── -->
   <div class="schedule-section" data-section="weekday">
     <div class="section-label-row">
       <div class="section-label">Monday – Friday</div>
-      <div class="controls-wrapper">
+      <div style="display: flex; gap: 14px; align-items: center;">
         <label class="hd-toggle-label">
           <input type="checkbox" id="half-day-toggle"> Half-Day Mode
         </label>
-        
-        <div class="control-cluster">
-          <label class="hd-toggle-label">
-            <input type="checkbox" id="schools-out-toggle"> School's Out
-          </label>
-          <div class="duration-counter">
-            <button type="button" class="ledger-btn" id="so-minus" style="width:16px; height:16px; font-size:9px; border-radius:3px;">-</button>
-            <input type="number" id="so-days" value="1" min="1" max="99" class="duration-input">
-            <button type="button" class="ledger-btn" id="so-plus" style="width:16px; height:16px; font-size:9px; border-radius:3px;">+</button>
-            <span class="duration-unit" id="so-unit-label">d</span>
-          </div>
-        </div>
+        <label class="hd-toggle-label">
+          <input type="checkbox" id="schools-out-toggle"> School's Out
+        </label>
       </div>
     </div>
     
     <div class="timeline">
+
       <div class="tl-time">5:30 AM</div>
       <div class="tl-block t-morning" data-days="1,2,3,4,5" data-start="05:30" data-end="05:45">Wake up · sofa → bed · desk + chair · morning skincare</div>
 
       <div class="tl-time"></div>
       <div class="tl-block t-pets" data-days="1,2,3,4,5" data-start="05:45" data-end="06:00">Feed cats</div>
 
+      <!-- SCHOOL IS OUT REPLACEMENT TRACK -->
       <div class="tl-time" data-so="only">6:00 AM<br>– 4:00 PM</div>
       <div class="tl-block t-free" data-so="only" data-days="1,2,3,4,5" data-start="06:00" data-end="16:00">Bonus Day Off
-        <span class="sub">School's Out mode is active · complete freedom to rest, execute personal projects, or sleep in</span>
+        <span class="sub">School is out · complete freedom to rest, tackle projects, or sleep in</span>
       </div>
 
-      <div class="tl-time" data
+      <!-- STANDARD RUN TRACK (Hides entirely when School's Out is Active) -->
+      <div class="tl-time" data-so="normal">6:00 AM</div>
+      <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="06:00" data-end="07:00">Commute to school</div>
+
+      <div class="tl-time" data-so="normal">7:00 AM</div>
+      <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="07:00" data-end="07:15">Arrive + settle in</div>
+
+      <!-- NORMAL RUN SUB-TRACK: Full School Day -->
+      <div class="tl-time" data-hd="normal" data-so="normal">7:00 AM<br>– 3:00 PM</div>
+      <div class="tl-block t-school" data-hd="normal" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="15:00">School</div>
+
+      <div class="tl-time" data-hd="normal" data-so="normal">3:00 PM</div>
+      <div class="tl-block t-school" data-hd="normal" data-so="
