@@ -187,44 +187,6 @@
       box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 40%, transparent);
     }
 
-    /* ── School's Out Days Counter Engine Styling ── */
-    .so-counter-container {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      font-size: 9.5px;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    body.schools-out-active .so-counter-container {
-      display: flex;
-    }
-    .so-counter-btn {
-      background: var(--bg3);
-      border: 0.5px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-mono);
-      width: 16px;
-      height: 16px;
-      border-radius: 3px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      user-select: none;
-      transition: all 0.15s ease;
-    }
-    .so-counter-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
     /* ── Morphing Timeline Display Engine ── */
     [data-hd="only"], [data-so="only"] { display: none !important; }
     
@@ -236,13 +198,7 @@
     body.schools-out-active [data-so="only"].tl-block { display: block !important; }
     body.schools-out-active [data-so="only"].tl-time { display: block !important; text-align: right; }
 
-    /* ── Utility Actions Container ── */
-    .util-actions-group {
-      display: flex;
-      gap: 6px;
-    }
-
-    /* ── Reset / Snapshot Utility Buttons ── */
+    /* ── Reset Button ── */
     .reset-btn {
       background: transparent;
       border: 0.5px solid var(--border);
@@ -259,9 +215,6 @@
     .reset-btn:hover {
       border-color: var(--accent);
       color: var(--text);
-    }
-    .btn-snapshot {
-      border-color: var(--border);
     }
 
     /* ── PalFish Ledger Card UI ── */
@@ -586,6 +539,15 @@
 
     .sleep-note .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
+    /* ── Backup Section ── */
+    .backup-section {
+      margin-top: 0.5rem;
+    }
+    .backup-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
     /* ── Integrated Sticky Next Up Dock ── */
     #next-up-dock {
       position: fixed;
@@ -649,8 +611,7 @@
       .timeline { grid-template-columns: 58px 1fr; }
       .tl-time { font-size: 9.5px; padding-right: 7px; }
       .tl-block { font-size: 11px; }
-      .menu-header-row { margin-top: 1.5rem; flex-direction: column; align-items: flex-start; gap: 10px; }
-      .util-actions-group { width: 100%; justify-content: flex-start; }
+      .menu-header-row { margin-top: 1.5rem; }
     }
   </style>
 </head>
@@ -661,7 +622,6 @@
     <div class="header-title">Weekly <em>Schedule</em></div>
     <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
     
-    <!-- Daily Habit Pips Matrix -->
     <div class="habit-container">
       <div class="habit-group" data-habit="skincare">
         <span class="habit-label">Skincare</span>
@@ -691,7 +651,6 @@
     <span class="leg"><span class="dot" style="background:#902050;"></span>Night</span>
   </div>
 
-  <!-- ── WEEKDAY SECTION ── -->
   <div class="schedule-section" data-section="weekday">
     <div class="section-label-row">
       <div class="section-label">Monday – Friday</div>
@@ -699,17 +658,9 @@
         <label class="hd-toggle-label">
           <input type="checkbox" id="half-day-toggle"> Half-Day Mode
         </label>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <label class="hd-toggle-label">
-            <input type="checkbox" id="schools-out-toggle"> School's Out
-          </label>
-          <!-- Dynamic Streak Counter Block -->
-          <div class="so-counter-container" id="so-counter-wrap">
-            <button class="so-counter-btn" id="so-minus">−</button>
-            <span id="so-count" style="min-width: 12px; text-align: center; font-weight: 500;">0</span> days
-            <button class="so-counter-btn" id="so-plus">+</button>
-          </div>
-        </div>
+        <label class="hd-toggle-label">
+          <input type="checkbox" id="schools-out-toggle"> School's Out
+        </label>
       </div>
     </div>
     
@@ -721,27 +672,23 @@
       <div class="tl-time"></div>
       <div class="tl-block t-pets" data-days="1,2,3,4,5" data-start="05:45" data-end="06:00">Feed cats</div>
 
-      <!-- SCHOOL IS OUT REPLACEMENT TRACK -->
       <div class="tl-time" data-so="only">6:00 AM<br>– 4:00 PM</div>
       <div class="tl-block t-free" data-so="only" data-days="1,2,3,4,5" data-start="06:00" data-end="16:00">Bonus Day Off
         <span class="sub">School is out · complete freedom to rest, tackle projects, or sleep in</span>
       </div>
 
-      <!-- STANDARD RUN TRACK (Hides entirely when School's Out is Active) -->
       <div class="tl-time" data-so="normal">6:00 AM</div>
       <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="06:00" data-end="07:00">Commute to school</div>
 
       <div class="tl-time" data-so="normal">7:00 AM</div>
       <div class="tl-block t-school" data-so="normal" data-days="1,2,3,4,5" data-start="07:00" data-end="07:15">Arrive + settle in</div>
 
-      <!-- NORMAL RUN SUB-TRACK: Full School Day -->
       <div class="tl-time" data-hd="normal" data-so="normal">7:00 AM<br>– 3:00 PM</div>
       <div class="tl-block t-school" data-hd="normal" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="15:00">School</div>
 
       <div class="tl-time" data-hd="normal" data-so="normal">3:00 PM</div>
       <div class="tl-block t-school" data-hd="normal" data-so="normal" data-days="1,2,3,4,5" data-start="15:00" data-end="16:00">Commute home</div>
 
-      <!-- HALF DAY RUN SUB-TRACK: Dismissal & Bonus Windows -->
       <div class="tl-time" data-hd="only" data-so="normal">7:00 AM<br>– 11:30 AM</div>
       <div class="tl-block t-school" data-hd="only" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="11:30">School (Half-Day)</div>
 
@@ -753,7 +700,6 @@
         <span class="sub">Extra Clara window · rest · tackle as-needed list early</span>
       </div>
 
-      <!-- Resynchronized Schedule Anchor -->
       <div class="tl-time">4:00 PM</div>
       <div class="tl-block t-chores" data-days="1,2,3,4,5" data-start="16:00" data-end="16:15">Clean litter box</div>
 
@@ -788,7 +734,6 @@
 
   <div class="divider"></div>
 
-  <!-- ── WEEKEND SECTIONS ── -->
   <div class="section-label" style="margin-bottom:0.5rem;">Weekend</div>
   <div class="wknd-grid">
 
@@ -862,7 +807,6 @@
 
   <div class="divider"></div>
 
-  <!-- ── PALFISH LEDGER SECTOR ── -->
   <div class="palfish-ledger">
     <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
     <div class="ledger-row">
@@ -877,19 +821,10 @@
     </div>
   </div>
 
-  <!-- ── AS-NEEDED MENU ── -->
   <div class="menu-header-row">
     <div class="section-label">As-needed menu · pick from any free window</div>
-    <!-- Shared Utility Action Bar -->
-    <div class="util-actions-group">
-      <button id="export-backup-btn" class="reset-btn btn-snapshot" title="Download setup snapshot">Backup</button>
-      <button id="import-backup-btn" class="reset-btn btn-snapshot" title="Upload setup snapshot">Restore</button>
-      <button id="reset-week-btn" class="reset-btn">Reset Week</button>
-    </div>
+    <button id="reset-week-btn" class="reset-btn">Reset Week</button>
   </div>
-  
-  <!-- Hidden File Input Bridge for Dashboard Portability -->
-  <input type="file" id="snapshot-file-bridge" accept=".json" style="display: none;">
   
   <div class="progress-container">
     <div id="progress-bar-fill" class="progress-bar"></div>
@@ -1067,9 +1002,18 @@
 
   </div>
 
+  <div class="divider"></div>
+  <div class="backup-section">
+    <div class="section-label" style="margin-bottom: 0.6rem;">Data Management</div>
+    <div class="backup-buttons">
+      <button id="export-json-btn" class="reset-btn">Export Backup (JSON)</button>
+      <button id="import-json-btn" class="reset-btn">Import Backup (JSON)</button>
+      <input type="file" id="import-json-file" accept=".json" style="display: none;">
+    </div>
+  </div>
+
 </div>
 
-<!-- ── Persistent Sticky Dock ── -->
 <div id="next-up-dock">
   <div class="next-dock-inner">
     <div class="next-dock-meta">
@@ -1181,13 +1125,9 @@
         localStorage.removeItem('dashboardCheckboxes');
         localStorage.removeItem('dashboardSubPills');
         localStorage.removeItem('palfishClassCount');
-        localStorage.removeItem('schoolsOutCount');
         
         pfClassCount = 0;
         renderPalFishLedger();
-
-        soDaysCount = 0;
-        renderSoCounter();
 
         checkboxes.forEach(cb => {
           cb.checked = false;
@@ -1246,31 +1186,6 @@
       localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
       document.body.classList.toggle('schools-out-active', e.target.checked);
       parseAndUpdateSchedule(false); // Instantly recalculate current track
-    });
-
-    // School's Out Multi-Day Counter Storage & Action Engine
-    let soDaysCount = parseInt(localStorage.getItem('schoolsOutCount')) || 0;
-    const soCountEl = document.getElementById('so-count');
-
-    function renderSoCounter() {
-      soCountEl.textContent = soDaysCount;
-    }
-    renderSoCounter();
-
-    document.getElementById('so-plus').addEventListener('click', (e) => {
-      e.preventDefault();
-      soDaysCount++;
-      localStorage.setItem('schoolsOutCount', soDaysCount);
-      renderSoCounter();
-    });
-
-    document.getElementById('so-minus').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (soDaysCount > 0) {
-        soDaysCount--;
-        localStorage.setItem('schoolsOutCount', soDaysCount);
-        renderSoCounter();
-      }
     });
 
     document.querySelectorAll('.habit-pip').forEach(pip => {
@@ -1463,75 +1378,64 @@
       }
     }
 
-    // 10. Data Snapshot Engine (Export / Import Core)
-    const exportBtn = document.getElementById('export-backup-btn');
-    const importBtn = document.getElementById('import-backup-btn');
-    const fileBridge = document.getElementById('snapshot-file-bridge');
+    // 10. JSON Export and Import Configuration Logic
+    const exportBtn = document.getElementById('export-json-btn');
+    const importBtn = document.getElementById('import-json-btn');
+    const importFileInput = document.getElementById('import-json-file');
 
     exportBtn.addEventListener('click', () => {
-      const snapshotPackage = {
-        dashboardCheckboxes: localStorage.getItem('dashboardCheckboxes'),
-        dashboardSubPills: localStorage.getItem('dashboardSubPills'),
+      const backupData = {
+        dashboardCheckboxes: JSON.parse(localStorage.getItem('dashboardCheckboxes')),
+        dashboardSubPills: JSON.parse(localStorage.getItem('dashboardSubPills')),
         palfishClassCount: localStorage.getItem('palfishClassCount'),
-        dashboardHabits: localStorage.getItem('dashboardHabits'),
-        schoolsOutCount: localStorage.getItem('schoolsOutCount')
+        dashboardHabits: JSON.parse(localStorage.getItem('dashboardHabits'))
       };
 
-      const blob = new Blob([JSON.stringify(snapshotPackage, null, 2)], { type: 'application/json' });
-      const downloadUrl = URL.createObjectURL(blob);
-      const tempLink = document.createElement('a');
-      const stamp = new Date().toISOString().split('T')[0];
-
-      tempLink.href = downloadUrl;
-      tempLink.download = `routine_snapshot_${stamp}.json`;
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      document.body.removeChild(tempLink);
-      URL.revokeObjectURL(downloadUrl);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const timestamp = new Date().toISOString().split('T')[0];
+      
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `dashboard_backup_${timestamp}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     });
 
     importBtn.addEventListener('click', () => {
-      fileBridge.click();
+      importFileInput.click();
     });
 
-    fileBridge.addEventListener('change', (e) => {
-      const targetFile = e.target.files[0];
-      if (!targetFile) return;
+    importFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-      const filePipeline = new FileReader();
-      filePipeline.onload = (fileEvent) => {
+      const reader = new FileReader();
+      reader.onload = function(event) {
         try {
-          const parsedPayload = JSON.parse(fileEvent.target.result);
+          const importedData = JSON.parse(event.target.result);
           
-          // Integrity validation checklist safely parsing items back to storage
-          if (parsedPayload.dashboardCheckboxes !== undefined) {
-            if (parsedPayload.dashboardCheckboxes) localStorage.setItem('dashboardCheckboxes', parsedPayload.dashboardCheckboxes);
-            else localStorage.removeItem('dashboardCheckboxes');
+          if (importedData.dashboardCheckboxes) {
+            localStorage.setItem('dashboardCheckboxes', JSON.stringify(importedData.dashboardCheckboxes));
           }
-          if (parsedPayload.dashboardSubPills !== undefined) {
-            if (parsedPayload.dashboardSubPills) localStorage.setItem('dashboardSubPills', parsedPayload.dashboardSubPills);
-            else localStorage.removeItem('dashboardSubPills');
+          if (importedData.dashboardSubPills) {
+            localStorage.setItem('dashboardSubPills', JSON.stringify(importedData.dashboardSubPills));
           }
-          if (parsedPayload.palfishClassCount !== undefined) {
-            if (parsedPayload.palfishClassCount) localStorage.setItem('palfishClassCount', parsedPayload.palfishClassCount);
-            else localStorage.removeItem('palfishClassCount');
+          if (importedData.palfishClassCount !== undefined && importedData.palfishClassCount !== null) {
+            localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
           }
-          if (parsedPayload.dashboardHabits !== undefined) {
-            if (parsedPayload.dashboardHabits) localStorage.setItem('dashboardHabits', parsedPayload.dashboardHabits);
-            else localStorage.removeItem('dashboardHabits');
-          }
-          if (parsedPayload.schoolsOutCount !== undefined) {
-            if (parsedPayload.schoolsOutCount) localStorage.setItem('schoolsOutCount', parsedPayload.schoolsOutCount);
-            else localStorage.removeItem('schoolsOutCount');
+          if (importedData.dashboardHabits) {
+            localStorage.setItem('dashboardHabits', JSON.stringify(importedData.dashboardHabits));
           }
 
-          alert('Snapshot unpacked successfully. Re-syncing schedule display components...');
+          alert('Data metrics imported successfully! Updating your workspace dashboard...');
           window.location.reload();
         } catch (err) {
-          alert('Snapshot parse collision: Verify the integrity of your selected system JSON template file.');
+          alert('Could not parse layout data. Please make sure this file is a valid JSON dashboard backup.');
+          console.error(err);
         }
       };
-      filePipeline.readAsText(targetFile);
+      reader.readAsText(file);
     });
 
     // Initialization Pipelines
