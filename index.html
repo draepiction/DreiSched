@@ -187,6 +187,44 @@
       box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 40%, transparent);
     }
 
+    /* ── School's Out Days Counter Engine Styling ── */
+    .so-counter-container {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-size: 9.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    body.schools-out-active .so-counter-container {
+      display: flex;
+    }
+    .so-counter-btn {
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .so-counter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     /* ── Morphing Timeline Display Engine ── */
     [data-hd="only"], [data-so="only"] { display: none !important; }
     
@@ -198,7 +236,13 @@
     body.schools-out-active [data-so="only"].tl-block { display: block !important; }
     body.schools-out-active [data-so="only"].tl-time { display: block !important; text-align: right; }
 
-    /* ── Reset Button ── */
+    /* ── Utility Actions Container ── */
+    .util-actions-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* ── Reset / Snapshot Utility Buttons ── */
     .reset-btn {
       background: transparent;
       border: 0.5px solid var(--border);
@@ -215,6 +259,9 @@
     .reset-btn:hover {
       border-color: var(--accent);
       color: var(--text);
+    }
+    .btn-snapshot {
+      border-color: var(--border);
     }
 
     /* ── PalFish Ledger Card UI ── */
@@ -602,7 +649,8 @@
       .timeline { grid-template-columns: 58px 1fr; }
       .tl-time { font-size: 9.5px; padding-right: 7px; }
       .tl-block { font-size: 11px; }
-      .menu-header-row { margin-top: 1.5rem; }
+      .menu-header-row { margin-top: 1.5rem; flex-direction: column; align-items: flex-start; gap: 10px; }
+      .util-actions-group { width: 100%; justify-content: flex-start; }
     }
   </style>
 </head>
@@ -651,9 +699,17 @@
         <label class="hd-toggle-label">
           <input type="checkbox" id="half-day-toggle"> Half-Day Mode
         </label>
-        <label class="hd-toggle-label">
-          <input type="checkbox" id="schools-out-toggle"> School's Out
-        </label>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label class="hd-toggle-label">
+            <input type="checkbox" id="schools-out-toggle"> School's Out
+          </label>
+          <!-- Dynamic Streak Counter Block -->
+          <div class="so-counter-container" id="so-counter-wrap">
+            <button class="so-counter-btn" id="so-minus">−</button>
+            <span id="so-count" style="min-width: 12px; text-align: center; font-weight: 500;">0</span> days
+            <button class="so-counter-btn" id="so-plus">+</button>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -683,4 +739,812 @@
       <div class="tl-block t-school" data-hd="normal" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="15:00">School</div>
 
       <div class="tl-time" data-hd="normal" data-so="normal">3:00 PM</div>
-      <div class="tl-block t-school" data-hd="normal" data-so="
+      <div class="tl-block t-school" data-hd="normal" data-so="normal" data-days="1,2,3,4,5" data-start="15:00" data-end="16:00">Commute home</div>
+
+      <!-- HALF DAY RUN SUB-TRACK: Dismissal & Bonus Windows -->
+      <div class="tl-time" data-hd="only" data-so="normal">7:00 AM<br>– 11:30 AM</div>
+      <div class="tl-block t-school" data-hd="only" data-so="normal" style="padding: 12px 10px;" data-days="1,2,3,4,5" data-start="07:15" data-end="11:30">School (Half-Day)</div>
+
+      <div class="tl-time" data-hd="only" data-so="normal">11:30 AM</div>
+      <div class="tl-block t-school" data-hd="only" data-so="normal" data-days="1,2,3,4,5" data-start="11:30" data-end="12:30">Commute home</div>
+
+      <div class="tl-time" data-hd="only" data-so="normal">12:30 PM</div>
+      <div class="tl-block t-free" data-hd="only" data-so="normal" data-days="1,2,3,4,5" data-start="12:30" data-end="16:00">Bonus Free Window
+        <span class="sub">Extra Clara window · rest · tackle as-needed list early</span>
+      </div>
+
+      <!-- Resynchronized Schedule Anchor -->
+      <div class="tl-time">4:00 PM</div>
+      <div class="tl-block t-chores" data-days="1,2,3,4,5" data-start="16:00" data-end="16:15">Clean litter box</div>
+
+      <div class="tl-time"></div>
+      <div class="tl-block t-free" data-days="1,2,3,4,5" data-start="16:15" data-end="18:00">Free time
+        <span class="sub">Clara window · laundry · organize · sweep · mop if needed</span>
+      </div>
+
+      <div class="tl-time">6:00 PM</div>
+      <div class="tl-block t-teach" data-days="1,2,3,4,5" data-start="18:00" data-end="19:30">PalFish · active teaching</div>
+
+      <div class="tl-time">7:30 PM</div>
+      <div class="tl-block t-free" data-days="1,2,3,4,5" data-start="19:30" data-end="23:30">Free time
+        <span class="sub">Clara time · personal projects · rest</span>
+      </div>
+
+      <div class="tl-time">~11:30 PM</div>
+      <div class="tl-block t-night" data-days="1,2,3,4,5" data-start="23:30" data-end="00:00">Shower + night skincare</div>
+
+      <div class="tl-time">12:00 AM</div>
+      <div class="tl-block t-sleep" data-days="1,2,3,4,5" data-start="00:00" data-end="05:30">Sleep
+        <span class="sub">Fri: flexible · late Clara time</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sleep-note">
+    <span class="icon">🌙</span>
+    <span>Weekday sleep: ~5.5 hrs (12:00 AM → 5:30 AM). Friday sleep is later · Clara night.</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── WEEKEND SECTIONS ── -->
+  <div class="section-label" style="margin-bottom:0.5rem;">Weekend</div>
+  <div class="wknd-grid">
+
+    <div class="wknd-col" data-section="saturday">
+      <div class="col-head">Saturday</div>
+      <div class="timeline">
+        <div class="tl-time">Late</div>
+        <div class="tl-block t-morning" data-days="6" data-start="00:00" data-end="11:00">Wake up (flexible · late Clara night)</div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-morning" data-days="6" data-start="11:00" data-end="11:20">Morning skincare</div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-pets" data-days="6" data-start="11:20" data-end="11:40">Feed cats</div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-chores" data-days="6" data-start="11:40" data-end="12:00">Clean litter box</div>
+
+        <div class="tl-time">Daytime</div>
+        <div class="tl-block t-chores" data-days="6" data-start="12:00" data-end="14:00">Laundry + sweep / mop
+          <span class="sub">fit around Clara window</span>
+        </div>
+
+        <div class="tl-time">2:00 PM</div>
+        <div class="tl-block t-free" data-days="6" data-start="14:00" data-end="18:00">Clara window
+          <span class="sub">2:00 – 6:00 PM</span>
+        </div>
+
+        <div class="tl-time">Night</div>
+        <div class="tl-block t-free" data-days="6" data-start="18:00" data-end="23:00">Free / Clara
+          <span class="sub">late sleep · Clara night</span>
+        </div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-night" data-days="6" data-start="23:00" data-end="23:59">Shower + night skincare → sleep</div>
+      </div>
+    </div>
+
+    <div class="wknd-col" data-section="sunday">
+      <div class="col-head">Sunday</div>
+      <div class="timeline">
+        <div class="tl-time">7:00 AM</div>
+        <div class="tl-block t-morning" data-days="0" data-start="00:00" data-end="08:00">Wake up · sofa → bed · morning skincare</div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-pets" data-days="0" data-start="08:00" data-end="09:00">Feed cats</div>
+
+        <div class="tl-time">9:00 AM</div>
+        <div class="tl-block t-church" data-days="0" data-start="09:00" data-end="11:00">Church (9:00 – 11:00 AM)</div>
+
+        <div class="tl-time">11:00 AM</div>
+        <div class="tl-block t-free" data-days="0" data-start="11:00" data-end="14:00">Return home · rest</div>
+
+        <div class="tl-time">2:00 PM</div>
+        <div class="tl-block t-free" data-days="0" data-start="14:00" data-end="18:00">Clara window
+          <span class="sub">2:00 – 6:00 PM</span>
+        </div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-chores" data-days="0" data-start="18:00" data-end="19:00">Clean litter box + take out trash</div>
+
+        <div class="tl-time"></div>
+        <div class="tl-block t-free" data-days="0" data-start="19:00" data-end="23:00">Free / rest</div>
+
+        <div class="tl-time">Night</div>
+        <div class="tl-block t-night" data-days="0" data-start="23:00" data-end="23:59">Shower + night skincare → sleep</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ── PALFISH LEDGER SECTOR ── -->
+  <div class="palfish-ledger">
+    <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
+    <div class="ledger-row">
+      <div class="ledger-counter">
+        <button class="ledger-btn" id="pf-minus">−</button>
+        <span id="pf-count">0</span> classes completed
+        <button class="ledger-btn" id="pf-plus">+</button>
+      </div>
+      <div class="ledger-earnings">
+        Est. Base: <span id="pf-earnings" style="color: var(--accent); font-weight: 500;">0</span> RMB
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AS-NEEDED MENU ── -->
+  <div class="menu-header-row">
+    <div class="section-label">As-needed menu · pick from any free window</div>
+    <!-- Shared Utility Action Bar -->
+    <div class="util-actions-group">
+      <button id="export-backup-btn" class="reset-btn btn-snapshot" title="Download setup snapshot">Backup</button>
+      <button id="import-backup-btn" class="reset-btn btn-snapshot" title="Upload setup snapshot">Restore</button>
+      <button id="reset-week-btn" class="reset-btn">Reset Week</button>
+    </div>
+  </div>
+  
+  <!-- Hidden File Input Bridge for Dashboard Portability -->
+  <input type="file" id="snapshot-file-bridge" accept=".json" style="display: none;">
+  
+  <div class="progress-container">
+    <div id="progress-bar-fill" class="progress-bar"></div>
+  </div>
+
+  <div class="menu-grid">
+
+    <div class="menu-card">
+      <div class="menu-card-title">Pets</div>
+      
+      <div class="menu-item-group">
+        <label class="menu-item c-teal">
+          <input type="checkbox" id="pet-brush">
+          <span class="label-text">Groom & brush dogs<span class="hint">4–6 PM preferred window</span></span>
+        </label>
+        <div class="sub-selector">
+          <span class="pill" data-val="cotton">Cotton</span>
+          <span class="pill" data-val="snow">Snow</span>
+          <span class="pill" data-val="casper">Casper</span>
+          <span class="pill" data-val="powder">Powder</span>
+        </div>
+      </div>
+
+      <div class="menu-item-group">
+        <label class="menu-item c-teal">
+          <input type="checkbox" id="pet-nails">
+          <span class="label-text">Dog nail trimming</span>
+        </label>
+        <div class="sub-selector">
+          <span class="pill" data-val="cotton">Cotton</span>
+          <span class="pill" data-val="snow">Snow</span>
+          <span class="pill" data-val="casper">Casper</span>
+          <span class="pill" data-val="powder">Powder</span>
+        </div>
+      </div>
+
+      <div class="menu-item-group">
+        <label class="menu-item c-teal">
+          <input type="checkbox" id="pet-flea">
+          <span class="label-text">Flea / tick preventatives</span>
+        </label>
+        <div class="sub-selector">
+          <span class="pill" data-val="cotton">Cotton</span>
+          <span class="pill" data-val="snow">Snow</span>
+          <span class="pill" data-val="casper">Casper</span>
+          <span class="pill" data-val="powder">Powder</span>
+        </div>
+      </div>
+
+      <div class="menu-item-group">
+        <label class="menu-item c-teal">
+          <input type="checkbox" id="pet-bath">
+          <span class="label-text">Bathing the dogs</span>
+        </label>
+        <div class="sub-selector">
+          <span class="pill" data-val="cotton">Cotton</span>
+          <span class="pill" data-val="snow">Snow</span>
+          <span class="pill" data-val="casper">Casper</span>
+          <span class="pill" data-val="powder">Powder</span>
+        </div>
+      </div>
+
+      <div class="menu-item-group">
+        <label class="menu-item c-teal">
+          <input type="checkbox" id="pet-litter">
+          <span class="label-text">Litter box deep clean</span>
+        </label>
+        <div class="sub-selector">
+          <span class="pill" data-val="jiji">Jiji</span>
+          <span class="pill" data-val="koichi">Koichi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Bedding</div>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="bed-sheets">
+        <span class="label-text">
+          Wash bedsheets + pillowcases
+          <span class="hint">Suggested weekly, with laundry</span>
+        </span>
+      </label>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="bed-blankets">
+        <span class="label-text">Wash blankets</span>
+      </label>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="bed-inserts">
+        <span class="label-text">Wash pillow inserts</span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Kitchen</div>
+      <label class="menu-item c-pink">
+        <input type="checkbox" id="kit-appliances">
+        <span class="label-text">
+          Appliance upkeep
+          <span class="hint">microwave · stove · air fryer</span>
+        </span>
+      </label>
+      <label class="menu-item c-pink">
+        <input type="checkbox" id="kit-shelves">
+        <span class="label-text">Shelves + stock reorganization</span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Wardrobe</div>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="ward-closet">
+        <span class="label-text">Closet declutter + re-fold</span>
+      </label>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="ward-shoes">
+        <span class="label-text">Shoe cleaning</span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Room & Desk</div>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="room-aircon">
+        <span class="label-text">Aircon cleaning</span>
+      </label>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="room-windows">
+        <span class="label-text">Window cleaning</span>
+      </label>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="room-sofabed">
+        <span class="label-text">Sofabed cleaning</span>
+      </label>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="room-peripherals">
+        <span class="label-text">Keyboard + mouse wipe-down</span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Tech & Workspace</div>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="tech-screens">
+        <span class="label-text">Screen cleaning</span>
+      </label>
+      <label class="menu-item c-blue">
+        <input type="checkbox" id="tech-files">
+        <span class="label-text">
+          Digital file purge + organization
+          <span class="hint">including photos</span>
+        </span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Decor</div>
+      <label class="menu-item c-purple">
+        <input type="checkbox" id="decor-dusting">
+        <span class="label-text">Figure + shelf dusting</span>
+      </label>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-card-title">Deep Cleans</div>
+      <label class="menu-item c-pink">
+        <input type="checkbox" id="deep-bathroom">
+        <span class="label-text">Bathroom deep clean</span>
+      </label>
+      <label class="menu-item c-pink">
+        <input type="checkbox" id="deep-fridge">
+        <span class="label-text">Fridge clean-out</span>
+      </label>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ── Persistent Sticky Dock ── -->
+<div id="next-up-dock">
+  <div class="next-dock-inner">
+    <div class="next-dock-meta">
+      <span class="next-dock-tag">NEXT UP</span>
+      <span id="next-dock-title">Checking upcoming routine...</span>
+    </div>
+    <span id="next-dock-timer">--</span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Load configuration and storage matrices
+    const savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
+    const savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
+    
+    const checkboxes = document.querySelectorAll('.menu-item input[type="checkbox"]');
+    
+    // 2. Comprehensive Progress Tracker Function
+    function updateProgressBar() {
+      const total = checkboxes.length;
+      const checked = document.querySelectorAll('.menu-item input[type="checkbox"]:checked').length;
+      const percentage = total > 0 ? (checked / total) * 100 : 0;
+      document.getElementById('progress-bar-fill').style.width = `${percentage}%`;
+    }
+
+    // 3. Process Checkboxes, Groups, and Pill Selectors
+    checkboxes.forEach(cb => {
+      const parentLabel = cb.closest('.menu-item');
+      const group = cb.closest('.menu-item-group');
+      const subSelector = group ? group.querySelector('.sub-selector') : null;
+
+      if (savedStates[cb.id]) {
+        cb.checked = true;
+        parentLabel.classList.add('checked');
+      }
+
+      function toggleSubVisibility() {
+        if (subSelector) {
+          subSelector.style.display = cb.checked ? 'flex' : 'none';
+        }
+      }
+      toggleSubVisibility();
+
+      cb.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          parentLabel.classList.add('checked');
+          savedStates[cb.id] = true;
+        } else {
+          parentLabel.classList.remove('checked');
+          delete savedStates[cb.id];
+        }
+        localStorage.setItem('dashboardCheckboxes', JSON.stringify(savedStates));
+        toggleSubVisibility();
+        updateProgressBar();
+      });
+
+      if (subSelector) {
+        const pills = subSelector.querySelectorAll('.pill');
+        pills.forEach(pill => {
+          const val = pill.getAttribute('data-val');
+          const cacheKey = `${cb.id}-${val}`;
+
+          if (savedPills[cacheKey]) {
+            pill.classList.add('active');
+          }
+
+          pill.addEventListener('click', () => {
+            pill.classList.toggle('active');
+            if (pill.classList.contains('active')) {
+              savedPills[cacheKey] = true;
+            } else {
+              delete savedPills[cacheKey];
+            }
+            localStorage.setItem('dashboardSubPills', JSON.stringify(savedPills));
+          });
+        });
+      }
+    });
+
+    // 4. PalFish Ledger Engine Addition
+    let pfClassCount = parseInt(localStorage.getItem('palfishClassCount')) || 0;
+    const pfCountEl = document.getElementById('pf-count');
+    const pfEarningsEl = document.getElementById('pf-earnings');
+
+    function renderPalFishLedger() {
+      pfCountEl.textContent = pfClassCount;
+      pfEarningsEl.textContent = pfClassCount * 35;
+    }
+    renderPalFishLedger();
+
+    document.getElementById('pf-plus').addEventListener('click', () => {
+      pfClassCount++;
+      localStorage.setItem('palfishClassCount', pfClassCount);
+      renderPalFishLedger();
+    });
+
+    document.getElementById('pf-minus').addEventListener('click', () => {
+      if (pfClassCount > 0) {
+        pfClassCount--;
+        localStorage.setItem('palfishClassCount', pfClassCount);
+        renderPalFishLedger();
+      }
+    });
+
+    // 5. Reset Week Operations
+    document.getElementById('reset-week-btn').addEventListener('click', () => {
+      if (confirm('Clear all tasks, ledger metrics, and active pet selections for the new week?')) {
+        localStorage.removeItem('dashboardCheckboxes');
+        localStorage.removeItem('dashboardSubPills');
+        localStorage.removeItem('palfishClassCount');
+        localStorage.removeItem('schoolsOutCount');
+        
+        pfClassCount = 0;
+        renderPalFishLedger();
+
+        soDaysCount = 0;
+        renderSoCounter();
+
+        checkboxes.forEach(cb => {
+          cb.checked = false;
+          cb.closest('.menu-item').classList.remove('checked');
+          const group = cb.closest('.menu-item-group');
+          if (group && group.querySelector('.sub-selector')) {
+            group.querySelector('.sub-selector').style.display = 'none';
+          }
+          delete savedStates[cb.id];
+        });
+
+        document.querySelectorAll('.sub-selector .pill').forEach(pill => {
+          pill.classList.remove('active');
+          const val = pill.getAttribute('data-val');
+          const cbId = pill.closest('.menu-item-group').querySelector('input[type="checkbox"]').id;
+          delete savedPills[`${cbId}-${val}`];
+        });
+
+        updateProgressBar();
+      }
+    });
+
+    // 6. Ephemeral Daily Habits Tracking Module + Engine States
+    const todayStr = new Date().toISOString().split('T')[0];
+    let habitData = JSON.parse(localStorage.getItem('dashboardHabits')) || { date: todayStr, pips: {}, halfDay: false, schoolsOut: false };
+    
+    // Auto-wipe configuration if cross-boundary midnight condition occurs
+    if (habitData.date !== todayStr) {
+      habitData = { date: todayStr, pips: {}, halfDay: false, schoolsOut: false };
+      localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+    }
+
+    // Initialize Half Day Checkbox State
+    const hdToggle = document.getElementById('half-day-toggle');
+    hdToggle.checked = !!habitData.halfDay;
+    if (hdToggle.checked) {
+      document.body.classList.add('half-day-active');
+    }
+
+    hdToggle.addEventListener('change', (e) => {
+      habitData.halfDay = e.target.checked;
+      localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+      document.body.classList.toggle('half-day-active', e.target.checked);
+      parseAndUpdateSchedule(false); // Instantly recalculate current track
+    });
+
+    // Initialize School's Out Checkbox State
+    const soToggle = document.getElementById('schools-out-toggle');
+    soToggle.checked = !!habitData.schoolsOut;
+    if (soToggle.checked) {
+      document.body.classList.add('schools-out-active');
+    }
+
+    soToggle.addEventListener('change', (e) => {
+      habitData.schoolsOut = e.target.checked;
+      localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+      document.body.classList.toggle('schools-out-active', e.target.checked);
+      parseAndUpdateSchedule(false); // Instantly recalculate current track
+    });
+
+    // School's Out Multi-Day Counter Storage & Action Engine
+    let soDaysCount = parseInt(localStorage.getItem('schoolsOutCount')) || 0;
+    const soCountEl = document.getElementById('so-count');
+
+    function renderSoCounter() {
+      soCountEl.textContent = soDaysCount;
+    }
+    renderSoCounter();
+
+    document.getElementById('so-plus').addEventListener('click', (e) => {
+      e.preventDefault();
+      soDaysCount++;
+      localStorage.setItem('schoolsOutCount', soDaysCount);
+      renderSoCounter();
+    });
+
+    document.getElementById('so-minus').addEventListener('click', (e) => {
+      e.preventDefault();
+      if (soDaysCount > 0) {
+        soDaysCount--;
+        localStorage.setItem('schoolsOutCount', soDaysCount);
+        renderSoCounter();
+      }
+    });
+
+    document.querySelectorAll('.habit-pip').forEach(pip => {
+      const groupName = pip.closest('.habit-group').getAttribute('data-habit');
+      const pipIdx = pip.getAttribute('data-index');
+      const storageKey = `${groupName}-${pipIdx}`;
+
+      if (habitData.pips[storageKey]) {
+        pip.classList.add('active');
+      }
+
+      pip.addEventListener('click', () => {
+        pip.classList.toggle('active');
+        if (pip.classList.contains('active')) {
+          habitData.pips[storageKey] = true;
+        } else {
+          delete habitData.pips[storageKey];
+        }
+        localStorage.setItem('dashboardHabits', JSON.stringify(habitData));
+      });
+    });
+
+    // 7. Running Live Clock Display
+    function updateClock() {
+      const now = new Date();
+      const optionsDay = { weekday: 'long' };
+      const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
+      
+      const dayStr = now.toLocaleDateString('en-US', optionsDay);
+      const timeStr = now.toLocaleTimeString('en-US', optionsTime);
+      
+      document.getElementById('live-header-meta').textContent = `Drei · ${dayStr} · ${timeStr}`;
+    }
+
+    // 8. Smart Focus Day Dimming Routine
+    function applySmartDimming() {
+      const currentDay = new Date().getDay(); 
+      const weekdaySection = document.querySelector('[data-section="weekday"]');
+      const satSection = document.querySelector('[data-section="saturday"]');
+      const sunSection = document.querySelector('[data-section="sunday"]');
+
+      weekdaySection.classList.remove('dimmed');
+      satSection.classList.remove('dimmed');
+      sunSection.classList.remove('dimmed');
+
+      if (currentDay >= 1 && currentDay <= 5) {
+        satSection.classList.add('dimmed');
+        sunSection.classList.add('dimmed');
+      } else if (currentDay === 6) {
+        weekdaySection.classList.add('dimmed');
+        sunSection.classList.add('dimmed');
+      } else if (currentDay === 0) {
+        weekdaySection.classList.add('dimmed');
+        satSection.classList.add('dimmed');
+      }
+    }
+
+    // 9. Active Block Tracking & Sticky Footer Updates
+    function parseAndUpdateSchedule(shouldScroll = false) {
+      const now = new Date();
+      const currentDay = now.getDay(); 
+      const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+      const isHalfDayActive = document.body.classList.contains('half-day-active');
+      const isSchoolsOutActive = document.body.classList.contains('schools-out-active');
+
+      document.querySelectorAll('.tl-block.live-current').forEach(el => {
+        el.classList.remove('live-current');
+      });
+
+      const scheduleBlocks = document.querySelectorAll('.tl-block[data-start][data-end]');
+      let todayBlocks = [];
+
+      scheduleBlocks.forEach(block => {
+        // Filter calculations for blocks hidden by the school's out engine state
+        const soMode = block.getAttribute('data-so');
+        if (isSchoolsOutActive && soMode === 'normal') return;
+        if (!isSchoolsOutActive && soMode === 'only') return;
+
+        // Filter calculations for blocks hidden by the half-day engine state
+        const hdMode = block.getAttribute('data-hd');
+        if (isHalfDayActive && hdMode === 'normal') return;
+        if (!isHalfDayActive && hdMode === 'only') return;
+
+        const daysArray = block.getAttribute('data-days').split(',').map(Number);
+        if (daysArray.includes(currentDay)) {
+          const [sh, sm] = block.getAttribute('data-start').split(':').map(Number);
+          const [eh, em] = block.getAttribute('data-end').split(':').map(Number);
+          
+          let startMin = (sh * 60) + sm;
+          let endMin = (eh * 60) + em;
+          
+          if (endMin === 0 && startMin > 0) endMin = 24 * 60;
+
+          const cleanNode = block.cloneNode(true);
+          const subText = cleanNode.querySelector('.sub');
+          if (subText) subText.remove();
+          const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('—')[0].trim();
+
+          todayBlocks.push({
+            element: block,
+            name: parsedTitle,
+            start: startMin,
+            end: endMin
+          });
+        }
+      });
+
+      todayBlocks.sort((a, b) => a.start - b.start);
+
+      let activeBlock = null;
+      let nextBlock = null;
+
+      for (let i = 0; i < todayBlocks.length; i++) {
+        const b = todayBlocks[i];
+        if (currentMinutes >= b.start && currentMinutes < b.end) {
+          b.element.classList.add('live-current');
+          activeBlock = b;
+          if (i + 1 < todayBlocks.length) {
+            nextBlock = todayBlocks[i + 1];
+          }
+          break;
+        }
+      }
+
+      if (!activeBlock) {
+        for (let i = 0; i < todayBlocks.length; i++) {
+          if (todayBlocks[i].start > currentMinutes) {
+            nextBlock = todayBlocks[i];
+            break;
+          }
+        }
+      }
+
+      let calculatedDiff = 0;
+      if (nextBlock) {
+        calculatedDiff = nextBlock.start - currentMinutes;
+      } else {
+        const tomorrowDay = (currentDay + 1) % 7;
+        let tomorrowBlocks = [];
+        
+        scheduleBlocks.forEach(block => {
+          const hdMode = block.getAttribute('data-hd');
+          const soMode = block.getAttribute('data-so');
+          if (hdMode === 'only' || soMode === 'only') return; 
+
+          const daysArray = block.getAttribute('data-days').split(',').map(Number);
+          if (daysArray.includes(tomorrowDay)) {
+            const [sh, sm] = block.getAttribute('data-start').split(':').map(Number);
+            const cleanNode = block.cloneNode(true);
+            const subText = cleanNode.querySelector('.sub');
+            if (subText) subText.remove();
+            
+            tomorrowBlocks.push({
+              name: cleanNode.textContent.trim().split('·')[0].split('—')[0].trim(),
+              start: (sh * 60) + sm
+            });
+          }
+        });
+
+        if (tomorrowBlocks.length > 0) {
+          tomorrowBlocks.sort((a, b) => a.start - b.start);
+          nextBlock = tomorrowBlocks[0];
+          calculatedDiff = (24 * 60 - currentMinutes) + nextBlock.start;
+        }
+      }
+
+      const dockTitle = document.getElementById('next-dock-title');
+      const dockTimer = document.getElementById('next-dock-timer');
+
+      if (nextBlock) {
+        let timeStr = '';
+        if (calculatedDiff >= 60) {
+          const hrs = Math.floor(calculatedDiff / 60);
+          const mins = calculatedDiff % 60;
+          timeStr = `in ${hrs}h ${mins}m`;
+        } else {
+          timeStr = `in ${calculatedDiff}m`;
+        }
+        dockTitle.textContent = nextBlock.name;
+        dockTimer.textContent = timeStr;
+      } else {
+        dockTitle.textContent = 'Routines completed';
+        dockTimer.textContent = '--';
+      }
+
+      if (shouldScroll && activeBlock) {
+        setTimeout(() => {
+          activeBlock.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 400);
+      }
+    }
+
+    // 10. Data Snapshot Engine (Export / Import Core)
+    const exportBtn = document.getElementById('export-backup-btn');
+    const importBtn = document.getElementById('import-backup-btn');
+    const fileBridge = document.getElementById('snapshot-file-bridge');
+
+    exportBtn.addEventListener('click', () => {
+      const snapshotPackage = {
+        dashboardCheckboxes: localStorage.getItem('dashboardCheckboxes'),
+        dashboardSubPills: localStorage.getItem('dashboardSubPills'),
+        palfishClassCount: localStorage.getItem('palfishClassCount'),
+        dashboardHabits: localStorage.getItem('dashboardHabits'),
+        schoolsOutCount: localStorage.getItem('schoolsOutCount')
+      };
+
+      const blob = new Blob([JSON.stringify(snapshotPackage, null, 2)], { type: 'application/json' });
+      const downloadUrl = URL.createObjectURL(blob);
+      const tempLink = document.createElement('a');
+      const stamp = new Date().toISOString().split('T')[0];
+
+      tempLink.href = downloadUrl;
+      tempLink.download = `routine_snapshot_${stamp}.json`;
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(downloadUrl);
+    });
+
+    importBtn.addEventListener('click', () => {
+      fileBridge.click();
+    });
+
+    fileBridge.addEventListener('change', (e) => {
+      const targetFile = e.target.files[0];
+      if (!targetFile) return;
+
+      const filePipeline = new FileReader();
+      filePipeline.onload = (fileEvent) => {
+        try {
+          const parsedPayload = JSON.parse(fileEvent.target.result);
+          
+          // Integrity validation checklist safely parsing items back to storage
+          if (parsedPayload.dashboardCheckboxes !== undefined) {
+            if (parsedPayload.dashboardCheckboxes) localStorage.setItem('dashboardCheckboxes', parsedPayload.dashboardCheckboxes);
+            else localStorage.removeItem('dashboardCheckboxes');
+          }
+          if (parsedPayload.dashboardSubPills !== undefined) {
+            if (parsedPayload.dashboardSubPills) localStorage.setItem('dashboardSubPills', parsedPayload.dashboardSubPills);
+            else localStorage.removeItem('dashboardSubPills');
+          }
+          if (parsedPayload.palfishClassCount !== undefined) {
+            if (parsedPayload.palfishClassCount) localStorage.setItem('palfishClassCount', parsedPayload.palfishClassCount);
+            else localStorage.removeItem('palfishClassCount');
+          }
+          if (parsedPayload.dashboardHabits !== undefined) {
+            if (parsedPayload.dashboardHabits) localStorage.setItem('dashboardHabits', parsedPayload.dashboardHabits);
+            else localStorage.removeItem('dashboardHabits');
+          }
+          if (parsedPayload.schoolsOutCount !== undefined) {
+            if (parsedPayload.schoolsOutCount) localStorage.setItem('schoolsOutCount', parsedPayload.schoolsOutCount);
+            else localStorage.removeItem('schoolsOutCount');
+          }
+
+          alert('Snapshot unpacked successfully. Re-syncing schedule display components...');
+          window.location.reload();
+        } catch (err) {
+          alert('Snapshot parse collision: Verify the integrity of your selected system JSON template file.');
+        }
+      };
+      filePipeline.readAsText(targetFile);
+    });
+
+    // Initialization Pipelines
+    updateClock();
+    applySmartDimming();
+    updateProgressBar();
+    parseAndUpdateSchedule(true); 
+
+    // Runtime hooks
+    setInterval(updateClock, 1000); 
+    setInterval(applySmartDimming, 60000); 
+    setInterval(() => parseAndUpdateSchedule(false), 20000); 
+  });
+</script>
+</body>
+</html>
