@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Schedule Dashboard</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Schedule">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BPHSCA Student Attendance & Discipline Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -14,56 +11,66 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
+      color-scheme: light;
+      --bg: #fdfbf7;          
+      --bg2: #f5f0e1;         
+      --bg3: #eae2cc;         
+      --border: #c4bca6;      
+      --text: #11291d;        
+      --muted: #57665e;       
+      --accent: #1b4d3e;      
+      
+      --color-att: #1b5e20;
+      --color-late: #b45309;
+      --color-abs: #b71c1c;
+      --color-misd: #4a148c;
+      --color-ns: #475569;
+
       --font-display: 'Instrument Serif', Georgia, serif;
       --font-mono: 'DM Mono', 'Courier New', monospace;
-      --bg: #0e0e0e;
-      --bg2: #161616;
-      --bg3: #1f1f1f;
-      --border: #2a2a2a;
-      --text: #e4e0d8;
-      --muted: #6b6860;
-      --accent: #c9a96e;
+    }
 
-      /* Block palette styles */
-      --free-bg:     #1a1a18; --free-fg:     #c8c5bc;
-      --amber-bg:    #2a1a05; --amber-fg:    #f0c07a;
-      --blue-bg:     #062440; --blue-fg:     #8ec4f0;
-      --teal-bg:     #052820; --teal-fg:     #7ddcb8;
-      --purple-bg:   #1a1830; --purple-fg:   #b8b4f5;
-      --pink-bg:     #2a0d18; --pink-fg:     #f0aec8;
-      --green-bg:    #0d2205; --green-fg:    #a8d47a;
-      --orange-bg:   #2a1205; --orange-fg:   #f0956a;
-      --red-bg:      #2a0505; --red-fg:      #ff7575;
-      --lavender-bg: #22162b; --lavender-fg: #e0aaff;
+    :root.dark-mode {
+      color-scheme: dark;
+      --bg: #0a1410;          
+      --bg2: #11221a;         
+      --bg3: #193327;         
+      --border: #234737;      
+      --text: #f4f0e6;        
+      --muted: #7ca38e;       
+      --accent: #d4af37;      
+
+      --color-att: #4caf50;
+      --color-late: #fbbf24;
+      --color-abs: #f87171;
+      --color-misd: #c084fc;
+      --color-ns: #94a3b8;
     }
 
     body {
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-mono);
-      overscroll-behavior-y: contain;
       min-height: 100vh;
+      padding: 2rem 1.25rem;
+      transition: background 0.2s, color 0.2s;
     }
 
     .wrap {
-      max-width: 860px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.25rem;
-      padding-top: calc(2rem + env(safe-area-inset-top));
-      padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+      position: relative;
     }
 
-    /* Header styling */
     .header {
-      margin-bottom: 2.5rem;
+      margin-bottom: 1.5rem;
       border-bottom: 0.5px solid var(--border);
       padding-bottom: 1.25rem;
     }
     .header-title {
       font-family: var(--font-display);
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-size: 2.6rem;
       color: var(--text);
-      letter-spacing: -0.01em;
       line-height: 1.1;
     }
     .header-title em {
@@ -74,2344 +81,1759 @@
       font-size: 11px;
       color: var(--muted);
       margin-top: 6px;
-      letter-spacing: 0.04em;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    /* Habits setup */
-    .habit-container {
+    .toolbar-container {
+      position: absolute;
+      top: 0;
+      right: 0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 14px;
-      align-items: center;
+      gap: 6px;
+      z-index: 1010;
     }
-    .habit-group {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .habit-label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-right: 2px;
-    }
-    .habit-pips-wrap {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .habit-pip {
-      width: 8px;
-      height: 8px;
-      border: 0.5px solid var(--muted);
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .habit-pip.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 50%, transparent);
-    }
-    .habit-ctrl-btn {
-      background: transparent;
+    .tool-btn {
+      background: var(--bg2);
       border: 0.5px solid var(--border);
-      color: var(--muted);
-      width: 14px;
-      height: 14px;
-      font-size: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .habit-ctrl-btn:hover {
-      border-color: var(--accent);
       color: var(--text);
-    }
-    .add-habit-btn {
-      background: transparent;
-      border: 0.5px dashed var(--border);
-      color: var(--muted);
       font-family: var(--font-mono);
-      font-size: 9px;
-      padding: 2px 6px;
+      font-size: 11px;
+      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      text-transform: uppercase;
-    }
-    .add-habit-btn:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-
-    /* Refactored purely color based schedule legend */
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 14px;
-      margin-bottom: 2rem;
-    }
-    .leg {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
+      user-select: none;
     }
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .tool-btn:hover {
+      background: var(--bg3);
+      border-color: var(--muted);
     }
 
-    /* Layout headers */
-    .section-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      gap: 12px;
-    }
-    .menu-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin: 1.5rem 0 0.5rem;
-    }
     .section-label {
       font-size: 10px;
-      font-weight: 500;
       color: var(--muted);
       letter-spacing: 0.1em;
       text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
     }
 
-    /* Selectors layout setup */
-    .cat-selector-row {
+    .week-selector-wrapper {
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 1.5rem;
       flex-wrap: wrap;
     }
-    .cat-btn {
+    .week-btn-container {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      align-items: center;
+    }
+    .week-btn {
       background: var(--bg2);
       border: 0.5px solid var(--border);
       color: var(--muted);
       font-family: var(--font-mono);
-      font-size: 10px;
-      padding: 4px 10px;
+      font-size: 11px;
+      padding: 8px 14px;
       border-radius: 4px;
       cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      white-space: nowrap;
     }
-    .cat-btn:hover {
-      border-color: var(--accent);
+    .week-btn:hover {
+      border-color: var(--muted);
       color: var(--text);
     }
-    .cat-btn.active {
+    .week-btn.active {
+      background: var(--bg3);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: bold;
+    }
+    
+    .totals-toggle-btn {
+      background: rgba(27, 77, 62, 0.05);
+      border: 0.5px solid var(--accent);
+      color: var(--accent);
+    }
+    .totals-toggle-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .week-control-ops {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .ctrl-w-btn {
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-weight: bold;
+      padding: 8px 14px;
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ctrl-w-btn:hover {
       background: var(--accent);
       color: var(--bg);
       border-color: var(--accent);
-      font-weight: 500;
-    }
-    .cat-btn .del-cat {
-      font-size: 9px;
-      opacity: 0.6;
-      cursor: pointer;
-      padding: 2px;
-    }
-    .cat-btn .del-cat:hover {
-      opacity: 1;
-      color: #ff5555;
-    }
-    
-    .hd-toggle-label {
-      font-size: 9.5px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      user-select: none;
-      transition: color 0.2s ease;
-    }
-    .hd-toggle-label input {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 11px;
-      height: 11px;
-      border: 0.5px solid var(--muted);
-      border-radius: 2px;
-      background: var(--bg);
-      cursor: pointer;
-      position: relative;
-    }
-    .hd-toggle-label input:checked {
-      background: var(--accent);
-      border-color: var(--accent);
     }
 
-    .engine-controls-right {
+    .student-admin-panel {
       display: flex;
-      align-items: center;
       gap: 8px;
-    }
-    .reset-btn {
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.2s ease;
-    }
-    .reset-btn:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-    .edit-mode-btn {
-      background: transparent;
-      border: 0.5px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 9.5px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .edit-mode-btn.active {
-      border-color: #f0c07a;
-      color: #f0c07a;
-      background: rgba(240, 192, 122, 0.05);
-    }
-
-    /* PalFish Track layout */
-    .palfish-ledger {
+      margin-bottom: 1.5rem;
       background: var(--bg2);
       border: 0.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin: 1.5rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .ledger-row {
-      display: flex;
-      justify-content: space-between;
+      padding: 10px;
+      border-radius: 6px;
       align-items: center;
+      max-width: 480px;
     }
-    .ledger-counter {
+    .input-placeholder-container {
+      position: relative;
+      flex: 1;
       display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
     }
-    .ledger-btn {
-      background: var(--bg3);
+    #newStudentInput {
+      width: 100%;
+      background: var(--bg);
       border: 0.5px solid var(--border);
       color: var(--text);
       font-family: var(--font-mono);
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 11px;
-      user-select: none;
-    }
-    .ledger-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    #pf-count {
-      font-weight: 500;
-      font-size: 13px;
-      min-width: 18px;
-      text-align: center;
-    }
-    .ledger-earnings {
-      font-size: 11.5px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-    }
-
-    /* Progress meters */
-    .progress-container {
-      width: 100%;
-      height: 2px;
-      background: var(--bg2);
-      border-radius: 1px;
-      margin-bottom: 1.25rem;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .divider {
-      height: 0.5px;
-      background: var(--border);
-      margin: 1.75rem 0;
-    }
-
-    [data-section] {
-      transition: opacity 0.4s ease, filter 0.4s ease;
-    }
-    [data-section].dimmed {
-      opacity: 0.25;
-      filter: grayscale(30%);
-    }
-    [data-section].dimmed:hover {
-      opacity: 1;
-      filter: none;
-    }
-
-    /* Timeline architecture */
-    .timeline {
-      display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 0;
-    }
-    .tl-time {
-      font-size: 10px;
-      color: var(--muted);
-      padding: 10px 12px 0 0;
-      text-align: right;
-      line-height: 1.4;
-      letter-spacing: 0.02em;
-    }
-    .tl-block-container {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      width: 100%;
-    }
-    .tl-block {
-      flex-grow: 1;
-      border-radius: 5px;
-      padding: 9px 12px;
-      font-size: 11.5px;
-      font-weight: 400;
-      margin-bottom: 4px;
-      line-height: 1.4;
-      letter-spacing: 0.01em;
-      border-left: 2px solid transparent;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    .tl-block .sub {
-      font-size: 10px;
-      opacity: 0.55;
-      font-weight: 300;
-      margin-top: 2px;
-      display: block;
-    }
-
-    /* Refactored clean color classes mapping */
-    .t-free     { background: var(--free-bg);     color: var(--free-fg);     border-left-color: #444440; }
-    .t-amber    { background: var(--amber-bg);    color: var(--amber-fg);    border-left-color: #c07830; }
-    .t-blue     { background: var(--blue-bg);     color: var(--blue-fg);     border-left-color: #2a7ec0; }
-    .t-teal     { background: var(--teal-bg);     color: var(--teal-fg);     border-left-color: #1a9060; }
-    .t-purple   { background: var(--purple-bg);   color: var(--purple-fg);   border-left-color: #5855c0; }
-    .t-pink     { background: var(--pink-bg);     color: var(--pink-fg);     border-left-color: #902050; }
-    .t-green    { background: var(--green-bg);    color: var(--green-fg);    border-left-color: #2a6010; }
-    .t-orange   { background: var(--orange-bg);   color: var(--orange-fg);   border-left-color: #c05520; }
-    .t-red      { background: var(--red-bg);      color: var(--red-fg);      border-left-color: #aa2020; }
-    .t-lavender { background: var(--lavender-bg); color: var(--lavender-fg); border-left-color: #be95c4; }
-
-    .tl-inline-ctrls {
-      display: none;
-      gap: 4px;
-      align-items: center;
-      margin-top: 4px;
-    }
-    body.edit-mode-active .tl-inline-ctrls {
-      display: flex;
-    }
-    .inline-action-btn {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 9px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .inline-action-btn:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-    .inline-action-btn.del-btn:hover {
-      border-color: #ff5555;
-      color: #ff5555;
-    }
-
-    .tl-block.live-current {
-      position: relative;
-      z-index: 5;
-      border-left-width: 4px !important;
-      animation: live-pulse 3s infinite ease-in-out;
-    }
-    @keyframes live-pulse {
-      0% { box-shadow: 0 0 8px color-mix(in srgb, currentColor 15%, transparent), inset 0 0 0 0.5px color-mix(in srgb, currentColor 10%, transparent); }
-      50% { box-shadow: 0 0 22px color-mix(in srgb, currentColor 45%, transparent), inset 0 0 0 1px color-mix(in srgb, currentColor 30%, transparent); transform: translateY(-0.5px); }
-      100% { box-shadow: 0 0 8px color-mix(in srgb, currentColor 15%, transparent), inset 0 0 0 0.5px color-mix(in srgb, currentColor 10%, transparent); }
-    }
-
-    /* Grid architecture */
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 8px;
-    }
-    .menu-card {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      position: relative;
-    }
-    .menu-card-title {
-      font-size: 9.5px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      padding-bottom: 6px;
-      border-bottom: 0.5px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .menu-item-group {
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-    .menu-item {
-      font-size: 11.5px;
-      padding: 6px 0;
-      line-height: 1.45;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .menu-item input[type="checkbox"] {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border: 0.5px solid var(--muted);
-      border-radius: 2px;
-      background: var(--bg);
-      margin-top: 2px;
-      flex-shrink: 0;
-      cursor: pointer;
-      position: relative;
-    }
-    .menu-item input[type="checkbox"]:checked {
-      background: var(--bg3);
-      border-color: var(--accent);
-    }
-    .menu-item input[type="checkbox"]:checked::after {
-      content: '';
-      position: absolute;
-      left: 3.5px;
-      top: 1px;
-      width: 3px;
-      height: 6px;
-      border: solid var(--accent);
-      border-width: 0 1px 1px 0;
-      transform: rotate(45deg);
-    }
-    .menu-item .label-text {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      width: 100%;
-    }
-    .menu-item .hint { font-size: 9.5px; opacity: 0.45; font-weight: 300; }
-    .menu-item.checked .label-text { opacity: 0.25; text-decoration: line-through; text-decoration-color: var(--muted); }
-    .menu-item.checked input[type="checkbox"] { opacity: 0.4; }
-
-    .sub-selector {
-      display: none;
-      gap: 4px;
-      padding-left: 22px;
-      margin-bottom: 8px;
-      margin-top: -2px;
-      flex-wrap: wrap;
-    }
-    .pill {
-      font-size: 9.5px;
-      padding: 2px 6px;
-      background: var(--bg);
-      border: 0.5px solid var(--border);
+      padding: 6px 10px;
       border-radius: 4px;
-      color: var(--muted);
-      cursor: pointer;
-      user-select: none;
-    }
-    .pill.active { background: var(--teal-bg); color: var(--teal-fg); border-color: var(--teal-fg); }
-
-    /* Expanded color palette tokens */
-    .c-amber    { color: #f0c07a; }
-    .c-blue     { color: #8ec4f0; }
-    .c-teal     { color: #7ddcb8; }
-    .c-purple   { color: #b8b4f5; }
-    .c-pink     { color: #f0aec8; }
-    .c-green    { color: #a8d47a; }
-    .c-orange   { color: #f0956a; }
-    .c-red      { color: #ff7575; }
-    .c-lavender { color: #e0aaff; }
-
-    .last-completed {
-      font-size: 8.5px;
-      color: var(--accent);
-      margin-top: 2px;
-      opacity: 0.8;
-      display: none;
-    }
-    .menu-item.checked .last-completed { display: block; }
-
-    .menu-edit-tools {
-      display: none;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    body.edit-mode-active .menu-edit-tools { display: flex; }
-    
-    .edit-item-btn, .del-item-btn {
-      font-size: 9px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--muted);
-      margin-left: auto;
-      padding: 2px;
-      display: none;
-    }
-    body.edit-mode-active .edit-item-btn, 
-    body.edit-mode-active .del-item-btn { display: inline-block; }
-    .edit-item-btn:hover { color: var(--accent); }
-    .del-item-btn:hover { color: #ff5555; }
-
-    .sleep-note {
-      margin-top: 1.25rem;
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 11px;
-      color: var(--muted);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.6;
-    }
-    .sleep-note .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-
-    .backup-section { margin-top: 0.5rem; }
-    .backup-buttons { display: flex; gap: 10px; }
-
-    /* Modal Architecture */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.25rem;
-    }
-    .modal-card {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      width: 100%;
-      max-width: 460px;
-      padding: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-title {
-      font-family: var(--font-display);
-      font-size: 1.4rem;
-      color: var(--text);
-      font-style: italic;
-      margin-bottom: 1rem;
-      border-bottom: 0.5px solid var(--border);
-      padding-bottom: 0.5rem;
-    }
-    .modal-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 1rem;
-    }
-    .modal-field label {
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .modal-field input[type="text"], .modal-field select, .modal-field input[type="time"] {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 12px;
-      padding: 8px;
-      width: 100%;
-    }
-    .modal-field input[type="text"]:focus, .modal-field select:focus, .modal-field input[type="time"]:focus {
-      border-color: var(--accent);
       outline: none;
     }
-    .modal-row-split {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 1.5rem;
-    }
-    .toggle-opt-container {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 1rem;
-    }
-    .toggle-opt-label {
-      font-size: 11px;
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .toggle-opt-label input {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      border: 0.5px solid var(--border);
-      border-radius: 50%;
-      background: var(--bg);
-    }
-    .toggle-opt-label input:checked {
-      background: var(--accent);
+    #newStudentInput:focus {
       border-color: var(--accent);
     }
-
-    #next-up-dock {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(14, 14, 14, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 0.5px solid var(--border);
-      padding: 11px 1.25rem;
-      padding-bottom: calc(11px + env(safe-area-inset-bottom));
-      z-index: 100;
-      display: flex;
-      justify-content: center;
-    }
-    .next-dock-inner {
-      max-width: 860px;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .fading-placeholder-text {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
       font-size: 11px;
-      letter-spacing: 0.02em;
+      pointer-events: none;
+      transition: opacity 0.4s ease-in-out;
+      opacity: 1;
+      white-space: nowrap;
     }
-    .next-dock-meta {
+    #newStudentInput:focus ~ .fading-placeholder-text,
+    #newStudentInput:not(:placeholder-shown) ~ .fading-placeholder-text {
+      opacity: 0 !important;
+    }
+
+    #stickySentinel {
+      height: 0px;
+      margin: 0;
+      padding: 0;
+    }
+    .controls-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      padding: 12px;
+      border-radius: 6px;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .controls-toolbar.is-sticky {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-5px);
+      width: calc(100% - 2.5rem);
+      max-width: 1200px;
+      z-index: 1000;
+      background: var(--bg2);
+      border: 1px solid var(--accent);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.16);
+      border-radius: 8px;
+      opacity: 0;
+      animation: stickyPopInAnim 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes stickyPopInAnim {
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    .search-box-wrap {
+      flex: 1;
+      min-width: 240px;
+    }
+    .search-box-wrap input {
+      width: 100%;
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      outline: none;
+    }
+    .search-box-wrap input:focus {
+      border-color: var(--accent);
+    }
+    .sort-box-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      padding-right: 12px;
+      font-size: 11px;
     }
-    .next-dock-tag {
+    .sort-select {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 7px 10px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .metrics-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 8px;
+      margin-bottom: 1.75rem;
+    }
+    .metric-card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 4px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .metric-card.student-card {
+      border-color: var(--accent);
+      background: rgba(27, 77, 62, 0.03);
+    }
+    .metric-title {
       font-size: 9px;
       color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .metrics-values {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--text);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .metric-val {
+      display: inline-flex;
+      align-items: center;
+    }
+    .metric-val .lbl {
+      font-size: 8px;
+      color: var(--muted);
+      font-weight: normal;
+      text-transform: uppercase;
+      margin-left: 3px;
+    }
+    .metric-val.abs-count { color: var(--color-abs); }
+    .metric-val.late-count { color: var(--color-late); }
+
+    .table-container {
+      width: 100%;
       border: 0.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg2);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      min-width: 1000px;
+    }
+
+    th, td {
+      border: 0.5px solid var(--border);
+      padding: 6px 8px;
+      vertical-align: middle;
+      transition: background-color 0.28s ease, opacity 0.28s ease;
+    }
+
+    th {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 10px;
+      background: var(--bg);
+      position: relative;
+      padding: 10px;
+    }
+
+    td.ns-darkened-col {
+      background-color: rgba(15, 23, 42, 0.12) !important;
+      opacity: 0.45;
+    }
+    .dark-mode td.ns-darkened-col {
+      background-color: rgba(0, 0, 0, 0.55) !important;
+      opacity: 0.35;
+    }
+    th.ns-darkened-header {
+      background-color: rgba(15, 23, 42, 0.2) !important;
+    }
+
+    .day-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .day-controls {
+      display: flex;
+      gap: 4px;
+    }
+    .day-toggle {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+    .day-toggle:hover {
+      color: var(--text);
+      background: var(--bg3);
+    }
+    .day-toggle-att { color: var(--color-att); }
+    .day-toggle-late { color: var(--color-late); }
+    .day-toggle-abs { color: var(--color-abs); }
+    .day-toggle-ns { 
+      color: var(--color-ns); 
+      border: 0.5px solid var(--color-ns);
+      font-weight: bold;
+    }
+    .day-toggle-ns.active-ns {
+      background: var(--color-ns);
+      color: #ffffff;
+    }
+
+    .student-name-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 185px;
+      padding: 10px 8px;
+    }
+    .student-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0.2;
+      transition: opacity 0.2s;
+    }
+    .student-name-cell:hover .student-actions {
+      opacity: 1;
+    }
+    .action-btn {
+      background: none; border: none; color: var(--muted);
+      cursor: pointer; font-size: 11px; padding: 2px 4px;
+    }
+    .action-btn:hover { color: var(--accent); }
+    .action-btn.del-btn:hover { color: var(--color-abs); }
+
+    .cell-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+    }
+    .att-group {
+      display: flex;
+      gap: 1px;
+      background: rgba(0,0,0,0.05);
+      padding: 2px;
+      border-radius: 4px;
+      border: 0.5px solid var(--border);
+      width: 100%;
+    }
+    .dark-mode .att-group { background: rgba(0,0,0,0.2); }
+    
+    .att-btn {
+      flex: 1; background: none; border: none; color: var(--muted);
+      font-family: var(--font-mono); font-size: 9.5px; font-weight: 500;
+      padding: 3px 2px; cursor: pointer; border-radius: 2px;
+      user-select: none; text-transform: uppercase;
+    }
+    .att-btn:hover { color: var(--text); background: var(--bg3); }
+    .att-btn.active.att { background: var(--color-att); color: #ffffff; font-weight: bold; }
+    .att-btn.active.late { background: var(--color-late); color: #ffffff; font-weight: bold; }
+    .att-btn.active.abs { background: var(--color-abs); color: #ffffff; font-weight: bold; }
+
+    .tag-container-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 100%;
+      align-items: flex-start;
+    }
+    .misd-container, .reason-container {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      width: 100%;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    
+    .add-tag-trigger {
+      background: none;
+      border: 0.5px dashed var(--muted);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 8px;
       padding: 1px 4px;
       border-radius: 3px;
-      letter-spacing: 0.05em;
-      flex-shrink: 0;
+      cursor: pointer;
+      white-space: nowrap;
     }
-    #next-dock-title { color: var(--text); overflow: hidden; text-overflow: ellipsis; }
-    #next-dock-timer { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 500; flex-shrink: 0; }
+    .add-tag-trigger:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .misd-tag {
+      background: rgba(74, 20, 140, 0.06);
+      border: 0.5px solid var(--color-misd);
+      color: var(--color-misd);
+      font-size: 8px; padding: 0px 4px; border-radius: 2px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 2px;
+    }
+    .dark-mode .misd-tag { background: rgba(192, 132, 252, 0.15); }
+    .misd-tag:hover, .reason-tag:hover {
+      background: var(--color-abs); border-color: var(--color-abs);
+      color: #ffffff; text-decoration: line-through;
+    }
 
-    @media (max-width: 600px) {
-      .wrap { padding: 1.25rem 1rem; padding-top: calc(1.25rem + env(safe-area-inset-top)); }
-      .menu-grid { grid-template-columns: 1fr; }
-      .timeline { grid-template-columns: 90px 1fr; }
-      .tl-time { font-size: 9.5px; padding-right: 7px; }
-      .tl-block { font-size: 11px; }
-      .menu-header-row { margin-top: 1.5rem; }
-      .section-label-row { flex-direction: column; align-items: flex-start; }
+    .reason-tag {
+      background: rgba(180, 83, 9, 0.06);
+      border: 0.5px solid var(--color-late);
+      color: var(--color-late);
+      font-size: 8px; padding: 0px 4px; border-radius: 2px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 2px;
+    }
+    .dark-mode .reason-tag { background: rgba(251, 191, 36, 0.15); }
+
+    .system-glossary {
+      margin-top: 2rem; border-top: 0.5px solid var(--border); padding-top: 1.5rem;
+    }
+    .glossary-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px; margin-top: 0.75rem;
+    }
+    .glossary-item {
+      background: var(--bg2); border: 0.5px solid var(--border);
+      padding: 10px; border-radius: 4px; font-size: 11px; line-height: 1.4;
+    }
+    .glossary-term { font-weight: bold; color: var(--text); display: inline-block; margin-right: 4px; }
+    .glossary-term.g-att { color: var(--color-att); }
+    .glossary-term.g-late { color: var(--color-late); }
+    .glossary-term.g-abs { color: var(--color-abs); }
+    .glossary-term.g-misd { color: var(--color-misd); }
+    .glossary-term.g-ns { color: var(--color-ns); }
+
+    .data-operations-panel {
+      margin-top: 1.5rem; border-top: 0.5px solid var(--border);
+      padding-top: 1.5rem; margin-bottom: 3rem;
+    }
+    .ops-box {
+      background: var(--bg2); border: 0.5px solid var(--border); border-radius: 4px;
+      padding: 14px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    }
+    .ops-desc { font-size: 11px; color: var(--muted); flex: 1; min-width: 280px; line-height: 1.4; }
+    .ops-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ops-btn {
+      background: var(--bg3); border: 0.5px solid var(--border); color: var(--text);
+      font-family: var(--font-mono); font-size: 11px; padding: 7px 12px;
+      border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .ops-btn:hover { border-color: var(--muted); background: var(--bg2); }
+    .ops-btn-export { border-color: var(--accent); color: var(--text); background: rgba(27, 77, 62, 0.04); }
+    #hiddenImportEl { display: none; }
+
+    #totalsPageContainer { display: none; }
+    .totals-table th { text-align: left; padding: 12px; }
+    .totals-table td { padding: 10px 12px; }
+    .text-center { text-align: center !important; }
+    
+    .stat-accent-abs { color: var(--color-abs); font-weight: bold; }
+    .stat-accent-late { color: var(--color-late); font-weight: bold; }
+    .stat-accent-misd { color: var(--color-misd); font-weight: bold; }
+    .stat-accent-ns { color: var(--color-ns); font-weight: bold; }
+
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4); z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-content {
+      background: var(--bg2); border: 0.5px solid var(--border); padding: 16px;
+      border-radius: 8px; width: 100%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; border-bottom: 0.5px solid var(--border); padding-bottom: 6px;
+    }
+    .modal-header h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: normal; }
+    .modal-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+    .preset-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    
+    .preset-btn {
+      background: var(--bg3); border: 0.5px solid var(--border); color: var(--text);
+      font-family: var(--font-mono); font-size: 11px; padding: 6px 8px; border-radius: 4px;
+      cursor: pointer; text-align: left;
+    }
+    .preset-btn:hover { border-color: var(--accent); background: rgba(27, 77, 62, 0.05); }
+    .custom-tag-input {
+      flex: 1; background: var(--bg); border: 0.5px solid var(--border);
+      color: var(--text); font-family: var(--font-mono); font-size: 11px;
+      padding: 6px 10px; border-radius: 4px; outline: none;
     }
   </style>
 </head>
 <body>
+
 <div class="wrap">
+  <div class="toolbar-container">
+    <button type="button" class="tool-btn" id="langToggleBtn">🌐 Wika: EN</button>
+    <button type="button" class="tool-btn" id="themeToggleBtn">🌙 Dark Mode</button>
+  </div>
 
   <div class="header">
-    <div class="header-title">Weekly <em>Schedule</em></div>
-    <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
-    
-    <div class="habit-container" id="habit-container-matrix">
-      <div class="habit-group" data-habit="skincare" data-fixed="true">
-        <span class="habit-label">Skincare</span>
-        <div class="habit-pips-wrap">
-          <span class="habit-pip" data-index="0" title="Morning"></span>
-          <span class="habit-pip" data-index="1" title="Night"></span>
-        </div>
-      </div>
-      <div class="habit-group" data-habit="water" data-fixed="true">
-        <span class="habit-label">Water</span>
-        <div class="habit-pips-wrap">
-          <span class="habit-pip" data-index="0"></span>
-          <span class="habit-pip" data-index="1"></span>
-          <span class="habit-pip" data-index="2"></span>
-          <span class="habit-pip" data-index="3"></span>
-        </div>
-      </div>
+    <div class="header-title" id="mainHeaderTitle">BPHSCA <em>Student Attendance & Discipline</em></div>
+    <div class="header-sub" id="mainHeaderSub">Batangas Province High School for Culture and Arts · G12 Kumintang · SY 2026-2027</div>
+  </div>
+
+  <div class="section-label" id="lblSelectWeek">Select Active Tracking Week</div>
+  <div class="week-selector-wrapper">
+    <div class="week-btn-container" id="weekButtonsDynamicGroup"></div>
+    <div class="week-control-ops">
+      <button type="button" class="ctrl-w-btn" onclick="reduceTermWeeksSeq()" title="Remove Last Week">[-]</button>
+      <button type="button" class="ctrl-w-btn" onclick="addTermWeekSeq()" title="Add Tracking Week">[+]</button>
     </div>
   </div>
 
-  <div class="legend">
-    <span class="leg"><span class="dot" style="background:#444440;"></span>Free Time</span>
-    <span class="leg"><span class="dot" style="background:#c07830;"></span>Amber</span>
-    <span class="leg"><span class="dot" style="background:#2a7ec0;"></span>Blue</span>
-    <span class="leg"><span class="dot" style="background:#1a9060;"></span>Teal</span>
-    <span class="leg"><span class="dot" style="background:#5855c0;"></span>Purple</span>
-    <span class="leg"><span class="dot" style="background:#902050;"></span>Pink</span>
-    <span class="leg"><span class="dot" style="background:#2a6010;"></span>Green</span>
-    <span class="leg"><span class="dot" style="background:#c05520;"></span>Orange</span>
-    <span class="leg"><span class="dot" style="background:#aa2020;"></span>Red</span>
-    <span class="leg"><span class="dot" style="background:#be95c4;"></span>Lavender</span>
-  </div>
-
-  <div class="schedule-section" data-section="weekday">
-    <div class="section-label-row">
-      <div class="cat-selector-row" id="category-track-anchor">
-        <button class="cat-btn active" data-cat="default">Default</button>
-        <button class="cat-btn" data-cat="school">School Mode</button>
-        <button class="cat-btn" data-cat="weekend">Weekend</button>
-      </div>
-      
-      <div class="engine-controls-right">
-        <button class="add-habit-btn" id="edit-wake-time-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">Edit Wake Time</button>
-        <button class="add-habit-btn" id="custom-add-cat-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">+ Add Schedule</button>
-        <label class="hd-toggle-label" id="half-day-toggle-wrapper" style="display: none; margin-right: 10px;">
-          <input type="checkbox" id="half-day-toggle"> Half-Day
-        </label>
-        <button id="edit-mode-toggle" class="edit-mode-btn">Edit Mode</button>
-      </div>
+  <div class="section-label" id="lblManageClass">Manage Class Directory</div>
+  <div class="student-admin-panel">
+    <div class="input-placeholder-container">
+      <input type="text" id="newStudentInput" placeholder=" ">
+      <span id="fadingPlaceholder" class="fading-placeholder-text">Type name...</span>
     </div>
-    
-    <div class="timeline" id="master-timeline-track"></div>
+    <button type="button" class="ops-btn" id="addStudentBtn">+ Add Student</button>
   </div>
 
-  <div class="sleep-note">
-    <span class="icon">🌙</span>
-    <span>Weekday base sleep: ~5.5 hrs (12:00 AM to 5:30 AM). Friday sleep is later · Clara night. Autopiloting weekend routines when calendar hits Saturday.</span>
-  </div>
+  <div id="stickySentinel"></div>
 
-  <div class="divider"></div>
-
-  <div class="palfish-ledger">
-    <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
-    <div class="ledger-row">
-      <div class="ledger-counter">
-        <button class="ledger-btn" id="pf-minus">−</button>
-        <span id="pf-count">0</span> classes completed
-        <button class="ledger-btn" id="pf-plus">+</button>
-      </div>
-      <div class="ledger-earnings">
-        Est. Base: <span id="pf-earnings" style="color: var(--accent); font-weight: 500;">0</span> RMB
-      </div>
+  <div class="controls-toolbar" id="toolbarControlEl">
+    <div class="search-box-wrap">
+      <input type="text" id="dashboardSearchInput" oninput="handleSearchFiltering(this.value)" placeholder="🔍 Search student by name...">
     </div>
-  </div>
-
-  <div class="menu-header-row">
-    <div class="section-label">As-needed menu · pick from any free window</div>
-    <button id="reset-week-btn" class="reset-btn">Reset Week</button>
-  </div>
-  
-  <div class="progress-container">
-    <div id="progress-bar-fill" class="progress-bar"></div>
-  </div>
-
-  <div class="menu-grid" id="dynamic-menu-grid"></div>
-
-  <div style="margin-top:1rem; text-align:right; margin-bottom: 1.5rem;">
-    <button class="add-habit-btn" id="btn-add-as-needed-category" style="display:none; padding:4px 10px;">+ Add Menu Category</button>
-  </div>
-
-  <div class="divider"></div>
-  
-  <div class="menu-header-row" style="margin-top: 0.5rem;">
-    <div class="section-label">Hobbies & Media Menu</div>
-  </div>
-  
-  <div class="progress-container">
-    <div id="hobbies-progress-bar-fill" class="progress-bar" style="background: var(--accent);"></div>
-  </div>
-
-  <div class="menu-grid" id="dynamic-hobbies-grid"></div>
-
-  <div style="margin-top:1rem; text-align:right;">
-    <button class="add-habit-btn" id="btn-add-hobbies-category" style="display:none; padding:4px 10px;">+ Add Hobby Category</button>
-  </div>
-
-  <div class="divider"></div>
-  <div class="backup-section">
-    <div class="section-label" style="margin-bottom: 0.6rem;">Data Management</div>
-    <div class="backup-buttons">
-      <button id="export-json-btn" class="reset-btn">Export Backup (JSON)</button>
-      <button id="import-json-btn" class="reset-btn">Import Backup (JSON)</button>
-      <input type="file" id="import-json-file" accept=".json" style="display: none;">
-    </div>
-  </div>
-
-</div>
-
-<div id="next-up-dock">
-  <div class="next-dock-inner">
-    <div class="next-dock-meta">
-      <span class="next-dock-tag">NEXT UP</span>
-      <span id="next-dock-title">Checking upcoming routine...</span>
-    </div>
-    <span id="next-dock-timer">--</span>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-add-schedule">
-  <div class="modal-card">
-    <div class="modal-title">Create Custom Schedule</div>
-    <div class="modal-field">
-      <label>Schedule Name</label>
-      <input type="text" id="new-sched-name" placeholder="e.g., Vacation Track, Seminar Week">
-    </div>
-    <div class="modal-field">
-      <label>Earliest Wake Up / Start Time</label>
-      <input type="time" id="new-sched-start" value="06:00">
-      <span style="font-size:9px; color:var(--muted); margin-top:2px;">Limit range constraint window: 12:00 AM to 3:00 PM</span>
-    </div>
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-cancel-sched">Cancel</button>
-      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-save-sched">Create Track</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-block-editor">
-  <div class="modal-card">
-    <div class="modal-title" id="block-modal-header-title">Configure Block Details</div>
-    
-    <div class="modal-field">
-      <label>Task Nomenclature / Title</label>
-      <input type="text" id="block-input-title" placeholder="e.g., Deep Work Focus Window">
-    </div>
-    
-    <div class="modal-field">
-      <label>Subtitle / Context Hint (Optional)</label>
-      <input type="text" id="block-input-sub" placeholder="e.g., Read technical journals">
-    </div>
-
-    <div class="modal-field">
-      <label>Block Classification Style Color</label>
-      <select id="block-input-color">
-        <option value="t-free">Free Time</option>
-        <option value="t-amber">Amber</option>
-        <option value="t-blue">Blue</option>
-        <option value="t-teal">Teal</option>
-        <option value="t-purple">Purple</option>
-        <option value="t-pink">Pink</option>
-        <option value="t-green">Green</option>
-        <option value="t-orange">Orange</option>
-        <option value="t-red">Red</option>
-        <option value="t-lavender">Lavender</option>
+    <div class="sort-box-wrap">
+      <span id="lblSortBy">Sort By:</span>
+      <select id="dashboardSortSelect" class="sort-select" onchange="handleSortingChange(this.value)">
+        <option value="alphabetical" id="optAlpha">Alphabetical (A-Z)</option>
+        <option value="most_att" id="optMostAtt">Most Attended</option>
+        <option value="most_late" id="optMostLate">Most Late</option>
+        <option value="most_abs" id="optMostAbs">Most Absent</option>
+        <option value="most_misd" id="optMostMisd">Most Misdemeanors</option>
       </select>
     </div>
+  </div>
 
-    <div class="modal-field" id="smart-gap-picker-field">
-      <label>Smart Gap Recognition Tracker (Target Range Selector)</label>
-      <select id="block-smart-gap-select"></select>
-    </div>
-
-    <div style="border-top: 0.5px solid var(--border); margin: 12px 0; padding-top: 10px;">
-      <div class="toggle-opt-container">
-        <label class="toggle-opt-label">
-          <input type="radio" name="allocation-method" value="duration" checked> Duration Offset Entry
-        </label>
-        <label class="toggle-opt-label">
-          <input type="radio" name="allocation-method" value="explicit"> Fixed Timestamps Input
-        </label>
+  <div class="section-label" id="panelContextLabel">Attendance Metrics Dashboard (Active Week)</div>
+  <div class="metrics-panel">
+    <div class="metric-card student-card">
+      <span class="metric-title" id="mLabelAtt">Total Attended</span>
+      <div class="metrics-values">
+        <span class="metric-val" id="stat-total-att" style="color: var(--color-att);">0<span class="lbl">Pres</span></span>
       </div>
     </div>
-
-    <div id="allocation-wrap-duration" class="modal-field">
-      <label>Duration Length Options</label>
-      <select id="block-input-duration">
-        <option value="10">10 Minutes</option>
-        <option value="15">15 Minutes</option>
-        <option value="30" selected>30 Minutes</option>
-        <option value="45">45 Minutes</option>
-        <option value="60">1 Hour</option>
-        <option value="90">1.5 Hours</option>
-        <option value="120">2 Hours</option>
-        <option value="180">3 Hours</option>
-        <option value="240">4 Hours</option>
-      </select>
-    </div>
-
-    <div id="allocation-wrap-explicit" class="modal-field modal-row-split" style="display:none;">
-      <div>
-        <label>Start Timestamp</label>
-        <input type="time" id="block-input-start">
-      </div>
-      <div>
-        <label>End Timestamp</label>
-        <input type="time" id="block-input-end">
+    <div class="metric-card">
+      <span class="metric-title" id="mLabelLate">Total Late</span>
+      <div class="metrics-values">
+        <span class="metric-val late-count" id="stat-total-late">0<span class="lbl">Late</span></span>
       </div>
     </div>
+    <div class="metric-card">
+      <span class="metric-title" id="mLabelAbs">Total Absent</span>
+      <div class="metrics-values">
+        <span class="metric-val abs-count" id="stat-total-abs">0<span class="lbl">Abs</span></span>
+      </div>
+    </div>
+    <div class="metric-card">
+      <span class="metric-title" id="mLabelMisd">Total Misdemeanors</span>
+      <div class="metrics-values">
+        <span class="metric-val" id="stat-total-misd" style="color: var(--color-misd);">0<span class="lbl">Misd</span></span>
+      </div>
+    </div>
+    <div class="metric-card">
+      <span class="metric-title" id="mLabelExempt">Total Exempt Days</span>
+      <div class="metrics-values">
+        <span class="metric-val" id="stat-total-exempt" style="color: var(--color-ns);">0<span class="lbl">Days</span></span>
+      </div>
+    </div>
+  </div>
 
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-block-cancel">Cancel</button>
-      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-block-save">Commit Block</button>
+  <div id="weeklyGridContainer">
+    <div class="section-label" id="lblWeeklyGrid">Weekly Attendance Grid (Compact Multi-Selector)</div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="text-align: left; width: 210px;" id="thStudentName">Student Name</th>
+            <th id="th-mon">
+              <div class="day-header">
+                <span class="day-title-text" data-day="mon">Monday</span>
+                <div class="day-controls">
+                  <button type="button" class="day-toggle day-toggle-att" onclick="toggleWholeDay('mon', 'attended')" title="Set all to Attended">✓</button>
+                  <button type="button" class="day-toggle day-toggle-late" onclick="toggleWholeDay('mon', 'late')" title="Set all to Late">◷</button>
+                  <button type="button" class="day-toggle day-toggle-abs" onclick="toggleWholeDay('mon', 'absent')" title="Set all to Absent">⦸</button>
+                  <button type="button" class="day-toggle day-toggle-ns" id="header-ns-mon" onclick="toggleNoSchoolDay('mon')" title="Toggle No School Day">NS</button>
+                </div>
+                <div id="day-stats-mon" style="font-size: 9px; margin-top: 5px; font-weight: normal; white-space: nowrap; text-transform: none;"></div>
+              </div>
+            </th>
+            <th id="th-tue">
+              <div class="day-header">
+                <span class="day-title-text" data-day="tue">Tuesday</span>
+                <div class="day-controls">
+                  <button type="button" class="day-toggle day-toggle-att" onclick="toggleWholeDay('tue', 'attended')" title="Set all to Attended">✓</button>
+                  <button type="button" class="day-toggle day-toggle-late" onclick="toggleWholeDay('tue', 'late')" title="Set all to Late">◷</button>
+                  <button type="button" class="day-toggle day-toggle-abs" onclick="toggleWholeDay('tue', 'absent')" title="Set all to Absent">⦸</button>
+                  <button type="button" class="day-toggle day-toggle-ns" id="header-ns-tue" onclick="toggleNoSchoolDay('tue')" title="Toggle No School Day">NS</button>
+                </div>
+                <div id="day-stats-tue" style="font-size: 9px; margin-top: 5px; font-weight: normal; white-space: nowrap; text-transform: none;"></div>
+              </div>
+            </th>
+            <th id="th-wed">
+              <div class="day-header">
+                <span class="day-title-text" data-day="wed">Wednesday</span>
+                <div class="day-controls">
+                  <button type="button" class="day-toggle day-toggle-att" onclick="toggleWholeDay('wed', 'attended')" title="Set all to Attended">✓</button>
+                  <button type="button" class="day-toggle day-toggle-late" onclick="toggleWholeDay('wed', 'late')" title="Set all to Late">◷</button>
+                  <button type="button" class="day-toggle day-toggle-abs" onclick="toggleWholeDay('wed', 'absent')" title="Set all to Absent">⦸</button>
+                  <button type="button" class="day-toggle day-toggle-ns" id="header-ns-wed" onclick="toggleNoSchoolDay('wed')" title="Toggle No School Day">NS</button>
+                </div>
+                <div id="day-stats-wed" style="font-size: 9px; margin-top: 5px; font-weight: normal; white-space: nowrap; text-transform: none;"></div>
+              </div>
+            </th>
+            <th id="th-thu">
+              <div class="day-header">
+                <span class="day-title-text" data-day="thu">Thursday</span>
+                <div class="day-controls">
+                  <button type="button" class="day-toggle day-toggle-att" onclick="toggleWholeDay('thu', 'attended')" title="Set all to Attended">✓</button>
+                  <button type="button" class="day-toggle day-toggle-late" onclick="toggleWholeDay('thu', 'late')" title="Set all to Late">◷</button>
+                  <button type="button" class="day-toggle day-toggle-abs" onclick="toggleWholeDay('thu', 'absent')" title="Set all to Absent">⦸</button>
+                  <button type="button" class="day-toggle day-toggle-ns" id="header-ns-thu" onclick="toggleNoSchoolDay('thu')" title="Toggle No School Day">NS</button>
+                </div>
+                <div id="day-stats-thu" style="font-size: 9px; margin-top: 5px; font-weight: normal; white-space: nowrap; text-transform: none;"></div>
+              </div>
+            </th>
+            <th id="th-fri">
+              <div class="day-header">
+                <span class="day-title-text" data-day="fri">Friday</span>
+                <div class="day-controls">
+                  <button type="button" class="day-toggle day-toggle-att" onclick="toggleWholeDay('fri', 'attended')" title="Set all to Attended">✓</button>
+                  <button type="button" class="day-toggle day-toggle-late" onclick="toggleWholeDay('fri', 'late')" title="Set all to Late">◷</button>
+                  <button type="button" class="day-toggle day-toggle-abs" onclick="toggleWholeDay('fri', 'absent')" title="Set all to Absent">⦸</button>
+                  <button type="button" class="day-toggle day-toggle-ns" id="header-ns-fri" onclick="toggleNoSchoolDay('fri')" title="Toggle No School Day">NS</button>
+                </div>
+                <div id="day-stats-fri" style="font-size: 9px; margin-top: 5px; font-weight: normal; white-space: nowrap; text-transform: none;"></div>
+              </div>
+            </th>
+            <th style="width: 110px;" class="text-center" id="thWeeklyTotals">Weekly Totals</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="totalsPageContainer">
+    <div class="section-label" id="lblCumOverview">Cumulative Term Overview (Weeks 1-11 Aggregate Summary)</div>
+    <div class="table-container">
+      <table class="totals-table">
+        <thead>
+          <tr>
+            <th style="width: 230px;" id="thCumName">Student Name</th>
+            <th class="text-center" id="thCumAtt">Total Attended</th>
+            <th class="text-center" id="thCumLate">Total Late</th>
+            <th class="text-center" id="thCumAbs">Total Absent</th>
+            <th class="text-center" id="thCumMisd">Total Misdemeanors</th>
+            <th class="text-center" id="thCumExempt">Total Exempt Days</th>
+          </tr>
+        </thead>
+        <tbody id="totalsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="system-glossary">
+    <div class="section-label" id="lblGlossary">Interface Status Glossary</div>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </div>
+
+  <div class="data-operations-panel">
+    <div class="section-label" id="lblDataOps">Dashboard Maintenance & Local Storage Operations</div>
+    <div class="ops-box">
+      <div class="ops-desc" id="lblOpsDesc">
+        All entries populate an isolated application state store in your system's browser local cache storage.
+      </div>
+      <div class="ops-actions">
+        <button type="button" class="ops-btn ops-btn-export" onclick="exportToSpreadsheet()">📊 Export Matrix Spreadsheet (CSV)</button>
+        <button type="button" class="ops-btn" onclick="exportDataBackup()" id="btnSaveBackup">⭳ Save Backup Payload</button>
+        <button type="button" class="ops-btn" onclick="triggerImportSelection()" id="btnLoadBackup">⭱ Load Data Backup</button>
+        <input type="file" id="hiddenImportEl" accept=".json" onchange="importDataBackup(event)">
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-delete-strategy">
-  <div class="modal-card">
-    <div class="modal-title">Determine Block Deletion Strategy</div>
-    <p style="font-size:11.5px; color:var(--muted); line-height:1.5; margin-bottom:1.25rem;">
-      How should the schedule timeline adjust to fill the gap left behind by this removed block?
-    </p>
-    <div class="modal-field">
-      <select id="delete-strategy-selection"></select>
+<div id="misdModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitleText">Record Offense</h3>
+      <button type="button" class="modal-close" onclick="closeMisdModal()">&times;</button>
     </div>
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-del-strat-cancel">Cancel</button>
-      <button class="reset-btn" style="border-color:#ff5555; color:#ff5555;" id="btn-del-strat-confirm">Execute Removal</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-add-habit">
-  <div class="modal-card">
-    <div class="modal-title">Add Custom Habit Category</div>
-    <div class="modal-field">
-      <label>Habit Label Name</label>
-      <input type="text" id="habit-input-name" placeholder="e.g., Reading, Workout">
-    </div>
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-habit-cancel">Cancel</button>
-      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-habit-save">Create Habit</button>
+    <div class="modal-body">
+      <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;" id="modalContextText"></p>
+      <div class="preset-label" id="modalPresetLabel">Preset Infractions:</div>
+      <div class="preset-grid">
+        <button type="button" class="preset-btn" onclick="addPresetMisd('Vaping')">🚭 Vaping</button>
+        <button type="button" class="preset-btn" onclick="addPresetMisd('Littering')">🗑️ Littering</button>
+        <button type="button" class="preset-btn" onclick="addPresetMisd('Cutting Class')">🚶 Cutting Class</button>
+        <button type="button" class="preset-btn" onclick="addPresetMisd('Using Phone')">📱 Phone Use</button>
+        <button type="button" class="preset-btn" onclick="addPresetMisd('No Uniform')">👔 No Uniform</button>
+        <button type="button" class="preset-btn" onclick="addPresetMisd('Noise Making')">🗣️ Loud Noise</button>
+      </div>
+      <div style="margin-top: 14px; display: flex; gap: 6px;">
+        <input type="text" id="customMisdInput" class="custom-tag-input" placeholder="Or type custom offense...">
+        <button type="button" class="ops-btn" onclick="addCustomMisd()" id="modalAddBtn">Add</button>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-edit-category">
-  <div class="modal-card">
-    <div class="modal-title" id="cat-modal-title">Add Menu Category</div>
-    <input type="hidden" id="edit-cat-id">
-    <input type="hidden" id="edit-cat-section-context" value="as_needed">
-    <div class="modal-field">
-      <label>Category Name</label>
-      <input type="text" id="edit-cat-name" placeholder="e.g., Garden, Maintenance">
+<div id="reasonModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="rModalTitleText">Log Lateness Reason</h3>
+      <button type="button" class="modal-close" onclick="closeReasonModal()">&times;</button>
     </div>
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-cat-cancel">Cancel</button>
-      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-cat-save">Save</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-edit-task">
-  <div class="modal-card">
-    <div class="modal-title" id="task-modal-title">Edit Task</div>
-    <input type="hidden" id="edit-task-cat-id">
-    <input type="hidden" id="edit-task-id">
-    <input type="hidden" id="edit-task-section-context" value="as_needed">
-    <div class="modal-field">
-      <label>Task Name</label>
-      <input type="text" id="edit-task-name" placeholder="e.g., Clean fridge">
-    </div>
-    <div class="modal-field">
-      <label>Estimated Context Duration / Time Frame</label>
-      <input type="text" id="edit-task-duration" placeholder="e.g., 15~30 mins">
-    </div>
-    <div class="modal-field">
-      <label>Hint (Optional)</label>
-      <input type="text" id="edit-task-hint" placeholder="e.g., Check expiration dates">
-    </div>
-    <div class="modal-field">
-      <label>Color Accent</label>
-      <select id="edit-task-color">
-        <option value="c-amber">Amber</option>
-        <option value="c-blue">Blue</option>
-        <option value="c-teal">Teal</option>
-        <option value="c-purple">Purple</option>
-        <option value="c-pink">Pink</option>
-        <option value="c-green">Green</option>
-        <option value="c-orange">Orange</option>
-        <option value="c-red">Red</option>
-        <option value="c-lavender">Lavender</option>
-      </select>
-    </div>
-    <div class="modal-field">
-      <label>Sub-Selectors / Pills (Comma Separated)</label>
-      <input type="text" id="edit-task-pills" placeholder="e.g., Cotton, Snow, Casper">
-      <span style="font-size:9px; color:var(--muted); margin-top:2px;">Leave blank for none.</span>
-    </div>
-    <div class="modal-actions">
-      <button class="reset-btn" id="btn-task-cancel">Cancel</button>
-      <button class="reset-btn" style="border-color:var(--accent); color:var(--text);" id="btn-task-save">Save Task</button>
+    <div class="modal-body">
+      <p style="font-size: 11px; color: var(--muted); margin-bottom: 12px;" id="rModalContextText"></p>
+      <div class="preset-label" id="rModalPresetLabel">Common Presets:</div>
+      <div class="preset-grid">
+        <button type="button" class="preset-btn" onclick="addPresetReason('Heavy Traffic')">🚗 Traffic</button>
+        <button type="button" class="preset-btn" onclick="addPresetReason('Late Awakening')">⏰ Late Awakening</button>
+        <button type="button" class="preset-btn" onclick="addPresetReason('Bad Weather')">🌧️ Bad Weather</button>
+        <button type="button" class="preset-btn" onclick="addPresetReason('Transport Delay')">🚌 Transit Delay</button>
+        <button type="button" class="preset-btn" onclick="addPresetReason('Family Matter')">🏠 Family Matter</button>
+        <button type="button" class="preset-btn" onclick="addPresetReason('Health Issue')">🤒 Unwell</button>
+      </div>
+      <div style="margin-top: 14px; display: flex; gap: 6px;">
+        <input type="text" id="customReasonInput" class="custom-tag-input" placeholder="Or log custom reason...">
+        <button type="button" class="ops-btn" onclick="addCustomReason()" id="rModalAddBtn">Add</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  const initialClasslist = [
+    "K. Silang", "V. Datinguinoo", "J. Dela Cruz", "A. Martija", "W. Hernandez",
+    "J. Barrameda", "D. Palogme", "J. Javier", "G. Badillo", "J. Balmes",
+    "J. Balina", "J. Brucal", "A. Papa", "J. Coliat", "K. Bisa",
+    "G. Masangcay", "A. Salazar", "J. Macatangay", "A. Masangcay", "M. Libatique"
+  ];
+
+  const placeholderExampleNames = [
+    "K. Silang", "V. Datinguinoo", "J. Dela Cruz", "A. Martija", 
+    "W. Hernandez", "J. Barrameda", "A. Salazar", "J. Macatangay"
+  ];
+  let activePlaceholderNameIndex = 0;
+
+  const i18n = {
+    en: {
+      title: "BPHSCA <em>Student Attendance & Discipline</em>",
+      sub: "Batangas Province High School for Culture and Arts · G12 Kumintang · SY 2026-2027",
+      lblSelectWeek: "Select Active Tracking Week",
+      lblManageClass: "Manage Class Directory",
+      addStudent: "+ Add Student",
+      searchPlaceholder: "🔍 Search student by name...",
+      lblSortBy: "Sort By:",
+      optAlpha: "Alphabetical (A-Z)",
+      optMostAtt: "Most Attended",
+      optMostLate: "Most Late",
+      optMostAbs: "Most Absent",
+      optMostMisd: "Most Misdemeanors",
+      contextWeekly: "Attendance Metrics Dashboard (Active Week)",
+      contextTotals: "Attendance Metrics Dashboard (Absolute Cumulative Totals)",
+      mLabelAtt: "Total Attended",
+      mLabelLate: "Total Late",
+      mLabelAbs: "Total Absent",
+      mLabelMisd: "Total Misdemeanors",
+      mLabelExempt: "Total Exempt Days",
+      lblWeeklyGrid: "Weekly Attendance Grid (Compact Multi-Selector)",
+      thStudentName: "Student Name",
+      thWeeklyTotals: "Weekly Totals",
+      lblCumOverview: "Cumulative Term Overview (Weeks 1-11 Aggregate Summary)",
+      thCumName: "Student Name",
+      thCumAtt: "Total Attended",
+      thCumLate: "Total Late",
+      thCumAbs: "Total Absent",
+      thCumMisd: "Total Misdemeanors",
+      thCumExempt: "Total Exempt Days",
+      lblGlossary: "Interface Status Glossary",
+      lblDataOps: "Dashboard Maintenance & Local Storage Operations",
+      lblOpsDesc: "All entries populate an isolated application state store in your system's browser local cache storage. Export matrix records or system backups.",
+      btnSaveBackup: "⭳ Save Backup Payload",
+      btnLoadBackup: "⭱ Load Data Backup",
+      modalTitleText: "Record Offense",
+      modalPresetLabel: "Preset Infractions:",
+      modalCustomPlaceholder: "Or type a custom offense...",
+      modalAddBtn: "Add",
+      rModalTitleText: "Log Lateness Reason",
+      rModalPresetLabel: "Common Presets:",
+      rModalCustomPlaceholder: "Or log custom reason...",
+      rModalAddBtn: "Add",
+      placeholderPrefix: "Type name (e.g., ",
+      days: { mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday" },
+      glossary: [
+        { term: "Att", class: "g-att", desc: "Attended. Confirms student presence in the classroom for the full daily track." },
+        { term: "Late", class: "g-late", desc: "Tardy Arrival. Flags late entry. Allows recording reasons via internal tag systems." },
+        { term: "Absent", class: "g-abs", desc: "Absent. Flagged absolute full-day absence from the academic schedule." },
+        { term: "Misd", class: "g-misd", desc: "Misdemeanor. Tracks student discipline rules infraction tags. Click tag to delete." },
+        { term: "NS", class: "g-ns", desc: "No School. Suspends schedule for that specific day. Darkens column and acts as an absolute metric exemption." }
+      ]
+    },
+    tl: {
+      title: "BPHSCA <em>Attendance at Disiplina ng Mag-aaral</em>",
+      sub: "Batangas Province High School for Culture and Arts · G12 Kumintang · SY 2026-2027",
+      lblSelectWeek: "Piliin ang Linggo ng Pagsubaybay",
+      lblManageClass: "Pamahalaan ang Listahan ng mga Mag-aaral",
+      addStudent: "+ Magdagdag",
+      searchPlaceholder: "🔍 Maghanap ng mag-aaral...",
+      lblSortBy: "I-uri Ayon sa:",
+      optAlpha: "Alpabetiko (A-Z)",
+      optMostAtt: "Pinakamaraming Attended",
+      optMostLate: "Pinakamaraming Late",
+      optMostAbs: "Pinakamaraming Absent",
+      optMostMisd: "Pinakamaraming Misdemeanors",
+      contextWeekly: "Dashboard ng Sukatan ng Attendance (Kasalukuyang Linggo)",
+      contextTotals: "Dashboard ng Sukatan ng Attendance (Kabuuang Pangkalahatan)",
+      mLabelAtt: "Kabuuang Attended",
+      mLabelLate: "Kabuuang Late",
+      mLabelAbs: "Kabuuang Absent",
+      mLabelMisd: "Kabuuang Misdemeanors",
+      mLabelExempt: "Kabuuang Araw na Walang Pasok",
+      lblWeeklyGrid: "Talahanayan ng Attendance (Compact Multi-Selector)",
+      thStudentName: "Pangalan ng Mag-aaral",
+      thWeeklyTotals: "Kabuuang Lingguhan",
+      lblCumOverview: "Pangkalahatang Pagsusuri ng Termino (Kabuuan)",
+      thCumName: "Pangalan ng Mag-aaral",
+      thCumAtt: "Kabuuang Attended",
+      thCumLate: "Kabuuang Late",
+      thCumAbs: "Kabuuang Absent",
+      thCumMisd: "Kabuuang Misdemeanors",
+      thCumExempt: "Kabuuang Araw na Walang Pasok",
+      lblGlossary: "Glosaryo ng mga Status sa Interface",
+      lblDataOps: "Pagpapanatili ng Dashboard at Operasyon ng Local Storage",
+      lblOpsDesc: "Ang lahat ng tala ay naka-save sa local cache ng iyong browser. Maaari kang mag-export ng spreadsheet file (.csv) o mag-save ng backup logs.",
+      btnSaveBackup: "⭳ I-save ang Backup Payload",
+      btnLoadBackup: "⭱ I-load ang Data Backup",
+      modalTitleText: "Magtala ng Paglabag",
+      modalPresetLabel: "Mga Karaniwang Paglabag:",
+      modalCustomPlaceholder: "O mag-type ng ibang paglabag...",
+      modalAddBtn: "Idagdag",
+      rModalTitleText: "Itala ang Dahilan ng Pagkahuli",
+      rModalPresetLabel: "Karaniwang Dahilan:",
+      rModalCustomPlaceholder: "O isulat ang partikular na dahilan...",
+      rModalAddBtn: "Idagdag",
+      placeholderPrefix: "I-type ang pangalan (hal., ",
+      days: { mon: "Monday", tue: "Tuesday", wed: "Wednesday", thu: "Thursday", fri: "Friday" },
+      glossary: [
+        { term: "Att", class: "g-att", desc: "Attended. Kinukumpirma ang pagpasok ng mag-aaral sa loob ng silid-aralan sa araw na iyon." },
+        { term: "Late", class: "g-late", desc: "Late. Nahuli sa pagpasok. Nagbibigay-daan upang magtala ng rason tulad ng traffic." },
+        { term: "Absent", class: "g-abs", desc: "Absent. Hindi pumasok sa klase sa buong araw." },
+        { term: "Misd", class: "g-misd", desc: "Misdemeanor. Nagtatala ng mga paglabag sa disiplina. I-click ang tag upang burahin." },
+        { term: "NS", class: "g-ns", desc: "No School. Nagdedeklara ng walang pasok sa araw na iyon. Nagpapadilim sa kolum at hindi nagpapababa ng grado." }
+      ]
+    }
+  };
+
+  let students = [];
+  let attendance = {};
+  let misdemeanors = {};
+  let latenessReasons = {}; 
+  let noSchoolDays = {};    
+
+  let totalWeeks = 11;
+  let activeWeek = 1;
+  let isDisplayingGrandTotals = false;
+  let currentLang = 'en'; 
+
+  let searchQuery = "";
+  let sortBy = "alphabetical";
+
+  let currentModalStudentId = '';
+  let currentModalDay = '';
+
+  const htmlEl = document.documentElement;
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  let storedTheme = localStorage.getItem('bphscaTheme') || 'light';
+  applyTheme(storedTheme);
+
+  themeToggleBtn.onclick = function() {
+    let currentTheme = htmlEl.classList.contains('dark-mode') ? 'dark' : 'light';
+    let targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme(targetTheme);
+  };
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      htmlEl.classList.add('dark-mode');
+      themeToggleBtn.textContent = '☀️ Light Mode';
+      localStorage.setItem('bphscaTheme', 'dark');
+    } else {
+      htmlEl.classList.remove('dark-mode');
+      themeToggleBtn.textContent = '🌙 Dark Mode';
+      localStorage.setItem('bphscaTheme', 'light');
+    }
+  }
+
+  const langToggleBtn = document.getElementById('langToggleBtn');
+  langToggleBtn.onclick = function() {
+    currentLang = currentLang === 'en' ? 'tl' : 'en';
+    langToggleBtn.textContent = `🌐 Wika: ${currentLang.toUpperCase()}`;
+    updateInterfaceLanguage();
+  };
+
+  function initStickyToolbarObserver() {
+    const sentinel = document.getElementById('stickySentinel');
+    const toolbar = document.getElementById('toolbarControlEl');
     
-    const BASE_DEFAULT_ROUTINE = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
-      { start: 360, end: 960, name: "Bonus Day Off", sub: "School is out · complete freedom to rest, tackle projects, or sleep in", style: "t-free" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
-      { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
-      { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
-    ];
-
-    const STATIC_SCHOOL_NORMAL = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
-      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-blue" },
-      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-blue" },
-      { start: 435, end: 900, name: "School", sub: "", style: "t-blue" },
-      { start: 900, end: 960, name: "Commute home", sub: "", style: "t-blue" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
-      { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
-      { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
-    ];
-
-    const STATIC_SCHOOL_HALFDAY = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
-      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-blue" },
-      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-blue" },
-      { start: 435, end: 690, name: "School (Half-Day)", sub: "", style: "t-blue" },
-      { start: 690, end: 750, name: "Commute home", sub: "", style: "t-blue" },
-      { start: 750, end: 960, name: "Bonus Free Window", sub: "Extra Clara window · rest · tackle as-needed list early", style: "t-free" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
-      { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
-      { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
-    ];
-
-    const DEFAULT_AS_NEEDED = [
-      {
-        id: "cat_pets", title: "Pets",
-        items: [
-          { id: "pet-brush", text: "Groom & brush dogs", duration: "30~45 mins", hint: "4 to 6 PM preferred window", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-nails", text: "Dog nail trimming", duration: "15~20 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-flea", text: "Flea / tick preventatives", duration: "5 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-bath", text: "Bathing the dogs", duration: "45~60 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-litter", text: "Litter box deep clean", duration: "20~30 mins", hint: "", color: "c-teal", pills: ["Jiji", "Koichi"] }
-        ]
-      },
-      {
-        id: "cat_bedding", title: "Bedding",
-        items: [
-          { id: "bed-sheets", text: "Wash bedsheets + pillowcases", duration: "60~90 mins", hint: "Suggested weekly", color: "c-purple", pills: [] },
-          { id: "bed-blankets", text: "Wash blankets", duration: "60~90 mins", hint: "", color: "c-purple", pills: [] },
-          { id: "bed-inserts", text: "Wash pillow inserts", duration: "40 mins", hint: "", color: "c-purple", pills: [] }
-        ]
-      },
-      {
-        id: "cat_kitchen", title: "Kitchen",
-        items: [
-          { id: "kit-appliances", text: "Appliance upkeep", duration: "15~30 mins", hint: "microwave · stove · air fryer", color: "c-pink", pills: [] },
-          { id: "kit-shelves", text: "Shelves + stock reorganization", duration: "30 mins", hint: "", color: "c-pink", pills: [] }
-        ]
-      },
-      {
-        id: "cat_wardrobe", title: "Wardrobe",
-        items: [
-          { id: "ward-closet", text: "Closet declutter + re-fold", duration: "45 mins", hint: "", color: "c-purple", pills: [] },
-          { id: "ward-shoes", text: "Shoe cleaning", duration: "20 mins", hint: "", color: "c-purple", pills: [] }
-        ]
-      },
-      {
-        id: "cat_room", title: "Room & Desk",
-        items: [
-          { id: "room-aircon", text: "Aircon cleaning", duration: "30 mins", hint: "", color: "c-blue", pills: [] },
-          { id: "room-windows", text: "Window cleaning", duration: "30 mins", hint: "", color: "c-blue", pills: [] },
-          { id: "room-sofabed", text: "Sofabed cleaning", duration: "20 mins", hint: "", color: "c-blue", pills: [] },
-          { id: "room-peripherals", text: "Keyboard + mouse wipe-down", duration: "10 mins", hint: "", color: "c-blue", pills: [] }
-        ]
-      },
-      {
-        id: "cat_tech", title: "Tech & Workspace",
-        items: [
-          { id: "tech-screens", text: "Screen cleaning", duration: "5 mins", hint: "", color: "c-blue", pills: [] },
-          { id: "tech-files", text: "Digital file purge + organization", duration: "30~60 mins", hint: "including photos", color: "c-blue", pills: [] }
-        ]
-      },
-      {
-        id: "cat_decor", title: "Decor",
-        items: [
-          { id: "decor-dusting", text: "Figure + shelf dusting", duration: "20~40 mins", hint: "", color: "c-purple", pills: [] }
-        ]
-      },
-      {
-        id: "cat_deep", title: "Deep Cleans",
-        items: [
-          { id: "deep-bathroom", text: "Bathroom deep clean", duration: "60 mins", hint: "", color: "c-pink", pills: [] },
-          { id: "deep-fridge", text: "Fridge clean-out", duration: "40 mins", hint: "", color: "c-pink", pills: [] }
-        ]
-      }
-    ];
-
-    /* Completely overhauled structure */
-    const DEFAULT_HOBBIES = [
-      {
-        id: "cat_creativity", title: "Creativity",
-        items: [
-          { id: "hb-cr-1", text: "Write Poetry", hint: "", color: "c-purple", pills: [] },
-          { id: "hb-cr-2", text: "Write a Song", hint: "", color: "c-purple", pills: [] },
-          { id: "hb-cr-3", text: "Draw", hint: "", color: "c-purple", pills: [] },
-          { id: "hb-cr-4", text: "Code", hint: "", color: "c-purple", pills: [] }
-        ]
-      },
-      {
-        id: "cat_love_clara", title: "Love (Clara)",
-        items: [
-          { id: "hb-lv-1", text: "Make something for her (craft / poem/ drawing / song / letter)", hint: "", color: "c-pink", pills: [] },
-          { id: "hb-lv-2", text: "Add to Clara dictionary (words / meanings / inside language)", hint: "", color: "c-pink", pills: [] },
-          { id: "hb-lv-3", text: "Write down something you love about her", hint: "", color: "c-pink", pills: [] }
-        ]
-      },
-      {
-        id: "cat_music", title: "Music",
-        items: [
-          { id: "hb-mu-1", text: "Play an instrument (Guitar, Piano, Bass, Drums)", hint: "", color: "c-blue", pills: [] },
-          { id: "hb-mu-2", text: "Learn a song", hint: "", color: "c-blue", pills: [] },
-          { id: "hb-mu-3", text: "Practice / review / refresh song memory", hint: "", color: "c-blue", pills: [] }
-        ]
-      },
-      {
-        id: "cat_literature", title: "Literature",
-        items: [
-          { id: "hb-li-1", text: "Manga", hint: "", color: "c-teal", pills: [] },
-          { id: "hb-li-2", text: "Novel", hint: "", color: "c-teal", pills: [] },
-          { id: "hb-li-3", text: "Comic", hint: "", color: "c-teal", pills: [] },
-          { id: "hb-li-4", text: "Webcomic", hint: "", color: "c-teal", pills: [] },
-          { id: "hb-li-5", text: "Articles / Essays", hint: "", color: "c-teal", pills: [] }
-        ]
-      },
-      {
-        id: "cat_film_tv", title: "Film and TV",
-        items: [
-          { id: "hb-fi-1", text: "Movie", hint: "", color: "c-amber", pills: [] },
-          { id: "hb-fi-2", text: "Documentary", hint: "", color: "c-amber", pills: [] },
-          { id: "hb-fi-3", text: "Series", hint: "", color: "c-amber", pills: [] },
-          { id: "hb-fi-4", text: "Anime", hint: "", color: "c-amber", pills: [] }
-        ]
-      },
-      {
-        id: "cat_other_media", title: "Other Media",
-        items: [
-          { id: "hb-om-1", text: "Podcasts", hint: "", color: "c-lavender", pills: [] },
-          { id: "hb-om-2", text: "Music", hint: "", color: "c-lavender", pills: [] },
-          { id: "hb-om-3", text: "YouTube", hint: "", color: "c-lavender", pills: [] }
-        ]
-      },
-      {
-        id: "cat_learning", title: "Learning",
-        items: [
-          { id: "hb-le-1", text: "Learn a small skill", hint: "", color: "c-green", pills: [] },
-          { id: "hb-le-2", text: "Watch tutorials (intentional learning)", hint: "", color: "c-green", pills: [] },
-          { id: "hb-le-3", text: "Explore a topic of interest", hint: "", color: "c-green", pills: [] }
-        ]
-      }
-    ];
-
-    let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
-    let isEditModeActive = false;
-    let isHalfDayChecked = localStorage.getItem('db_half_day_toggle') === 'true';
-
-    let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
-    if (!dynamicSchedules) {
-      dynamicSchedules = {
-        default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)) },
-        weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] }
-      };
-    }
-    if (!dynamicSchedules.weekend) {
-      dynamicSchedules.weekend = { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] };
-    }
-
-    // Weekend Automation Tracker
-    function checkWeekendAutomation() {
-      const currentDayNum = new Date().getDay(); // 0 = Sunday, 6 = Saturday
-      const isWeekendNow = (currentDayNum === 0 || currentDayNum === 6);
-      let lastWeekdayCat = localStorage.getItem('db_last_weekday_category') || 'default';
-      
-      if (isWeekendNow) {
-        if (currentActiveCategory !== 'weekend') {
-          if (currentActiveCategory === 'default' || currentActiveCategory === 'school' || currentActiveCategory.startsWith('cat_')) {
-            localStorage.setItem('db_last_weekday_category', currentActiveCategory);
-          }
-          currentActiveCategory = 'weekend';
-          localStorage.setItem('db_active_category', 'weekend');
-        }
-      } else {
-        if (currentActiveCategory === 'weekend') {
-          currentActiveCategory = lastWeekdayCat;
-          localStorage.setItem('db_active_category', currentActiveCategory);
-        } else {
-          localStorage.setItem('db_last_weekday_category', currentActiveCategory);
-        }
-      }
-    }
-
-    checkWeekendAutomation();
-
-    let habitCustomList = JSON.parse(localStorage.getItem('db_habit_custom_list')) || []; 
-    const todayStr = new Date().toISOString().split('T')[0];
-    let habitActivityLog = JSON.parse(localStorage.getItem('db_habit_activity_log')) || { date: todayStr, checks: {} };
-
-    if (habitActivityLog.date !== todayStr) {
-      habitActivityLog = { date: todayStr, checks: {} };
-      localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
-    }
-
-    let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
-    let hobbiesData = JSON.parse(localStorage.getItem('db_hobbies')) || DEFAULT_HOBBIES;
-
-    let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
-    let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
-    let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
-
-    function parseMinutesToTimeStr(totalMinutes) {
-      if (totalMinutes === 1440) return "12:00 AM";
-      let hours = Math.floor(totalMinutes / 60);
-      let minutes = totalMinutes % 60;
-      let ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12;
-      hours = hours ? hours : 12; 
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      return `${hours}:${minutes} ${ampm}`;
-    }
-
-    function parseTimeStrToMinutes(timeStr) {
-      const [h, m] = timeStr.split(':').map(Number);
-      return (h * 60) + m;
-    }
-
-    function getRelativeTime(dateString) {
-      const date = new Date(dateString);
-      const now = new Date();
-      date.setHours(0,0,0,0);
-      now.setHours(0,0,0,0);
-      const diffTime = Math.abs(now - date);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays === 0) return "Today";
-      if (diffDays === 1) return "1 day ago";
-      return `${diffDays} days ago`;
-    }
-
-    function getFormattedDate(dateString) {
-      const d = new Date(dateString);
-      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    }
-
-    function getGapsForSchedule(scheduleObj) {
-      let currentMarker = scheduleObj.dayStart;
-      let gaps = [];
-      let sortedBlocks = [...scheduleObj.blocks].sort((a, b) => a.start - b.start);
-
-      sortedBlocks.forEach(b => {
-        if (b.start > currentMarker) {
-          gaps.push({ start: currentMarker, end: b.start, duration: b.start - currentMarker });
-        }
-        currentMarker = Math.max(currentMarker, b.end);
-      });
-
-      if (currentMarker < 1440) {
-        gaps.push({ start: currentMarker, end: 1440, duration: 1440 - currentMarker });
-      }
-      return gaps;
-    }
-
-    function autoRebuildTimelineTrack() {
-      const container = document.getElementById('master-timeline-track');
-      container.innerHTML = '';
-
-      let activeTrackData = [];
-      let isCurrentTrackEditable = false;
-
-      if (currentActiveCategory === 'default') {
-        activeTrackData = dynamicSchedules.default.blocks;
-        isCurrentTrackEditable = true;
-      } else if (currentActiveCategory === 'weekend') {
-        activeTrackData = dynamicSchedules.weekend.blocks;
-        isCurrentTrackEditable = true;
-      } else if (currentActiveCategory === 'school') {
-        activeTrackData = isHalfDayChecked ? STATIC_SCHOOL_HALFDAY : STATIC_SCHOOL_NORMAL;
-        isCurrentTrackEditable = false;
-      } else if (dynamicSchedules[currentActiveCategory]) {
-        activeTrackData = dynamicSchedules[currentActiveCategory].blocks;
-        isCurrentTrackEditable = true;
-      }
-
-      let dayStartLimit = 330; 
-      if (dynamicSchedules[currentActiveCategory]) {
-        dayStartLimit = dynamicSchedules[currentActiveCategory].dayStart;
-      }
-
-      let mergedSequence = [];
-      let currentProgress = dayStartLimit;
-      let sortedBlocks = [...activeTrackData].sort((a, b) => a.start - b.start);
-      
-      sortedBlocks.forEach(b => {
-        if (b.start > currentProgress) {
-          mergedSequence.push({
-            start: currentProgress,
-            end: b.start,
-            name: "Free time",
-            sub: "Unallocated open window",
-            style: "t-free",
-            isFreeFiller: true
-          });
-        }
-        mergedSequence.push({ ...b, isFreeFiller: false });
-        currentProgress = Math.max(currentProgress, b.end);
-      });
-
-      if (currentProgress < 1440) {
-        mergedSequence.push({
-          start: currentProgress,
-          end: 1440,
-          name: "Free time",
-          sub: "Unallocated open window",
-          style: "t-free",
-          isFreeFiller: true
-        });
-      }
-
-      mergedSequence.sort((a, b) => a.start - b.start);
-
-      mergedSequence.forEach((block, idx) => {
-        const timeNode = document.createElement('div');
-        timeNode.className = 'tl-time';
-        timeNode.innerHTML = `${parseMinutesToTimeStr(block.start)}<br> to ${parseMinutesToTimeStr(block.end)}`;
-
-        const blockContainer = document.createElement('div');
-        blockContainer.className = 'tl-block-container';
-
-        const contentNode = document.createElement('div');
-        contentNode.className = `tl-block ${block.style}`;
-        
-        if (!block.isFreeFiller) {
-          contentNode.setAttribute('data-start', block.start);
-          contentNode.setAttribute('data-end', block.end);
-        }
-
-        let innerContent = `${block.name}`;
-        if (block.sub) innerContent += `<span class="sub">${block.sub}</span>`;
-
-        if (isCurrentTrackEditable) {
-          let controlsHTML = `<div class="tl-inline-ctrls">`;
-          if (block.isFreeFiller) {
-            controlsHTML += `<button class="inline-action-btn add-btn" data-start="${block.start}" data-end="${block.end}">+ Add Block</button>`;
+    if (sentinel && toolbar) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) {
+            toolbar.classList.add('is-sticky');
           } else {
-            controlsHTML += `
-              <button class="inline-action-btn edit-btn" data-idx="${idx}" data-start="${block.start}">Edit</button>
-              <button class="inline-action-btn del-btn" data-start="${block.start}">Delete</button>
-              <button class="inline-action-btn up-btn" data-start="${block.start}">▲ Move Up</button>
-              <button class="inline-action-btn down-btn" data-start="${block.start}">▼ Move Down</button>
-            `;
-          }
-          controlsHTML += `</div>`;
-          innerContent += controlsHTML;
-        }
-
-        contentNode.innerHTML = innerContent;
-        blockContainer.appendChild(contentNode);
-        container.appendChild(timeNode);
-        container.appendChild(blockContainer);
-      });
-
-      if (isCurrentTrackEditable) bindEditableBlockListeners(mergedSequence);
-      executeLiveTimelineTrackingUpdates();
-    }
-
-    let selectedGapContext = null; 
-    let currentTargetEditingBlockStart = null; 
-
-    function bindEditableBlockListeners(fullTimelineSequence) {
-      document.querySelectorAll('.inline-action-btn.add-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const start = parseInt(btn.getAttribute('data-start'));
-          const end = parseInt(btn.getAttribute('data-end'));
-          selectedGapContext = { start, end };
-          currentTargetEditingBlockStart = null;
-          openBlockEditorModal("Create Dynamic Block", start, end);
-        });
-      });
-
-      document.querySelectorAll('.inline-action-btn.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          const activeSched = dynamicSchedules[currentActiveCategory];
-          const targetBlock = activeSched.blocks.find(b => b.start === startVal);
-          if (targetBlock) {
-            selectedGapContext = null;
-            currentTargetEditingBlockStart = startVal;
-            openBlockEditorModal("Modify Dynamic Block Parameters", targetBlock.start, targetBlock.end, targetBlock);
+            toolbar.classList.remove('is-sticky');
           }
         });
-      });
+      }, { threshold: 0, rootMargin: "-10px 0px 0px 0px" });
+      
+      observer.observe(sentinel);
+    }
+  }
 
-      document.querySelectorAll('.inline-action-btn.del-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          openDeleteStrategyDispatcher(startVal, fullTimelineSequence);
+  function cycleFadingInputPlaceholder() {
+    const fadingEl = document.getElementById('fadingPlaceholder');
+    if (!fadingEl) return;
+    
+    // Smooth transition fade out first
+    fadingEl.style.opacity = 0;
+    
+    // Swap contents after transition timing completes
+    setTimeout(() => {
+      activePlaceholderNameIndex = (activePlaceholderNameIndex + 1) % placeholderExampleNames.length;
+      const dict = i18n[currentLang];
+      fadingEl.textContent = `${dict.placeholderPrefix}${placeholderExampleNames[activePlaceholderNameIndex]})`;
+      
+      const nativeInput = document.getElementById('newStudentInput');
+      if (document.activeElement !== nativeInput && nativeInput.value === "") {
+        fadingEl.style.opacity = 1;
+      }
+    }, 400); 
+  }
+
+  function updateInterfaceLanguage() {
+    const dict = i18n[currentLang];
+    
+    document.getElementById('mainHeaderTitle').innerHTML = dict.title;
+    document.getElementById('mainHeaderSub').textContent = dict.sub;
+    document.getElementById('lblSelectWeek').textContent = dict.lblSelectWeek;
+    document.getElementById('lblManageClass').textContent = dict.lblManageClass;
+    document.getElementById('addStudentBtn').textContent = dict.addStudent;
+    document.getElementById('dashboardSearchInput').placeholder = dict.searchPlaceholder;
+    document.getElementById('lblSortBy').textContent = dict.lblSortBy;
+    
+    document.getElementById('optAlpha').textContent = dict.optAlpha;
+    document.getElementById('optMostAtt').textContent = dict.optMostAtt;
+    document.getElementById('optMostLate').textContent = dict.optMostLate;
+    document.getElementById('optMostAbs').textContent = dict.optMostAbs;
+    document.getElementById('optMostMisd').textContent = dict.optMostMisd;
+
+    document.getElementById('mLabelAtt').textContent = dict.mLabelAtt;
+    document.getElementById('mLabelLate').textContent = dict.mLabelLate;
+    document.getElementById('mLabelAbs').textContent = dict.mLabelAbs;
+    document.getElementById('mLabelMisd').textContent = dict.mLabelMisd;
+    document.getElementById('mLabelExempt').textContent = dict.mLabelExempt;
+    document.getElementById('lblWeeklyGrid').textContent = dict.lblWeeklyGrid;
+    document.getElementById('thStudentName').textContent = dict.thStudentName;
+    document.getElementById('thWeeklyTotals').textContent = dict.thWeeklyTotals;
+    document.getElementById('lblCumOverview').textContent = dict.lblCumOverview;
+    document.getElementById('thCumName').textContent = dict.thCumName;
+    document.getElementById('thCumAtt').textContent = dict.thCumAtt;
+    document.getElementById('thCumLate').textContent = dict.thCumLate;
+    document.getElementById('thCumAbs').textContent = dict.thCumAbs;
+    document.getElementById('thCumMisd').textContent = dict.thCumMisd;
+    document.getElementById('thCumExempt').textContent = dict.thCumExempt;
+    document.getElementById('lblGlossary').textContent = dict.lblGlossary;
+    document.getElementById('lblDataOps').textContent = dict.lblDataOps;
+    document.getElementById('lblOpsDesc').textContent = dict.lblOpsDesc;
+    document.getElementById('btnSaveBackup').textContent = dict.btnSaveBackup;
+    document.getElementById('btnLoadBackup').textContent = dict.btnLoadBackup;
+    
+    document.getElementById('modalTitleText').textContent = dict.modalTitleText;
+    document.getElementById('modalPresetLabel').textContent = dict.modalPresetLabel;
+    document.getElementById('customMisdInput').placeholder = dict.modalCustomPlaceholder;
+    document.getElementById('modalAddBtn').textContent = dict.modalAddBtn;
+
+    document.getElementById('rModalTitleText').textContent = dict.rModalTitleText;
+    document.getElementById('rModalPresetLabel').textContent = dict.rModalPresetLabel;
+    document.getElementById('customReasonInput').placeholder = dict.rModalCustomPlaceholder;
+    document.getElementById('rModalAddBtn').textContent = dict.rModalAddBtn;
+
+    document.getElementById('fadingPlaceholder').textContent = `${dict.placeholderPrefix}${placeholderExampleNames[activePlaceholderNameIndex]})`;
+
+    document.querySelectorAll('.day-title-text').forEach(el => {
+      const dCode = el.getAttribute('data-day');
+      if(dict.days[dCode]) el.textContent = dict.days[dCode];
+    });
+
+    const glossGrid = document.getElementById('glossaryGrid');
+    glossGrid.innerHTML = '';
+    dict.glossary.forEach(g => {
+      glossGrid.innerHTML += `
+        <div class="glossary-item">
+          <span class="glossary-term ${g.class}">${g.term}</span>
+          <span class="glossary-desc">${g.desc}</span>
+        </div>
+      `;
+    });
+
+    renderWeekSelector();
+    renderDashboard();
+  }
+
+  function initDatabaseSync() {
+    totalWeeks = parseInt(localStorage.getItem('bphscaTotalWeeks')) || 11;
+    
+    let cachedStudents = localStorage.getItem('bphscaStudents_List');
+    if (!cachedStudents) {
+      students = initialClasslist.map((name, index) => ({
+        id: 'stud_' + Date.now() + '_' + index,
+        name: name
+      }));
+      localStorage.setItem('bphscaStudents_List', JSON.stringify(students));
+    } else {
+      try { students = JSON.parse(cachedStudents); } 
+      catch (e) { students = initialClasslist.map((name, idx) => ({ id: 'stud_' + idx, name: name })); }
+    }
+
+    try {
+      attendance = JSON.parse(localStorage.getItem('bphscaAttendance')) || {};
+      misdemeanors = JSON.parse(localStorage.getItem('bphscaMisdemeanors')) || {};
+      latenessReasons = JSON.parse(localStorage.getItem('bphscaLatenessReasons')) || {};
+      noSchoolDays = JSON.parse(localStorage.getItem('bphscaNoSchoolDays')) || {};
+    } catch(err) {
+      attendance = {}; misdemeanors = {}; latenessReasons = {}; noSchoolDays = {};
+    }
+  }
+
+  function formatStudentNameInput(inputStr) {
+    let trimmed = inputStr.trim().replace(/\s+/g, ' ');
+    if (!trimmed) return "";
+    let parts = trimmed.split(/[\s.]+/).filter(Boolean);
+    if (parts.length < 2) {
+      return parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
+    }
+    let initial = parts[0].charAt(0).toUpperCase();
+    let surname = parts.slice(1).map(p => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(' ');
+    return `${initial}. ${surname}`;
+  }
+
+  function renderWeekSelector() {
+    const container = document.getElementById('weekButtonsDynamicGroup');
+    container.innerHTML = '';
+    
+    for (let w = 1; w <= totalWeeks; w++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'week-btn';
+      if (!isDisplayingGrandTotals && activeWeek === w) btn.className += ' active';
+      btn.textContent = `Week ${w}`;
+      btn.onclick = function() {
+        activeWeek = w;
+        isDisplayingGrandTotals = false;
+        renderWeekSelector();
+        renderDashboard();
+      };
+      container.appendChild(btn);
+    }
+
+    const totalBtn = document.createElement('button');
+    totalBtn.type = 'button';
+    totalBtn.className = 'week-btn totals-toggle-btn';
+    if (isDisplayingGrandTotals) totalBtn.className += ' active';
+    totalBtn.id = 'showTotalsBtn';
+    totalBtn.textContent = 'Σ All Totals';
+    totalBtn.onclick = function() {
+      isDisplayingGrandTotals = true;
+      renderWeekSelector();
+      renderDashboard();
+    };
+    container.appendChild(totalBtn);
+  }
+
+  function addTermWeekSeq() {
+    totalWeeks++;
+    localStorage.setItem('bphscaTotalWeeks', totalWeeks);
+    renderWeekSelector();
+    if (!isDisplayingGrandTotals) renderDashboard();
+  }
+
+  function reduceTermWeeksSeq() {
+    if (totalWeeks <= 1) return;
+    
+    let targetWeekPrefix = `W${totalWeeks}-`;
+    let blockAndWarn = false;
+
+    for (let key in attendance) {
+      if (key.startsWith(targetWeekPrefix)) { blockAndWarn = true; break; }
+    }
+    if (!blockAndWarn) {
+      for (let key in misdemeanors) {
+        if (key.startsWith(targetWeekPrefix)) { blockAndWarn = true; break; }
+      }
+    }
+    if (!blockAndWarn) {
+      for (let key in latenessReasons) {
+        if (key.startsWith(targetWeekPrefix)) { blockAndWarn = true; break; }
+      }
+    }
+    if (!blockAndWarn) {
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(d => {
+        if (noSchoolDays[`W${totalWeeks}-${d}`]) blockAndWarn = true;
+      });
+    }
+
+    if (blockAndWarn) {
+      const promptWarningText = currentLang === 'en'
+        ? `Are you sure? Week ${totalWeeks} contains recorded system tracking data. Removing it will erase all entries permanently.`
+        : `Sigurado ka ba? Ang Week ${totalWeeks} ay naglalaman ng mga tala. Ang pagbawas nito ay permanenteng bubura sa mga ito.`;
+      if (!confirm(promptWarningText)) return;
+    }
+
+    for (let key in attendance) { if (key.startsWith(targetWeekPrefix)) delete attendance[key]; }
+    for (let key in misdemeanors) { if (key.startsWith(targetWeekPrefix)) delete misdemeanors[key]; }
+    for (let key in latenessReasons) { if (key.startsWith(targetWeekPrefix)) delete latenessReasons[key]; }
+    ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(d => { delete noSchoolDays[`W${totalWeeks}-${d}`]; });
+
+    localStorage.setItem('bphscaAttendance', JSON.stringify(attendance));
+    localStorage.setItem('bphscaMisdemeanors', JSON.stringify(misdemeanors));
+    localStorage.setItem('bphscaLatenessReasons', JSON.stringify(latenessReasons));
+    localStorage.setItem('bphscaNoSchoolDays', JSON.stringify(noSchoolDays));
+
+    totalWeeks--;
+    localStorage.setItem('bphscaTotalWeeks', totalWeeks);
+    if (activeWeek > totalWeeks) activeWeek = totalWeeks;
+    
+    renderWeekSelector();
+    renderDashboard();
+  }
+
+  function handleSearchFiltering(value) {
+    searchQuery = value;
+    renderDashboard();
+  }
+
+  function handleSortingChange(value) {
+    sortBy = value;
+    renderDashboard();
+  }
+
+  function computeStudentMetricStats(studentId) {
+    let att = 0, late = 0, abs = 0, misd = 0;
+    if (isDisplayingGrandTotals) {
+      for (let w = 1; w <= totalWeeks; w++) {
+        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+          if (noSchoolDays[`W${w}-${day}`]) return; 
+          const key = `W${w}-${studentId}-${day}`;
+          if (attendance[key] === 'attended') att++;
+          else if (attendance[key] === 'late') late++;
+          else if (attendance[key] === 'absent') abs++;
+          if (misdemeanors[key]) misd += misdemeanors[key].length;
         });
-      });
-
-      document.querySelectorAll('.inline-action-btn.up-btn').forEach(btn => {
-        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), -1));
-      });
-
-      document.querySelectorAll('.inline-action-btn.down-btn').forEach(btn => {
-        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), 1));
+      }
+    } else {
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+        if (noSchoolDays[`W${activeWeek}-${day}`]) return;
+        const key = `W${activeWeek}-${studentId}-${day}`;
+        if (attendance[key] === 'attended') att++;
+        else if (attendance[key] === 'late') late++;
+        else if (attendance[key] === 'absent') abs++;
+        if (misdemeanors[key]) misd += misdemeanors[key].length;
       });
     }
+    return { att, late, abs, misd };
+  }
 
-    function openBlockEditorModal(titleText, gapStart, gapEnd, blockData = null) {
-      document.getElementById('block-modal-header-title').textContent = titleText;
-      const selectGapField = document.getElementById('smart-gap-picker-field');
-      const selectGapDropdown = document.getElementById('block-smart-gap-select');
-      selectGapDropdown.innerHTML = '';
+  function getFilteredAndSortedClasslist() {
+    let result = students.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    result.sort((a, b) => {
+      if (sortBy === 'alphabetical') return a.name.localeCompare(b.name);
+      let statsA = computeStudentMetricStats(a.id);
+      let statsB = computeStudentMetricStats(b.id);
+      if (sortBy === 'most_att') return statsB.att - statsA.att;
+      if (sortBy === 'most_late') return statsB.late - statsA.late;
+      if (sortBy === 'most_abs') return statsB.abs - statsA.abs;
+      if (sortBy === 'most_misd') return statsB.misd - statsA.misd;
+      return 0;
+    });
+    return result;
+  }
 
-      if (blockData) {
-        selectGapField.style.display = 'none';
-        document.getElementById('block-input-title').value = blockData.name;
-        document.getElementById('block-input-sub').value = blockData.sub;
-        document.getElementById('block-input-color').value = blockData.style;
-        document.getElementById('block-input-start').value = convertMinutesTo24hInput(blockData.start);
-        document.getElementById('block-input-end').value = convertMinutesTo24hInput(blockData.end);
+  function renderDashboard() {
+    const dict = i18n[currentLang];
+    const panelContextLabel = document.getElementById('panelContextLabel');
+    const weeklyGridContainer = document.getElementById('weeklyGridContainer');
+    const totalsPageContainer = document.getElementById('totalsPageContainer');
+
+    let datasetToRender = getFilteredAndSortedClasslist();
+
+    if (isDisplayingGrandTotals) {
+      weeklyGridContainer.style.display = 'none';
+      totalsPageContainer.style.display = 'block';
+      panelContextLabel.textContent = dict.contextTotals;
+      renderTotalsPage(datasetToRender);
+      calculateGlobalMetrics();
+      return;
+    }
+
+    weeklyGridContainer.style.display = 'block';
+    totalsPageContainer.style.display = 'none';
+    panelContextLabel.textContent = `${dict.contextWeekly} - Week ${activeWeek}`;
+
+    // Compute exempt days cleanly based ONLY on unique calendar days, not multiplied by students
+    let weekExemptDays = 0;
+    ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+      const isNS = noSchoolDays[`W${activeWeek}-${day}`];
+      const thEl = document.getElementById(`th-${day}`);
+      const btnNS = document.getElementById(`header-ns-${day}`);
+      const statsEl = document.getElementById(`day-stats-${day}`);
+      
+      if (isNS) {
+        weekExemptDays++;
+        thEl.classList.add('ns-darkened-header');
+        btnNS.classList.add('active-ns');
+        statsEl.innerHTML = `<span style="color: var(--color-ns); font-weight: bold;">EXEMPT</span>`;
       } else {
-        selectGapField.style.display = 'flex';
-        document.getElementById('block-input-title').value = '';
-        document.getElementById('block-input-sub').value = '';
-        document.getElementById('block-input-color').value = 't-free';
-
-        const gaps = getGapsForSchedule(dynamicSchedules[currentActiveCategory]);
-        gaps.forEach(g => {
-          const opt = document.createElement('option');
-          opt.value = `${g.start}-${g.end}`;
-          opt.textContent = `${parseMinutesToTimeStr(g.start)} to ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
-          if (g.start === gapStart && g.end === gapEnd) opt.selected = true;
-          selectGapDropdown.appendChild(opt);
-        });
-
-        document.getElementById('block-input-start').value = convertMinutesTo24hInput(gapStart);
-        document.getElementById('block-input-end').value = convertMinutesTo24hInput(gapEnd);
-      }
-
-      document.getElementById('modal-block-editor').style.display = 'flex';
-    }
-
-    function convertMinutesTo24hInput(totalMin) {
-      let h = Math.floor(totalMin / 60);
-      let m = totalMin % 60;
-      if (h === 24) h = 0; 
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-    }
-
-    document.getElementById('btn-block-cancel').addEventListener('click', () => {
-      document.getElementById('modal-block-editor').style.display = 'none';
-    });
-
-    document.querySelectorAll('input[name="allocation-method"]').forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        if (e.target.value === 'duration') {
-          document.getElementById('allocation-wrap-duration').style.display = 'flex';
-          document.getElementById('allocation-wrap-explicit').style.display = 'none';
-        } else {
-          document.getElementById('allocation-wrap-duration').style.display = 'none';
-          document.getElementById('allocation-wrap-explicit').style.display = 'flex';
-        }
-      });
-    });
-
-    document.getElementById('btn-block-save').addEventListener('click', () => {
-      const activeSched = dynamicSchedules[currentActiveCategory];
-      const title = document.getElementById('block-input-title').value.trim() || "Bespoke Task Block";
-      const subtitle = document.getElementById('block-input-sub').value.trim();
-      const styleClass = document.getElementById('block-input-color').value;
-      const allocationMethod = document.querySelector('input[name="allocation-method"]:checked').value;
-
-      let finalStart = 0, finalEnd = 0;
-
-      if (currentTargetEditingBlockStart !== null) {
-        if (allocationMethod === 'duration') {
-          finalStart = currentTargetEditingBlockStart;
-          finalEnd = finalStart + parseInt(document.getElementById('block-input-duration').value);
-        } else {
-          finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
-          finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
-        }
-
-        if (finalEnd <= finalStart || finalEnd > 1440) return alert("Layout Error: Out of bounds tracking window detected.");
-
-        let overlapFound = activeSched.blocks.filter(b => b.start !== currentTargetEditingBlockStart).some(b => (finalStart < b.end && finalEnd > b.start));
-        if (overlapFound) return alert("Overlap Prevention Block: Requested time constraints collide with another block.");
-
-        let idx = activeSched.blocks.findIndex(b => b.start === currentTargetEditingBlockStart);
-        activeSched.blocks[idx] = { start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass };
-      } else {
-        const [gStart, gEnd] = document.getElementById('block-smart-gap-select').value.split('-').map(Number);
-
-        if (allocationMethod === 'duration') {
-          const durationVal = parseInt(document.getElementById('block-input-duration').value);
-          finalStart = gStart;
-          finalEnd = finalStart + durationVal;
-          if (finalEnd > gEnd) return alert(`Smart Cap Adjustment Alert: Requested duration (${durationVal}m) exceeds window.`);
-        } else {
-          finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
-          finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
-          if (finalStart < gStart || finalEnd > gEnd || finalEnd <= finalStart) return alert("Boundary Violation.");
-        }
-
-        activeSched.blocks.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
-      }
-
-      activeSched.blocks.sort((a, b) => a.start - b.start);
-      localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-      document.getElementById('modal-block-editor').style.display = 'none';
-      autoRebuildTimelineTrack();
-    });
-
-    let targetDeleteBlockStartVal = null;
-    function openDeleteStrategyDispatcher(startVal, fullSequence) {
-      targetDeleteBlockStartVal = startVal;
-      const selectDropdown = document.getElementById('delete-strategy-selection');
-      selectDropdown.innerHTML = '';
-      const targetBlockIdx = fullSequence.findIndex(b => b.start === startVal);
-
-      const optFree = document.createElement('option');
-      optFree.value = "revert_free";
-      optFree.textContent = "Convert space back into an open Free time block slot";
-      selectDropdown.appendChild(optFree);
-
-      let prevBlock = null;
-      for (let i = targetBlockIdx - 1; i >= 0; i--) { if (!fullSequence[i].isFreeFiller) { prevBlock = fullSequence[i]; break; } }
-      if (prevBlock) {
-        const optPrev = document.createElement('option');
-        optPrev.value = `extend_prev-${prevBlock.start}`;
-        optPrev.textContent = `Extend previous activity block ("${prevBlock.name.substring(0,20)}...") forward`;
-        selectDropdown.appendChild(optPrev);
-      }
-
-      let nextBlock = null;
-      for (let i = targetBlockIdx + 1; i < fullSequence.length; i++) { if (!fullSequence[i].isFreeFiller) { nextBlock = fullSequence[i]; break; } }
-      if (nextBlock) {
-        const optNext = document.createElement('option');
-        optNext.value = `extend_next-${nextBlock.start}`;
-        optNext.textContent = `Extend next activity block ("${nextBlock.name.substring(0,20)}...") backward`;
-        selectDropdown.appendChild(optNext);
-      }
-
-      document.getElementById('modal-delete-strategy').style.display = 'flex';
-    }
-
-    document.getElementById('btn-del-strat-cancel').addEventListener('click', () => {
-      document.getElementById('modal-delete-strategy').style.display = 'none';
-    });
-
-    document.getElementById('btn-del-strat-confirm').addEventListener('click', () => {
-      const activeSched = dynamicSchedules[currentActiveCategory];
-      const strategySelection = document.getElementById('delete-strategy-selection').value;
-      const targetBlock = activeSched.blocks.find(b => b.start === targetDeleteBlockStartVal);
-
-      if (!targetBlock) return;
-
-      if (strategySelection === 'revert_free') {
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
-      } else if (strategySelection.startsWith('extend_prev')) {
-        let prevBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
-        if (prevBlockObj) prevBlockObj.end = targetBlock.end; 
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
-      } else if (strategySelection.startsWith('extend_next')) {
-        let nextBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
-        if (nextBlockObj) nextBlockObj.start = targetBlock.start;
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
-      }
-
-      activeSched.blocks.sort((a, b) => a.start - b.start);
-      localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-      document.getElementById('modal-delete-strategy').style.display = 'none';
-      autoRebuildTimelineTrack();
-    });
-
-    function executeChronologicalShift(startVal, directionOffset) {
-      const activeSched = dynamicSchedules[currentActiveCategory];
-      let idx = activeSched.blocks.findIndex(b => b.start === startVal);
-      if (idx === -1) return;
-
-      let targetIdx = idx + directionOffset;
-      if (targetIdx >= 0 && targetIdx < activeSched.blocks.length) {
-        let targetBlock = activeSched.blocks[targetIdx];
-        let currentBlock = activeSched.blocks[idx];
-        let currentDuration = currentBlock.end - currentBlock.start;
-        let targetDuration = targetBlock.end - targetBlock.start;
-
-        if (directionOffset === -1) {
-          currentBlock.start = targetBlock.start;
-          currentBlock.end = currentBlock.start + currentDuration;
-          targetBlock.start = currentBlock.end;
-          targetBlock.end = targetBlock.start + targetDuration;
-        } else {
-          targetBlock.start = currentBlock.start;
-          targetBlock.end = targetBlock.start + targetDuration;
-          currentBlock.start = targetBlock.end;
-          currentBlock.end = currentBlock.start + currentDuration;
-        }
-        activeSched.blocks.sort((a, b) => a.start - b.start);
-        localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-        autoRebuildTimelineTrack();
-      }
-    }
-
-    function drawCategorySelectorsLayoutButtons() {
-      const trackAnchor = document.getElementById('category-track-anchor');
-      trackAnchor.innerHTML = '';
-
-      const defaultBtn = document.createElement('button');
-      defaultBtn.className = `cat-btn ${currentActiveCategory === 'default' ? 'active' : ''}`;
-      defaultBtn.textContent = "Default";
-      defaultBtn.addEventListener('click', () => updateActiveCategoryContextState('default'));
-      trackAnchor.appendChild(defaultBtn);
-
-      const schoolBtn = document.createElement('button');
-      schoolBtn.className = `cat-btn ${currentActiveCategory === 'school' ? 'active' : ''}`;
-      schoolBtn.textContent = "School Mode";
-      schoolBtn.addEventListener('click', () => updateActiveCategoryContextState('school'));
-      trackAnchor.appendChild(schoolBtn);
-
-      const weekendBtn = document.createElement('button');
-      weekendBtn.className = `cat-btn ${currentActiveCategory === 'weekend' ? 'active' : ''}`;
-      weekendBtn.textContent = "Weekend";
-      weekendBtn.addEventListener('click', () => updateActiveCategoryContextState('weekend'));
-      trackAnchor.appendChild(weekendBtn);
-
-      Object.keys(dynamicSchedules).forEach(key => {
-        if (key === 'default' || key === 'weekend') return;
-        const customBtn = document.createElement('button');
-        customBtn.className = `cat-btn ${currentActiveCategory === key ? 'active' : ''}`;
-        customBtn.innerHTML = `${dynamicSchedules[key].name} <span class="del-cat" data-target="${key}">×</span>`;
+        thEl.classList.remove('ns-darkened-header');
+        btnNS.classList.remove('active-ns');
         
-        customBtn.addEventListener('click', (e) => {
-          if (e.target.classList.contains('del-cat')) {
-            e.stopPropagation();
-            const targetKey = e.target.getAttribute('data-target');
-            if (confirm(`Remove the custom schedule category track "${dynamicSchedules[targetKey].name}" permanently?`)) {
-              delete dynamicSchedules[targetKey];
-              localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-              updateActiveCategoryContextState('default');
-            }
+        // Calculate daily additions / total metrics per day
+        let dAtt = 0, dLate = 0, dAbs = 0, dMisd = 0;
+        students.forEach(s => {
+          const key = `W${activeWeek}-${s.id}-${day}`;
+          const status = attendance[key];
+          if (status === 'attended') dAtt++;
+          else if (status === 'late') dLate++;
+          else if (status === 'absent') dAbs++;
+          if (misdemeanors[key]) dMisd += misdemeanors[key].length;
+        });
+        
+        statsEl.innerHTML = `
+          <span style="color: var(--color-att); font-weight:bold;">${dAtt}✓</span> 
+          <span style="color: var(--color-late); font-weight:bold;">${dLate}◷</span> 
+          <span style="color: var(--color-abs); font-weight:bold;">${dAbs}⦸</span> 
+          <span style="color: var(--color-misd); font-weight:bold;">${dMisd}M</span>
+        `;
+      }
+    });
+
+    const tbody = document.getElementById('attendanceTableBody');
+    tbody.innerHTML = '';
+
+    let weekAtt = 0, weekLate = 0, weekAbs = 0, weekMisd = 0;
+
+    students.forEach(s => {
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+        if (noSchoolDays[`W${activeWeek}-${day}`]) return; 
+        const key = `W${activeWeek}-${s.id}-${day}`;
+        if (attendance[key] === 'attended') weekAtt++;
+        else if (attendance[key] === 'late') weekLate++;
+        else if (attendance[key] === 'absent') weekAbs++;
+        if (misdemeanors[key]) weekMisd += misdemeanors[key].length;
+      });
+    });
+
+    datasetToRender.forEach(s => {
+      let sAtt = 0, sLate = 0, sAbs = 0, sMisd = 0;
+      const tr = document.createElement('tr');
+
+      let nameTd = document.createElement('td');
+      nameTd.className = 'student-name-cell';
+      nameTd.innerHTML = `
+        <span class="student-name"><strong>${s.name}</strong></span>
+        <div class="student-actions">
+          <button type="button" class="action-btn" onclick="editStudentName('${s.id}')" title="Edit Name">✎</button>
+          <button type="button" class="action-btn del-btn" onclick="deleteStudentFromDirectory('${s.id}')" title="Remove Student">&times;</button>
+        </div>
+      `;
+      tr.appendChild(nameTd);
+
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+        const isNS = noSchoolDays[`W${activeWeek}-${day}`];
+        const key = `W${activeWeek}-${s.id}-${day}`;
+        const status = attendance[key] || '';
+        
+        let td = document.createElement('td');
+        if (isNS) {
+          td.className = 'ns-darkened-col';
+          td.innerHTML = `<div style="text-align:center; font-size:10px; color:var(--muted); font-weight:bold; letter-spacing:0.05em;">EXEMPT (NS)</div>`;
+          tr.appendChild(td);
+          return;
+        }
+
+        if (status === 'attended') sAtt++;
+        else if (status === 'late') sLate++;
+        else if (status === 'absent') sAbs++;
+
+        const listMisd = misdemeanors[key] || [];
+        const listReasons = latenessReasons[key] || [];
+        sMisd += listMisd.length;
+
+        if (status === 'absent') td.style.background = 'rgba(183, 28, 28, 0.04)';
+        else if (status === 'late') td.style.background = 'rgba(180, 83, 9, 0.04)';
+        else if (status === 'attended') td.style.background = 'rgba(27, 94, 32, 0.02)';
+
+        let misdTagsHtml = listMisd.map((m, idx) => `
+          <span class="misd-tag" onclick="deleteMisd('${s.id}', '${day}', ${idx})" title="Delete tag">${m} ✕</span>
+        `).join('');
+
+        let reasonTagsHtml = listReasons.map((r, idx) => `
+          <span class="reason-tag" onclick="deleteReason('${s.id}', '${day}', ${idx})" title="Delete reason">${r} ✕</span>
+        `).join('');
+
+        let reasonTriggerBtn = (status === 'late') 
+          ? `<button type="button" class="add-tag-trigger" style="border-color:var(--color-late); color:var(--color-late);" onclick="openReasonModal('${s.id}', '${day}')">+ Reason</button>`
+          : '';
+
+        td.innerHTML = `
+          <div class="cell-box">
+            <div class="att-group">
+              <button type="button" class="att-btn att ${status === 'attended' ? 'active' : ''}" onclick="setAttendanceStatus('${s.id}', '${day}', 'attended')">Att</button>
+              <button type="button" class="att-btn late ${status === 'late' ? 'active' : ''}" onclick="setAttendanceStatus('${s.id}', '${day}', 'late')">Late</button>
+              <button type="button" class="att-btn abs ${status === 'absent' ? 'active' : ''}" onclick="setAttendanceStatus('${s.id}', '${day}', 'absent')">Abs</button>
+            </div>
+            <div class="tag-container-block">
+              <div class="misd-container">
+                <button type="button" class="add-tag-trigger" onclick="openMisdModal('${s.id}', '${day}')">+ Misd</button>
+                ${misdTagsHtml}
+              </div>
+              <div class="reason-container" style="margin-top: 1px;">
+                ${reasonTriggerBtn}
+                ${reasonTagsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+        tr.appendChild(td);
+      });
+
+      let totalsTd = document.createElement('td');
+      totalsTd.className = 'text-center';
+      totalsTd.style.fontSize = '10px';
+      totalsTd.style.whiteSpace = 'nowrap';
+      totalsTd.innerHTML = `
+        <span style="color: var(--color-att); font-weight:bold;">${sAtt}A</span> | 
+        <span style="color: var(--color-late); font-weight:bold;">${sLate}L</span> | 
+        <span style="color: var(--color-abs); font-weight:bold;">${sAbs}X</span> | 
+        <span style="color: var(--color-misd); font-weight:bold;">${sMisd}M</span>
+      `;
+      tr.appendChild(totalsTd);
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('stat-total-att').innerHTML = `${weekAtt}<span class="lbl">Pres</span>`;
+    document.getElementById('stat-total-late').innerHTML = `${weekLate}<span class="lbl">Late</span>`;
+    document.getElementById('stat-total-abs').innerHTML = `${weekAbs}<span class="lbl">Abs</span>`;
+    document.getElementById('stat-total-misd').innerHTML = `${weekMisd}<span class="lbl">Misd</span>`;
+    document.getElementById('stat-total-exempt').innerHTML = `${weekExemptDays}<span class="lbl">Days</span>`;
+  }
+
+  function renderTotalsPage(dataset) {
+    const tbody = document.getElementById('totalsTableBody');
+    tbody.innerHTML = '';
+    
+    // Total calendar exempt days across all tracking weeks
+    let totExempt = 0;
+    for (let w = 1; w <= totalWeeks; w++) {
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+        if (noSchoolDays[`W${w}-${day}`]) totExempt++;
+      });
+    }
+
+    dataset.forEach(s => {
+      let totAtt = 0, totLate = 0, totAbs = 0, totMisd = 0;
+      for (let w = 1; w <= totalWeeks; w++) {
+        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+          if (noSchoolDays[`W${w}-${day}`]) return;
+          const key = `W${w}-${s.id}-${day}`;
+          const status = attendance[key];
+          if (status === 'attended') totAtt++;
+          else if (status === 'late') totLate++;
+          else if (status === 'absent') totAbs++;
+          if (misdemeanors[key]) totMisd += misdemeanors[key].length;
+        });
+      }
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${s.name}</strong></td>
+        <td class="text-center" style="color: var(--color-att); font-weight: bold;">${totAtt}</td>
+        <td class="text-center stat-accent-late">${totLate}</td>
+        <td class="text-center stat-accent-abs">${totAbs}</td>
+        <td class="text-center stat-accent-misd">${totMisd}</td>
+        <td class="text-center stat-accent-ns">${totExempt}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function calculateGlobalMetrics() {
+    let globalAtt = 0, globalLate = 0, globalAbs = 0, globalMisd = 0, globalExempt = 0;
+    
+    // Clean unique absolute calendar metrics computation
+    for (let w = 1; w <= totalWeeks; w++) {
+      ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+        if (noSchoolDays[`W${w}-${day}`]) globalExempt++;
+      });
+    }
+
+    students.forEach(s => {
+      for (let w = 1; w <= totalWeeks; w++) {
+        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(day => {
+          if (noSchoolDays[`W${w}-${day}`]) return;
+          const key = `W${w}-${s.id}-${day}`;
+          const status = attendance[key];
+          if (status === 'attended') globalAtt++;
+          else if (status === 'late') globalLate++;
+          else if (status === 'absent') globalAbs++;
+          if (misdemeanors[key]) globalMisd += misdemeanors[key].length;
+        });
+      }
+    });
+    
+    document.getElementById('stat-total-att').innerHTML = `${globalAtt}<span class="lbl">Pres</span>`;
+    document.getElementById('stat-total-late').innerHTML = `${globalLate}<span class="lbl">Late</span>`;
+    document.getElementById('stat-total-abs').innerHTML = `${globalAbs}<span class="lbl">Abs</span>`;
+    document.getElementById('stat-total-misd').innerHTML = `${globalMisd}<span class="lbl">Misd</span>`;
+    document.getElementById('stat-total-exempt').innerHTML = `${globalExempt}<span class="lbl">Days</span>`;
+  }
+
+  function setAttendanceStatus(studentId, day, status) {
+    const key = `W${activeWeek}-${studentId}-${day}`;
+    if (attendance[key] === status) delete attendance[key];
+    else attendance[key] = status;
+    localStorage.setItem('bphscaAttendance', JSON.stringify(attendance));
+    renderDashboard();
+  }
+
+  function toggleWholeDay(day, status) {
+    if (noSchoolDays[`W${activeWeek}-${day}`]) return; 
+    let dataset = getFilteredAndSortedClasslist();
+    let allHaveIt = dataset.every(s => attendance[`W${activeWeek}-${s.id}-${day}`] === status);
+    dataset.forEach(s => {
+      const key = `W${activeWeek}-${s.id}-${day}`;
+      if (allHaveIt) delete attendance[key];
+      else attendance[key] = status;
+    });
+    localStorage.setItem('bphscaAttendance', JSON.stringify(attendance));
+    renderDashboard();
+  }
+
+  function toggleNoSchoolDay(day) {
+    const key = `W${activeWeek}-${day}`;
+    if (noSchoolDays[key]) {
+      delete noSchoolDays[key];
+    } else {
+      noSchoolDays[key] = true;
+    }
+    localStorage.setItem('bphscaNoSchoolDays', JSON.stringify(noSchoolDays));
+    renderDashboard();
+  }
+
+  document.getElementById('addStudentBtn').onclick = function() {
+    const input = document.getElementById('newStudentInput');
+    const processedName = formatStudentNameInput(input.value);
+    if (processedName === '') return;
+    const newId = 'stud_' + Date.now();
+    students.push({ id: newId, name: processedName });
+    localStorage.setItem('bphscaStudents_List', JSON.stringify(students));
+    input.value = '';
+    renderDashboard();
+  };
+
+  document.getElementById('newStudentInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('addStudentBtn').click();
+  });
+
+  function editStudentName(studentId) {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+    const promptMsg = currentLang === 'en' ? `Modify Student Identity for [ ${student.name} ]:` : `Baguhin ang pangalan ni [ ${student.name} ]:`;
+    const newName = prompt(promptMsg, student.name);
+    if (newName && newName.trim() !== '') {
+      student.name = formatStudentNameInput(newName);
+      localStorage.setItem('bphscaStudents_List', JSON.stringify(students));
+      renderDashboard();
+    }
+  }
+
+  function deleteStudentFromDirectory(studentId) {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+    const confirmationText = currentLang === 'en'
+      ? `Are you sure you want to completely remove "${student.name}" and erase all associated attendance records?`
+      : `Sigurado ka ba na nais mong tanggalin si "${student.name}" at burahin ang lahat ng kanyang records?`;
+    if (confirm(confirmationText)) {
+      students = students.filter(s => s.id !== studentId);
+      localStorage.setItem('bphscaStudents_List', JSON.stringify(students));
+      renderDashboard();
+    }
+  }
+
+  function openMisdModal(studentId, day) {
+    currentModalStudentId = studentId; currentModalDay = day;
+    const student = students.find(s => s.id === studentId);
+    document.getElementById('modalContextText').textContent = `${student ? student.name : ''} -> ${day.toUpperCase()}`;
+    document.getElementById('misdModal').classList.add('open');
+  }
+  function closeMisdModal() {
+    document.getElementById('misdModal').classList.remove('open');
+    document.getElementById('customMisdInput').value = '';
+    currentModalStudentId = ''; currentModalDay = '';
+  }
+  function addPresetMisd(text) {
+    if (!currentModalStudentId || !currentModalDay) return;
+    const key = `W${activeWeek}-${currentModalStudentId}-${currentModalDay}`;
+    if (!misdemeanors[key]) misdemeanors[key] = [];
+    misdemeanors[key].push(text);
+    localStorage.setItem('bphscaMisdemeanors', JSON.stringify(misdemeanors));
+    closeMisdModal();
+    renderDashboard();
+  }
+  function addCustomMisd() {
+    const input = document.getElementById('customMisdInput');
+    const text = input.value.trim();
+    if (text === '') return;
+    addPresetMisd(text);
+  }
+  function deleteMisd(studentId, day, index) {
+    const key = `W${activeWeek}-${studentId}-${day}`;
+    if (misdemeanors[key] && misdemeanors[key][index] !== undefined) {
+      misdemeanors[key].splice(index, 1);
+      if (misdemeanors[key].length === 0) delete misdemeanors[key];
+      localStorage.setItem('bphscaMisdemeanors', JSON.stringify(misdemeanors));
+      renderDashboard();
+    }
+  }
+
+  function openReasonModal(studentId, day) {
+    currentModalStudentId = studentId; currentModalDay = day;
+    const student = students.find(s => s.id === studentId);
+    document.getElementById('rModalContextText').textContent = `${student ? student.name : ''} -> ${day.toUpperCase()}`;
+    document.getElementById('reasonModal').classList.add('open');
+  }
+  function closeReasonModal() {
+    document.getElementById('reasonModal').classList.remove('open');
+    document.getElementById('customReasonInput').value = '';
+    currentModalStudentId = ''; currentModalDay = '';
+  }
+  function addPresetReason(text) {
+    if (!currentModalStudentId || !currentModalDay) return;
+    const key = `W${activeWeek}-${currentModalStudentId}-${currentModalDay}`;
+    if (!latenessReasons[key]) latenessReasons[key] = [];
+    latenessReasons[key].push(text);
+    localStorage.setItem('bphscaLatenessReasons', JSON.stringify(latenessReasons));
+    closeReasonModal();
+    renderDashboard();
+  }
+  function addCustomReason() {
+    const input = document.getElementById('customReasonInput');
+    const text = input.value.trim();
+    if (text === '') return;
+    addPresetReason(text);
+  }
+  function deleteReason(studentId, day, index) {
+    const key = `W${activeWeek}-${studentId}-${day}`;
+    if (latenessReasons[key] && latenessReasons[key][index] !== undefined) {
+      latenessReasons[key].splice(index, 1);
+      if (latenessReasons[key].length === 0) delete latenessReasons[key];
+      localStorage.setItem('bphscaLatenessReasons', JSON.stringify(latenessReasons));
+      renderDashboard();
+    }
+  }
+
+  function exportToSpreadsheet() {
+    let headers = ["Student Name"];
+    const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri'];
+    const labelDays = { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri" };
+    
+    for (let w = 1; w <= totalWeeks; w++) {
+      dayKeys.forEach(d => {
+        headers.push(`W${w}-${labelDays[d]}`);
+      });
+    }
+    
+    headers.push("Total Attended", "Total Late", "Total Absent", "Total Misdemeanors", "Total Exempt Days");
+    let csvRows = [headers.join(",")];
+    
+    // Total calendar exempt days inside the system payload
+    let totExempt = 0;
+    for (let w = 1; w <= totalWeeks; w++) {
+      dayKeys.forEach(day => {
+        if (noSchoolDays[`W${w}-${day}`]) totExempt++;
+      });
+    }
+
+    students.forEach(s => {
+      let rowData = [`"${s.name.replace(/"/g, '""')}"`];
+      let totAtt = 0, totLate = 0, totAbs = 0, totMisd = 0;
+      
+      for (let w = 1; w <= totalWeeks; w++) {
+        dayKeys.forEach(day => {
+          const isNS = noSchoolDays[`W${w}-${day}`];
+          if (isNS) {
+            rowData.push('"NS"');
             return;
           }
-          updateActiveCategoryContextState(key);
+          
+          const key = `W${w}-${s.id}-${day}`;
+          const status = attendance[key] || '';
+          
+          if (status === 'attended') totAtt++;
+          else if (status === 'late') totLate++;
+          else if (status === 'absent') totAbs++;
+          
+          let listMisd = misdemeanors[key] || [];
+          let listReasons = latenessReasons[key] || [];
+          totMisd += listMisd.length;
+          
+          let cellValueStr = "-";
+          if (status === 'attended') cellValueStr = "Att";
+          else if (status === 'late') cellValueStr = "Late";
+          else if (status === 'absent') cellValueStr = "Abs";
+          
+          if (listReasons.length > 0) {
+            cellValueStr += ` (${listReasons.join("; ")})`;
+          }
+          if (listMisd.length > 0) {
+            cellValueStr += ` [Misd: ${listMisd.join("; ")}]`;
+          }
+          
+          rowData.push(`"${cellValueStr.replace(/"/g, '""')}"`);
         });
-        trackAnchor.appendChild(customBtn);
-      });
-    }
-
-    function updateActiveCategoryContextState(targetCategoryKey) {
-      currentActiveCategory = targetCategoryKey;
-      localStorage.setItem('db_active_category', currentActiveCategory);
-      
-      document.getElementById('half-day-toggle-wrapper').style.display = (currentActiveCategory === 'school') ? 'flex' : 'none';
-      drawCategorySelectorsLayoutButtons();
-      autoRebuildTimelineTrack();
-    }
-
-    const editModeToggleBtn = document.getElementById('edit-mode-toggle');
-    editModeToggleBtn.addEventListener('click', () => {
-      isEditModeActive = !isEditModeActive;
-      editModeToggleBtn.classList.toggle('active');
-      document.body.classList.toggle('edit-mode-active');
-      document.getElementById('custom-add-cat-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
-      document.getElementById('edit-wake-time-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
-      document.getElementById('btn-add-as-needed-category').style.display = isEditModeActive ? 'inline-block' : 'none';
-      document.getElementById('btn-add-hobbies-category').style.display = isEditModeActive ? 'inline-block' : 'none';
-      
-      autoRebuildTimelineTrack();
-      renderHabitsMatrixInterfaceTrack();
-      renderAsNeededMenu();
-      renderHobbiesMenu();
-    });
-
-    document.getElementById('edit-wake-time-btn').addEventListener('click', () => {
-      const activeSched = dynamicSchedules[currentActiveCategory];
-      if (!activeSched) return alert("This setup category start time cannot be modified directly.");
-      
-      const currentWakeTime = convertMinutesTo24hInput(activeSched.dayStart);
-      const newTime = prompt(`Change target wake up start time for [${activeSched.name}]:`, currentWakeTime);
-      if (newTime && newTime.includes(':')) {
-        const minutes = parseTimeStrToMinutes(newTime);
-        if (minutes >= 0 && minutes <= 1440) {
-          activeSched.dayStart = minutes;
-          localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-          autoRebuildTimelineTrack();
-        }
       }
-    });
-
-    document.getElementById('custom-add-cat-btn').addEventListener('click', () => {
-      document.getElementById('new-sched-name').value = '';
-      document.getElementById('modal-add-schedule').style.display = 'flex';
-    });
-    document.getElementById('btn-cancel-sched').addEventListener('click', () => {
-      document.getElementById('modal-add-schedule').style.display = 'none';
-    });
-    document.getElementById('btn-save-sched').addEventListener('click', () => {
-      const nameInput = document.getElementById('new-sched-name').value.trim();
-      const startTimeInput = document.getElementById('new-sched-start').value;
-
-      if (!nameInput) return alert("Schedule category label title required.");
-      const totalStartMin = parseTimeStrToMinutes(startTimeInput);
-      if (totalStartMin < 0 || totalStartMin > 900) return alert("Boundary Restriction: Start must be between 12:00 AM and 3:00 PM.");
-
-      const unifiedKeyId = 'cat_' + Date.now();
-      dynamicSchedules[unifiedKeyId] = { name: nameInput, dayStart: totalStartMin, blocks: [] };
-
-      localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
-      document.getElementById('modal-add-schedule').style.display = 'none';
-      updateActiveCategoryContextState(unifiedKeyId);
-    });
-
-    const hdToggleInput = document.getElementById('half-day-toggle');
-    hdToggleInput.checked = isHalfDayChecked;
-    hdToggleInput.addEventListener('change', (e) => {
-      isHalfDayChecked = e.target.checked;
-      localStorage.setItem('db_half_day_toggle', isHalfDayChecked ? 'true' : 'false');
-      autoRebuildTimelineTrack();
-    });
-
-    function handlePipInteraction(groupName, clickedIdx, totalPips) {
-      const firstKey = `${groupName}-0`;
-      const secondKey = `${groupName}-1`;
       
-      if (clickedIdx === 0 && habitActivityLog.checks[firstKey] && !habitActivityLog.checks[secondKey]) {
-        delete habitActivityLog.checks[firstKey];
-      } else {
-        for (let i = 0; i < totalPips; i++) {
-          const cacheKey = `${groupName}-${i}`;
-          if (i <= clickedIdx) {
-            habitActivityLog.checks[cacheKey] = true;
-          } else {
-            delete habitActivityLog.checks[cacheKey];
-          }
-        }
-      }
-      localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
-      renderHabitsMatrixInterfaceTrack();
-    }
-
-    function renderHabitsMatrixInterfaceTrack() {
-      const container = document.getElementById('habit-container-matrix');
-      document.querySelectorAll('.habit-group[data-fixed="false"]').forEach(el => el.remove());
-      const existingAddBtn = document.getElementById('action-trigger-habit-modal');
-      if (existingAddBtn) existingAddBtn.remove();
-
-      habitCustomList.forEach((habit, hIdx) => {
-        const groupWrap = document.createElement('div');
-        groupWrap.className = 'habit-group';
-        groupWrap.setAttribute('data-habit', habit.id);
-        groupWrap.setAttribute('data-fixed', 'false');
-
-        const labelSpan = document.createElement('span');
-        labelSpan.className = 'habit-label';
-        labelSpan.textContent = habit.name;
-        groupWrap.appendChild(labelSpan);
-
-        const pipsWrap = document.createElement('div');
-        pipsWrap.className = 'habit-pips-wrap';
-
-        for (let i = 0; i < habit.pipsCount; i++) {
-          const pipNode = document.createElement('span');
-          pipNode.className = `habit-pip ${habitActivityLog.checks[`${habit.id}-${i}`] ? 'active' : ''}`;
-          pipNode.setAttribute('data-index', i);
-          
-          pipNode.addEventListener('click', () => handlePipInteraction(habit.id, i, habit.pipsCount));
-          pipsWrap.appendChild(pipNode);
-        }
-        groupWrap.appendChild(pipsWrap);
-
-        if (isEditModeActive) {
-          const minusBtn = document.createElement('button'); minusBtn.className = 'habit-ctrl-btn'; minusBtn.textContent = '−';
-          minusBtn.addEventListener('click', () => modifyHabitPipBounds(hIdx, -1));
-          const plusBtn = document.createElement('button'); plusBtn.className = 'habit-ctrl-btn'; plusBtn.textContent = '+';
-          plusBtn.addEventListener('click', () => modifyHabitPipBounds(hIdx, 1));
-          const delBtn = document.createElement('button'); delBtn.className = 'habit-ctrl-btn'; delBtn.style.color = '#ff5555'; delBtn.style.marginLeft = '4px'; delBtn.textContent = '×';
-          delBtn.addEventListener('click', () => purgeHabitEntirely(hIdx));
-
-          groupWrap.appendChild(minusBtn);
-          groupWrap.appendChild(plusBtn);
-          groupWrap.appendChild(delBtn);
-        }
-        container.appendChild(groupWrap);
-      });
-
-      if (isEditModeActive) {
-        const addNewHabitActionBtn = document.createElement('button');
-        addNewHabitActionBtn.className = 'add-habit-btn';
-        addNewHabitActionBtn.id = 'action-trigger-habit-modal';
-        addNewHabitActionBtn.textContent = "+ Add Habit";
-        addNewHabitActionBtn.addEventListener('click', () => {
-          document.getElementById('habit-input-name').value = '';
-          document.getElementById('modal-add-habit').style.display = 'flex';
-        });
-        container.appendChild(addNewHabitActionBtn);
-      }
-
-      document.querySelectorAll('.habit-group[data-fixed="true"]').forEach(groupWrap => {
-        const groupName = groupWrap.getAttribute('data-habit');
-        const pips = groupWrap.querySelectorAll('.habit-pip');
-        
-        pips.forEach(pip => {
-          const pipIdx = parseInt(pip.getAttribute('data-index'));
-          const storageKey = `${groupName}-${pipIdx}`;
-          if (habitActivityLog.checks[storageKey]) { pip.classList.add('active'); } 
-          else { pip.classList.remove('active'); }
-          
-          const newPip = pip.cloneNode(true);
-          pip.replaceWith(newPip);
-          
-          newPip.addEventListener('click', () => handlePipInteraction(groupName, pipIdx, pips.length));
-        });
-      });
-    }
-
-    function modifyHabitPipBounds(index, deltaDirection) {
-      let updatedTotal = habitCustomList[index].pipsCount + deltaDirection;
-      if (updatedTotal >= 1 && updatedTotal <= 5) {
-        habitCustomList[index].pipsCount = updatedTotal;
-        localStorage.setItem('db_habit_custom_list', JSON.stringify(habitCustomList));
-        renderHabitsMatrixInterfaceTrack();
-      }
-    }
-
-    function purgeHabitEntirely(index) {
-      if (confirm(`Remove the custom habit category "${habitCustomList[index].name}"?`)) {
-        habitCustomList.splice(index, 1);
-        localStorage.setItem('db_habit_custom_list', JSON.stringify(habitCustomList));
-        renderHabitsMatrixInterfaceTrack();
-      }
-    }
-
-    document.getElementById('btn-habit-cancel').addEventListener('click', () => { document.getElementById('modal-add-habit').style.display = 'none'; });
-    document.getElementById('btn-habit-save').addEventListener('click', () => {
-      const nameInput = document.getElementById('habit-input-name').value.trim();
-      if (!nameInput) return;
-      habitCustomList.push({ id: 'custom_hb_' + Date.now(), name: nameInput, pipsCount: 1 });
-      localStorage.setItem('db_habit_custom_list', JSON.stringify(habitCustomList));
-      document.getElementById('modal-add-habit').style.display = 'none';
-      renderHabitsMatrixInterfaceTrack();
+      rowData.push(totAtt, totLate, totAbs, totMisd, totExempt);
+      csvRows.push(rowData.join(","));
     });
 
-    function buildFlexibleMenuEngine(targetDataArray, targetGridId, progressFillId, contextSectionToken) {
-      const grid = document.getElementById(targetGridId);
-      grid.innerHTML = '';
-      let totalTasks = 0, checkedTasks = 0;
+    const csvContent = "\uFEFF" + csvRows.join("\n"); 
+    const dataBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.href = URL.createObjectURL(dataBlob);
+    downloadAnchor.download = `BPHSCA_Class_Record_Matrix_Format1.csv`;
+    downloadAnchor.click();
+  }
 
-      targetDataArray.forEach((category, catIdx) => {
-        const card = document.createElement('div');
-        card.className = 'menu-card';
-        
-        const titleRow = document.createElement('div');
-        titleRow.className = 'menu-card-title';
-        titleRow.innerHTML = `<span>${category.title}</span>`;
-        
-        if (isEditModeActive) {
-          const catCtrls = document.createElement('div');
-          catCtrls.innerHTML = `
-            <button class="edit-item-btn context-cat-edit" title="Edit Category" data-context="${contextSectionToken}" data-cat-idx="${catIdx}">✏️</button>
-            <button class="del-item-btn context-cat-del" title="Delete Category" data-context="${contextSectionToken}" data-cat-idx="${catIdx}">×</button>
-          `;
-          titleRow.appendChild(catCtrls);
-        }
-        card.appendChild(titleRow);
-
-        category.items.forEach((item, itemIdx) => {
-          totalTasks++;
-          const group = document.createElement('div');
-          group.className = 'menu-item-group';
-          
-          const isChecked = !!savedStates[item.id];
-          if (isChecked) checkedTasks++;
-
-          let completionHTML = '';
-          if (completedDates[item.id]) {
-            completionHTML = `<span class="last-completed">Last Completed: ${getFormattedDate(completedDates[item.id])} (${getRelativeTime(completedDates[item.id])})</span>`;
-          }
-
-          let durationDisplay = item.duration ? ` <span style="opacity:0.75; font-size:10px; font-weight:500; letter-spacing:0.02em;">(${item.duration})</span>` : '';
-
-          const label = document.createElement('label');
-          label.className = `menu-item ${item.color} ${isChecked ? 'checked' : ''}`;
-          label.innerHTML = `
-            <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''}>
-            <span class="label-text">
-              <span>${item.text}${durationDisplay}</span>
-              ${item.hint ? `<span class="hint">${item.hint}</span>` : ''}
-              ${completionHTML}
-            </span>
-          `;
-          
-          const cb = label.querySelector('input');
-          cb.addEventListener('change', (e) => {
-            if (e.target.checked) {
-              label.classList.add('checked');
-              savedStates[item.id] = true;
-              completedDates[item.id] = new Date().toISOString();
-            } else {
-              label.classList.remove('checked');
-              delete savedStates[item.id];
-            }
-            localStorage.setItem('dashboardCheckboxes', JSON.stringify(savedStates));
-            localStorage.setItem('dashboardLastCompleted', JSON.stringify(completedDates));
-            
-            if (contextSectionToken === 'as_needed') renderAsNeededMenu();
-            else renderHobbiesMenu();
-          });
-          
-          group.appendChild(label);
-
-          if (isEditModeActive) {
-            const taskCtrls = document.createElement('div');
-            taskCtrls.className = 'menu-edit-tools';
-            taskCtrls.innerHTML = `
-              <button class="edit-item-btn context-task-edit" data-context="${contextSectionToken}" data-cat-id="${category.id}" data-task-id="${item.id}">Edit Task</button>
-              <button class="del-item-btn context-task-del" data-context="${contextSectionToken}" data-cat-id="${category.id}" data-task-id="${item.id}">Delete</button>
-            `;
-            group.appendChild(taskCtrls);
-          }
-
-          if (item.pills && item.pills.length > 0) {
-            const sub = document.createElement('div');
-            sub.className = 'sub-selector';
-            sub.style.display = isChecked ? 'flex' : 'none';
-            
-            item.pills.forEach(pillText => {
-              const pillVal = pillText.toLowerCase().replace(/[^a-z0-9]/g, '');
-              const cacheKey = `${item.id}-${pillVal}`;
-              const pill = document.createElement('span');
-              pill.className = `pill ${savedPills[cacheKey] ? 'active' : ''}`;
-              pill.textContent = pillText;
-              
-              pill.addEventListener('click', () => {
-                pill.classList.toggle('active');
-                if (pill.classList.contains('active')) savedPills[cacheKey] = true;
-                else delete savedPills[cacheKey];
-                localStorage.setItem('dashboardSubPills', JSON.stringify(savedPills));
-              });
-              sub.appendChild(pill);
-            });
-            group.appendChild(sub);
-          }
-
-          card.appendChild(group);
-        });
-
-        if (isEditModeActive) {
-          const addTaskBtn = document.createElement('button');
-          addTaskBtn.className = 'add-habit-btn';
-          addTaskBtn.style.marginTop = '10px';
-          addTaskBtn.textContent = '+ Add Task';
-          addTaskBtn.addEventListener('click', () => openTaskEditor(category.id, null, contextSectionToken));
-          card.appendChild(addTaskBtn);
-        }
-
-        grid.appendChild(card);
-      });
-
-      const percentage = totalTasks > 0 ? (checkedTasks / totalTasks) * 100 : 0;
-      document.getElementById(progressFillId).style.width = `${percentage}%`;
-      
-      bindUniversalContextListeners();
-    }
-
-    function renderAsNeededMenu() {
-      buildFlexibleMenuEngine(asNeededData, 'dynamic-menu-grid', 'progress-bar-fill', 'as_needed');
-    }
-
-    function renderHobbiesMenu() {
-      buildFlexibleMenuEngine(hobbiesData, 'dynamic-hobbies-grid', 'hobbies-progress-bar-fill', 'hobbies');
-    }
-
-    function bindUniversalContextListeners() {
-      document.querySelectorAll('.edit-item-btn.context-cat-edit').forEach(btn => {
-        btn.onclick = (e) => {
-          const context = e.currentTarget.getAttribute('data-context');
-          const idx = e.currentTarget.getAttribute('data-cat-idx');
-          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
-          
-          document.getElementById('cat-modal-title').textContent = context === 'as_needed' ? 'Edit Menu Category' : 'Edit Hobby Category';
-          document.getElementById('edit-cat-section-context').value = context;
-          document.getElementById('edit-cat-id').value = dataset[idx].id;
-          document.getElementById('edit-cat-name').value = dataset[idx].title;
-          document.getElementById('modal-edit-category').style.display = 'flex';
-        };
-      });
-
-      document.querySelectorAll('.del-item-btn.context-cat-del').forEach(btn => {
-        btn.onclick = (e) => {
-          const context = e.currentTarget.getAttribute('data-context');
-          const idx = e.currentTarget.getAttribute('data-cat-idx');
-          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
-          
-          if(confirm(`Delete category '${dataset[idx].title}' and all its tasks?`)) {
-            dataset.splice(idx, 1);
-            saveDataEngineContext(context);
-          }
-        };
-      });
-
-      document.querySelectorAll('.context-task-edit').forEach(btn => {
-        btn.onclick = (e) => {
-          openTaskEditor(e.currentTarget.getAttribute('data-cat-id'), e.currentTarget.getAttribute('data-task-id'), e.currentTarget.getAttribute('data-context'));
-        };
-      });
-
-      document.querySelectorAll('.context-task-del').forEach(btn => {
-        btn.onclick = (e) => {
-          const context = e.currentTarget.getAttribute('data-context');
-          const catId = e.currentTarget.getAttribute('data-cat-id');
-          const taskId = e.currentTarget.getAttribute('data-task-id');
-          const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
-          
-          if(confirm(`Delete this task?`)) {
-            const cat = dataset.find(c => c.id === catId);
-            cat.items = cat.items.filter(i => i.id !== taskId);
-            saveDataEngineContext(context);
-          }
-        };
-      });
-    }
-
-    document.getElementById('btn-add-as-needed-category').onclick = () => {
-      document.getElementById('cat-modal-title').textContent = 'Add Menu Category';
-      document.getElementById('edit-cat-section-context').value = 'as_needed';
-      document.getElementById('edit-cat-id').value = '';
-      document.getElementById('edit-cat-name').value = '';
-      document.getElementById('modal-edit-category').style.display = 'flex';
+  function exportDataBackup() {
+    const payload = {
+      version: "5.2-MatrixAndFadingSupport",
+      totalWeeks: totalWeeks,
+      students: students,
+      attendance: attendance,
+      misdemeanors: misdemeanors,
+      latenessReasons: latenessReasons,
+      noSchoolDays: noSchoolDays
     };
+    const dataBlob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(dataBlob);
+    a.download = `BPHSCA_SystemBackup_Payload.json`;
+    a.click();
+  }
 
-    document.getElementById('btn-add-hobbies-category').onclick = () => {
-      document.getElementById('cat-modal-title').textContent = 'Add Hobby Category';
-      document.getElementById('edit-cat-section-context').value = 'hobbies';
-      document.getElementById('edit-cat-id').value = '';
-      document.getElementById('edit-cat-name').value = '';
-      document.getElementById('modal-edit-category').style.display = 'flex';
+  function triggerImportSelection() { document.getElementById('hiddenImportEl').click(); }
+
+  function importDataBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const parsed = JSON.parse(e.target.result);
+        if (parsed.students && parsed.attendance) { 
+          totalWeeks = parsed.totalWeeks || 11;
+          students = parsed.students || [];
+          attendance = parsed.attendance || {};
+          misdemeanors = parsed.misdemeanors || {};
+          latenessReasons = parsed.latenessReasons || {};
+          noSchoolDays = parsed.noSchoolDays || {};
+          
+          localStorage.setItem('bphscaTotalWeeks', totalWeeks);
+          localStorage.setItem('bphscaStudents_List', JSON.stringify(students));
+          localStorage.setItem('bphscaAttendance', JSON.stringify(attendance));
+          localStorage.setItem('bphscaMisdemeanors', JSON.stringify(misdemeanors));
+          localStorage.setItem('bphscaLatenessReasons', JSON.stringify(latenessReasons));
+          localStorage.setItem('bphscaNoSchoolDays', JSON.stringify(noSchoolDays));
+          
+          alert("Backup data integration deployed successfully.");
+          isDisplayingGrandTotals = false;
+          activeWeek = 1;
+          updateInterfaceLanguage();
+        }
+      } catch (err) { alert("Error parsing storage JSON data schema payload configuration file."); }
     };
+    reader.readAsText(file);
+  }
 
-    document.getElementById('btn-cat-cancel').addEventListener('click', () => document.getElementById('modal-edit-category').style.display = 'none');
-    document.getElementById('btn-cat-save').addEventListener('click', () => {
-      const name = document.getElementById('edit-cat-name').value.trim();
-      const id = document.getElementById('edit-cat-id').value;
-      const context = document.getElementById('edit-cat-section-context').value;
-      const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
-      if (!name) return;
-
-      if (id) {
-        dataset.find(c => c.id === id).title = name;
-      } else {
-        dataset.push({ id: 'cat_' + Date.now(), title: name, items: [] });
-      }
-      saveDataEngineContext(context);
-      document.getElementById('modal-edit-category').style.display = 'none';
-    });
-
-    function openTaskEditor(catId, taskId, contextSectionToken) {
-      document.getElementById('edit-task-cat-id').value = catId;
-      document.getElementById('edit-task-section-context').value = contextSectionToken;
-      const dataset = contextSectionToken === 'as_needed' ? asNeededData : hobbiesData;
-      
-      if (taskId) {
-        document.getElementById('task-modal-title').textContent = 'Edit Task';
-        const cat = dataset.find(c => c.id === catId);
-        const task = cat.items.find(i => i.id === taskId);
-        document.getElementById('edit-task-id').value = task.id;
-        document.getElementById('edit-task-name').value = task.text;
-        document.getElementById('edit-task-duration').value = task.duration || '';
-        document.getElementById('edit-task-hint').value = task.hint || '';
-        document.getElementById('edit-task-color').value = task.color;
-        document.getElementById('edit-task-pills').value = task.pills ? task.pills.join(', ') : '';
-      } else {
-        document.getElementById('task-modal-title').textContent = 'Add Task';
-        document.getElementById('edit-task-id').value = '';
-        document.getElementById('edit-task-name').value = '';
-        document.getElementById('edit-task-duration').value = '';
-        document.getElementById('edit-task-hint').value = '';
-        document.getElementById('edit-task-color').value = 'c-amber';
-        document.getElementById('edit-task-pills').value = '';
-      }
-      document.getElementById('modal-edit-task').style.display = 'flex';
-    }
-
-    document.getElementById('btn-task-cancel').addEventListener('click', () => document.getElementById('modal-edit-task').style.display = 'none');
-    document.getElementById('btn-task-save').addEventListener('click', () => {
-      const catId = document.getElementById('edit-task-cat-id').value;
-      const taskId = document.getElementById('edit-task-id').value;
-      const context = document.getElementById('edit-task-section-context').value;
-      const text = document.getElementById('edit-task-name').value.trim();
-      const duration = document.getElementById('edit-task-duration').value.trim();
-      const hint = document.getElementById('edit-task-hint').value.trim();
-      const color = document.getElementById('edit-task-color').value;
-      const pillsRaw = document.getElementById('edit-task-pills').value;
-      const pills = pillsRaw.split(',').map(s => s.trim()).filter(s => s);
-
-      if (!text) return;
-
-      const dataset = context === 'as_needed' ? asNeededData : hobbiesData;
-      const cat = dataset.find(c => c.id === catId);
-      if (taskId) {
-        const task = cat.items.find(i => i.id === taskId);
-        task.text = text; task.duration = duration; task.hint = hint; task.color = color; task.pills = pills;
-      } else {
-        cat.items.push({ id: 'task_' + Date.now(), text, duration, hint, color, pills });
-      }
-      saveDataEngineContext(context);
-      document.getElementById('modal-edit-task').style.display = 'none';
-    });
-
-    function saveDataEngineContext(contextSectionToken) {
-      if (contextSectionToken === 'as_needed') {
-        localStorage.setItem('db_as_needed', JSON.stringify(asNeededData));
-        renderAsNeededMenu();
-      } else {
-        localStorage.setItem('db_hobbies', JSON.stringify(hobbiesData));
-        renderHobbiesMenu();
-      }
-    }
-
-    let pfClassCount = parseInt(localStorage.getItem('palfishClassCount')) || 0;
-    const pfCountEl = document.getElementById('pf-count');
-    const pfEarningsEl = document.getElementById('pf-earnings');
-
-    function renderPalFishLedger() {
-      pfCountEl.textContent = pfClassCount;
-      pfEarningsEl.textContent = pfClassCount * 35;
-    }
-
-    document.getElementById('pf-plus').addEventListener('click', () => {
-      pfClassCount++; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger();
-    });
-
-    document.getElementById('pf-minus').addEventListener('click', () => {
-      if (pfClassCount > 0) { pfClassCount--; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger(); }
-    });
-
-    document.getElementById('reset-week-btn').addEventListener('click', () => {
-      if (confirm('Clear all task selections, completed dates, ledger metrics, and pet pills for the new week?')) {
-        savedStates = {}; savedPills = {}; completedDates = {};
-        localStorage.removeItem('dashboardCheckboxes');
-        localStorage.removeItem('dashboardSubPills');
-        localStorage.removeItem('dashboardLastCompleted');
-        localStorage.removeItem('palfishClassCount');
-        pfClassCount = 0; renderPalFishLedger();
-        renderAsNeededMenu();
-        renderHobbiesMenu();
-      }
-    });
-
-    function updateClock() {
-      const now = new Date();
-      const optionsDay = { weekday: 'long' };
-      const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
-      document.getElementById('live-header-meta').textContent = `Drei · ${now.toLocaleDateString('en-US', optionsDay)} · ${now.toLocaleTimeString('en-US', optionsTime)}`;
-    }
-
-    function executeLiveTimelineTrackingUpdates() {
-      const now = new Date();
-      const currentDay = now.getDay();
-      const currentMinutes = (now.getHours() * 60) + now.getMinutes();
-
-      document.querySelectorAll('.tl-block.live-current').forEach(el => el.classList.remove('live-current'));
-
-      const blockElements = document.querySelectorAll('#master-timeline-track .tl-block[data-start][data-end]');
-      let todayBlocks = [];
-
-      blockElements.forEach(el => {
-        const start = parseInt(el.getAttribute('data-start'));
-        const end = parseInt(el.getAttribute('data-end'));
-        const cleanNode = el.cloneNode(true);
-        const sub = cleanNode.querySelector('.sub');
-        if (sub) sub.remove();
-        const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('-')[0].trim();
-        todayBlocks.push({ element: el, name: parsedTitle, start, end });
-      });
-
-      todayBlocks.sort((a, b) => a.start - b.start);
-
-      let activeBlock = null; let nextBlock = null;
-      for (let i = 0; i < todayBlocks.length; i++) {
-        const b = todayBlocks[i];
-        if (currentMinutes >= b.start && currentMinutes < b.end) {
-          b.element.classList.add('live-current');
-          activeBlock = b;
-          if (i + 1 < todayBlocks.length) nextBlock = todayBlocks[i + 1];
-          break;
-        }
-      }
-
-      if (!activeBlock) {
-        for (let i = 0; i < todayBlocks.length; i++) {
-          if (todayBlocks[i].start > currentMinutes) { nextBlock = todayBlocks[i]; break; }
-        }
-      }
-
-      let calculatedDiff = nextBlock ? nextBlock.start - currentMinutes : 0;
-      const dockTitle = document.getElementById('next-dock-title');
-      const dockTimer = document.getElementById('next-dock-timer');
-
-      if (nextBlock) {
-        let timeStr = calculatedDiff >= 60 ? `in ${Math.floor(calculatedDiff / 60)}h ${calculatedDiff % 60}m` : `in ${calculatedDiff}m`;
-        dockTitle.textContent = nextBlock.name;
-        dockTimer.textContent = timeStr;
-      } else {
-        dockTitle.textContent = 'Routines completed / Tracking idle';
-        dockTimer.textContent = '--';
-      }
-    }
-
-    const exportBtn = document.getElementById('export-json-btn');
-    const importBtn = document.getElementById('import-json-btn');
-    const importFileInput = document.getElementById('import-json-file');
-
-    exportBtn.addEventListener('click', () => {
-      const backupData = {
-        dashboardCheckboxes: JSON.parse(localStorage.getItem('dashboardCheckboxes')),
-        dashboardSubPills: JSON.parse(localStorage.getItem('dashboardSubPills')),
-        dashboardLastCompleted: JSON.parse(localStorage.getItem('dashboardLastCompleted')),
-        db_as_needed: JSON.parse(localStorage.getItem('db_as_needed')),
-        db_hobbies: JSON.parse(localStorage.getItem('db_hobbies')),
-        palfishClassCount: localStorage.getItem('palfishClassCount'),
-        db_dynamic_schedules: JSON.parse(localStorage.getItem('db_dynamic_schedules')),
-        db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
-        db_habit_activity_log: JSON.parse(localStorage.getItem('db_habit_activity_log')),
-        db_active_category: localStorage.getItem('db_active_category'),
-        db_half_day_toggle: localStorage.getItem('db_half_day_toggle')
-      };
-
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `dashboard_master_backup_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click(); downloadAnchor.remove();
-    });
-
-    importBtn.addEventListener('click', () => importFileInput.click());
-    importFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        try {
-          const importedData = JSON.parse(event.target.result);
-          if (importedData.dashboardCheckboxes) localStorage.setItem('dashboardCheckboxes', JSON.stringify(importedData.dashboardCheckboxes));
-          if (importedData.dashboardSubPills) localStorage.setItem('dashboardSubPills', JSON.stringify(importedData.dashboardSubPills));
-          if (importedData.dashboardLastCompleted) localStorage.setItem('dashboardLastCompleted', JSON.stringify(importedData.dashboardLastCompleted));
-          if (importedData.db_as_needed) localStorage.setItem('db_as_needed', JSON.stringify(importedData.db_as_needed));
-          if (importedData.db_hobbies) localStorage.setItem('db_hobbies', JSON.stringify(importedData.db_hobbies));
-          if (importedData.palfishClassCount !== null) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
-          if (importedData.db_dynamic_schedules) localStorage.setItem('db_dynamic_schedules', JSON.stringify(importedData.db_dynamic_schedules));
-          if (importedData.db_habit_custom_list) localStorage.setItem('db_habit_custom_list', JSON.stringify(importedData.db_habit_custom_list));
-          if (importedData.db_habit_activity_log) localStorage.setItem('db_habit_activity_log', JSON.stringify(importedData.db_habit_activity_log));
-          if (importedData.db_active_category) localStorage.setItem('db_active_category', importedData.db_active_category);
-          if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
-
-          alert('Data metrics imported successfully! Updating your workspace dashboard...');
-          window.location.reload();
-        } catch (err) { alert('Could not parse layout data. Validation tracking checksum failure.'); }
-      };
-      reader.readAsText(file);
-    });
-
-    updateClock();
-    renderPalFishLedger();
-    drawCategorySelectorsLayoutButtons();
-    autoRebuildTimelineTrack();
-    renderHabitsMatrixInterfaceTrack();
-    renderAsNeededMenu();
-    renderHobbiesMenu();
-
-    setInterval(updateClock, 1000);
-    setInterval(executeLiveTimelineTrackingUpdates, 20000);
-  });
+  initDatabaseSync();
+  updateInterfaceLanguage();
+  initStickyToolbarObserver();
+  
+  // Initialize dynamic placeholder fade sequence tracker
+  setInterval(cycleFadingInputPlaceholder, 3000);
 </script>
+
 </body>
 </html>
