@@ -149,7 +149,7 @@
       color: var(--text);
     }
 
-    /* Refactored purely color based schedule legend */
+    /* Dynamic Category Customization Legend */
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -163,6 +163,20 @@
       font-size: 11px;
       color: var(--muted);
       letter-spacing: 0.02em;
+    }
+    .leg input {
+      background: transparent;
+      border: none;
+      border-bottom: 0.5px dashed var(--border);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      width: 85px;
+      padding: 0 2px;
+    }
+    .leg input:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
     }
     .dot {
       width: 7px;
@@ -433,7 +447,7 @@
       display: block;
     }
 
-    /* Refactored clean color classes mapping */
+    /* Clean color classes mapping */
     .t-free     { background: var(--free-bg);     color: var(--free-fg);     border-left-color: #444440; }
     .t-amber    { background: var(--amber-bg);    color: var(--amber-fg);    border-left-color: #c07830; }
     .t-blue     { background: var(--blue-bg);     color: var(--blue-fg);     border-left-color: #2a7ec0; }
@@ -823,18 +837,7 @@
     </div>
   </div>
 
-  <div class="legend">
-    <span class="leg"><span class="dot" style="background:#444440;"></span>Free Time</span>
-    <span class="leg"><span class="dot" style="background:#c07830;"></span>Amber</span>
-    <span class="leg"><span class="dot" style="background:#2a7ec0;"></span>Blue</span>
-    <span class="leg"><span class="dot" style="background:#1a9060;"></span>Teal</span>
-    <span class="leg"><span class="dot" style="background:#5855c0;"></span>Purple</span>
-    <span class="leg"><span class="dot" style="background:#902050;"></span>Pink</span>
-    <span class="leg"><span class="dot" style="background:#2a6010;"></span>Green</span>
-    <span class="leg"><span class="dot" style="background:#c05520;"></span>Orange</span>
-    <span class="leg"><span class="dot" style="background:#aa2020;"></span>Red</span>
-    <span class="leg"><span class="dot" style="background:#be95c4;"></span>Lavender</span>
-  </div>
+  <div class="legend"></div>
 
   <div class="schedule-section" data-section="weekday">
     <div class="section-label-row">
@@ -966,18 +969,7 @@
 
     <div class="modal-field">
       <label>Block Classification Style Color</label>
-      <select id="block-input-color">
-        <option value="t-free">Free Time</option>
-        <option value="t-amber">Amber</option>
-        <option value="t-blue">Blue</option>
-        <option value="t-teal">Teal</option>
-        <option value="t-purple">Purple</option>
-        <option value="t-pink">Pink</option>
-        <option value="t-green">Green</option>
-        <option value="t-orange">Orange</option>
-        <option value="t-red">Red</option>
-        <option value="t-lavender">Lavender</option>
-      </select>
+      <select id="block-input-color"></select>
     </div>
 
     <div class="modal-field" id="smart-gap-picker-field">
@@ -1226,7 +1218,6 @@
       }
     ];
 
-    /* Completely overhauled structure */
     const DEFAULT_HOBBIES = [
       {
         id: "cat_creativity", title: "Creativity",
@@ -1294,6 +1285,20 @@
     let isEditModeActive = false;
     let isHalfDayChecked = localStorage.getItem('db_half_day_toggle') === 'true';
 
+    // Core Custom Category Color Mappings
+    let colorLabels = JSON.parse(localStorage.getItem('db_color_labels')) || {
+      't-free': 'Free Time',
+      't-amber': 'Amber',
+      't-blue': 'Blue',
+      't-teal': 'Teal',
+      't-purple': 'Purple',
+      't-pink': 'Pink',
+      't-green': 'Green',
+      't-orange': 'Orange',
+      't-red': 'Red',
+      't-lavender': 'Lavender'
+    };
+
     let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
     if (!dynamicSchedules) {
       dynamicSchedules = {
@@ -1305,9 +1310,8 @@
       dynamicSchedules.weekend = { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] };
     }
 
-    // Weekend Automation Tracker
     function checkWeekendAutomation() {
-      const currentDayNum = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+      const currentDayNum = new Date().getDay(); 
       const isWeekendNow = (currentDayNum === 0 || currentDayNum === 6);
       let lastWeekdayCat = localStorage.getItem('db_last_weekday_category') || 'default';
       
@@ -1359,6 +1363,7 @@
     }
 
     function parseTimeStrToMinutes(timeStr) {
+      if (!timeStr) return 0;
       const [h, m] = timeStr.split(':').map(Number);
       return (h * 60) + m;
     }
@@ -1398,6 +1403,58 @@
       return gaps;
     }
 
+    // Dynamic UI Color Legend Engine
+    function renderLegend() {
+      const legendContainer = document.querySelector('.legend');
+      legendContainer.innerHTML = '';
+      
+      const colorBackgrounds = {
+        't-free': '#444440', 't-amber': '#c07830', 't-blue': '#2a7ec0',
+        't-teal': '#1a9060', 't-purple': '#5855c0', 't-pink': '#902050',
+        't-green': '#2a6010', 't-orange': '#c05520', 't-red': '#aa2020',
+        't-lavender': '#be95c4'
+      };
+
+      Object.keys(colorLabels).forEach(key => {
+        const span = document.createElement('span');
+        span.className = 'leg';
+        
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.style.background = colorBackgrounds[key];
+        span.appendChild(dot);
+        
+        if (isEditModeActive) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = colorLabels[key];
+          input.addEventListener('change', (e) => {
+            colorLabels[key] = e.target.value.trim() || key.replace('t-', '');
+            localStorage.setItem('db_color_labels', JSON.stringify(colorLabels));
+            renderLegend();
+            updateBlockColorDropdown();
+            autoRebuildTimelineTrack();
+          });
+          span.appendChild(input);
+        } else {
+          span.appendChild(document.createTextNode(colorLabels[key]));
+        }
+        legendContainer.appendChild(span);
+      });
+    }
+
+    function updateBlockColorDropdown() {
+      const select = document.getElementById('block-input-color');
+      if (!select) return;
+      select.innerHTML = '';
+      Object.keys(colorLabels).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = colorLabels[key];
+        select.appendChild(opt);
+      });
+    }
+
     function autoRebuildTimelineTrack() {
       const container = document.getElementById('master-timeline-track');
       container.innerHTML = '';
@@ -1433,7 +1490,7 @@
           mergedSequence.push({
             start: currentProgress,
             end: b.start,
-            name: "Free time",
+            name: colorLabels['t-free'],
             sub: "Unallocated open window",
             style: "t-free",
             isFreeFiller: true
@@ -1447,7 +1504,7 @@
         mergedSequence.push({
           start: currentProgress,
           end: 1440,
-          name: "Free time",
+          name: colorLabels['t-free'],
           sub: "Unallocated open window",
           style: "t-free",
           isFreeFiller: true
@@ -1478,7 +1535,7 @@
         if (isCurrentTrackEditable) {
           let controlsHTML = `<div class="tl-inline-ctrls">`;
           if (block.isFreeFiller) {
-            controlsHTML += `<button class="inline-action-btn add-btn" data-start="${block.start}" data-end="${block.end}">+ Add Block</button>`;
+            controlsHTML += `<button class="inline-action-btn add-btn" data-start="${block.start}" data-end="${block.end}">Edit into Block</button>`;
           } else {
             controlsHTML += `
               <button class="inline-action-btn edit-btn" data-idx="${idx}" data-start="${block.start}">Edit</button>
@@ -1511,7 +1568,7 @@
           const end = parseInt(btn.getAttribute('data-end'));
           selectedGapContext = { start, end };
           currentTargetEditingBlockStart = null;
-          openBlockEditorModal("Create Dynamic Block", start, end);
+          openBlockEditorModal("Edit Unallocated Window into Block", start, end);
         });
       });
 
@@ -1549,6 +1606,7 @@
       const selectGapField = document.getElementById('smart-gap-picker-field');
       const selectGapDropdown = document.getElementById('block-smart-gap-select');
       selectGapDropdown.innerHTML = '';
+      updateBlockColorDropdown();
 
       if (blockData) {
         selectGapField.style.display = 'none';
@@ -1558,19 +1616,21 @@
         document.getElementById('block-input-start').value = convertMinutesTo24hInput(blockData.start);
         document.getElementById('block-input-end').value = convertMinutesTo24hInput(blockData.end);
       } else {
-        selectGapField.style.display = 'flex';
+        selectGapField.style.display = selectedGapContext ? 'none' : 'flex';
         document.getElementById('block-input-title').value = '';
         document.getElementById('block-input-sub').value = '';
-        document.getElementById('block-input-color').value = 't-free';
+        document.getElementById('block-input-color').value = 't-amber';
 
-        const gaps = getGapsForSchedule(dynamicSchedules[currentActiveCategory]);
-        gaps.forEach(g => {
-          const opt = document.createElement('option');
-          opt.value = `${g.start}-${g.end}`;
-          opt.textContent = `${parseMinutesToTimeStr(g.start)} to ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
-          if (g.start === gapStart && g.end === gapEnd) opt.selected = true;
-          selectGapDropdown.appendChild(opt);
-        });
+        if (!selectedGapContext) {
+          const gaps = getGapsForSchedule(dynamicSchedules[currentActiveCategory]);
+          gaps.forEach(g => {
+            const opt = document.createElement('option');
+            opt.value = `${g.start}-${g.end}`;
+            opt.textContent = `${parseMinutesToTimeStr(g.start)} to ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
+            if (g.start === gapStart && g.end === gapEnd) opt.selected = true;
+            selectGapDropdown.appendChild(opt);
+          });
+        }
 
         document.getElementById('block-input-start').value = convertMinutesTo24hInput(gapStart);
         document.getElementById('block-input-end').value = convertMinutesTo24hInput(gapEnd);
@@ -1580,6 +1640,7 @@
     }
 
     function convertMinutesTo24hInput(totalMin) {
+      if (totalMin === 1440) return "00:00";
       let h = Math.floor(totalMin / 60);
       let m = totalMin % 60;
       if (h === 24) h = 0; 
@@ -1618,6 +1679,7 @@
         } else {
           finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
           finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
+          if (finalEnd === 0 && finalStart > 0) finalEnd = 1440;
         }
 
         if (finalEnd <= finalStart || finalEnd > 1440) return alert("Layout Error: Out of bounds tracking window detected.");
@@ -1627,6 +1689,21 @@
 
         let idx = activeSched.blocks.findIndex(b => b.start === currentTargetEditingBlockStart);
         activeSched.blocks[idx] = { start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass };
+      } else if (selectedGapContext) {
+        if (allocationMethod === 'duration') {
+          const durationVal = parseInt(document.getElementById('block-input-duration').value);
+          finalStart = selectedGapContext.start;
+          finalEnd = finalStart + durationVal;
+          if (finalEnd > selectedGapContext.end) return alert(`Duration exceeds the unallocated window size.`);
+        } else {
+          finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
+          finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
+          if (finalEnd === 0 && finalStart > 0) finalEnd = 1440;
+          if (finalStart < selectedGapContext.start || finalEnd > selectedGapContext.end || finalEnd <= finalStart) {
+            return alert("Boundary Violation: Time blocks must remain within the selected unallocated window.");
+          }
+        }
+        activeSched.blocks.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
       } else {
         const [gStart, gEnd] = document.getElementById('block-smart-gap-select').value.split('-').map(Number);
 
@@ -1638,6 +1715,7 @@
         } else {
           finalStart = parseTimeStrToMinutes(document.getElementById('block-input-start').value);
           finalEnd = parseTimeStrToMinutes(document.getElementById('block-input-end').value);
+          if (finalEnd === 0 && finalStart > 0) finalEnd = 1440;
           if (finalStart < gStart || finalEnd > gEnd || finalEnd <= finalStart) return alert("Boundary Violation.");
         }
 
@@ -1805,6 +1883,7 @@
       document.getElementById('btn-add-as-needed-category').style.display = isEditModeActive ? 'inline-block' : 'none';
       document.getElementById('btn-add-hobbies-category').style.display = isEditModeActive ? 'inline-block' : 'none';
       
+      renderLegend();
       autoRebuildTimelineTrack();
       renderHabitsMatrixInterfaceTrack();
       renderAsNeededMenu();
@@ -2362,7 +2441,8 @@
         db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
         db_habit_activity_log: JSON.parse(localStorage.getItem('db_habit_activity_log')),
         db_active_category: localStorage.getItem('db_active_category'),
-        db_half_day_toggle: localStorage.getItem('db_half_day_toggle')
+        db_half_day_toggle: localStorage.getItem('db_half_day_toggle'),
+        db_color_labels: JSON.parse(localStorage.getItem('db_color_labels'))
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
@@ -2393,6 +2473,7 @@
           if (importedData.db_habit_activity_log) localStorage.setItem('db_habit_activity_log', JSON.stringify(importedData.db_habit_activity_log));
           if (importedData.db_active_category) localStorage.setItem('db_active_category', importedData.db_active_category);
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
+          if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
 
           alert('Data metrics imported successfully! Updating your workspace dashboard...');
           window.location.reload();
@@ -2402,6 +2483,7 @@
     });
 
     updateClock();
+    renderLegend();
     renderPalFishLedger();
     drawCategorySelectorsLayoutButtons();
     autoRebuildTimelineTrack();
