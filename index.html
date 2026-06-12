@@ -24,17 +24,17 @@
       --muted: #6b6860;
       --accent: #c9a96e;
 
-      /* block colors */
-      --morning-bg: #2a1a05; --morning-fg: #f0c07a;
-      --school-bg:  #062440; --school-fg:  #8ec4f0;
-      --free-bg:    #1a1a18; --free-fg:    #c8c5bc;
-      --teach-bg:   #1a1830; --teach-fg:   #b8b4f5;
-      --pets-bg:    #052820; --pets-fg:    #7ddcb8;
-      --chores-bg:  #062440; --chores-fg:  #6daadf;
-      --night-bg:   #2a0d18; --night-fg:   #f0aec8;
-      --sleep-bg:   #0d2205; --sleep-fg:   #a8d47a;
-      --church-bg:  #1a1830; --church-fg:  #b8b4f5;
-      --custom-bg:  #22162b; --custom-fg:  #e0aaff;
+      /* Block palette styles */
+      --free-bg:     #1a1a18; --free-fg:     #c8c5bc;
+      --amber-bg:    #2a1a05; --amber-fg:    #f0c07a;
+      --blue-bg:     #062440; --blue-fg:     #8ec4f0;
+      --teal-bg:     #052820; --teal-fg:     #7ddcb8;
+      --purple-bg:   #1a1830; --purple-fg:   #b8b4f5;
+      --pink-bg:     #2a0d18; --pink-fg:     #f0aec8;
+      --green-bg:    #0d2205; --green-fg:    #a8d47a;
+      --orange-bg:   #2a1205; --orange-fg:   #f0956a;
+      --red-bg:      #2a0505; --red-fg:      #ff7575;
+      --lavender-bg: #22162b; --lavender-fg: #e0aaff;
     }
 
     body {
@@ -53,7 +53,7 @@
       padding-bottom: calc(5rem + env(safe-area-inset-bottom));
     }
 
-    /* ── Header ── */
+    /* Header styling */
     .header {
       margin-bottom: 2.5rem;
       border-bottom: 0.5px solid var(--border);
@@ -78,7 +78,7 @@
       text-transform: uppercase;
     }
 
-    /* ── Daily Habit Pips ── */
+    /* Habits setup */
     .habit-container {
       display: flex;
       flex-wrap: wrap;
@@ -149,7 +149,7 @@
       color: var(--text);
     }
 
-    /* ── Legend ── */
+    /* Refactored purely color based schedule legend */
     .legend {
       display: flex;
       flex-wrap: wrap;
@@ -171,7 +171,7 @@
       flex-shrink: 0;
     }
 
-    /* ── Section Header Row ── */
+    /* Layout headers */
     .section-label-row {
       display: flex;
       justify-content: space-between;
@@ -193,7 +193,7 @@
       text-transform: uppercase;
     }
 
-    /* Category Engine Interface Selector */
+    /* Selectors layout setup */
     .cat-selector-row {
       display: flex;
       align-items: center;
@@ -265,7 +265,6 @@
       border-color: var(--accent);
     }
 
-    /* ── Reset / Edit Mode Buttons ── */
     .engine-controls-right {
       display: flex;
       align-items: center;
@@ -306,7 +305,7 @@
       background: rgba(240, 192, 122, 0.05);
     }
 
-    /* ── PalFish Ledger Card UI ── */
+    /* PalFish Track layout */
     .palfish-ledger {
       background: var(--bg2);
       border: 0.5px solid var(--border);
@@ -359,7 +358,7 @@
       letter-spacing: 0.02em;
     }
 
-    /* ── Completion Progress Bar ── */
+    /* Progress meters */
     .progress-container {
       width: 100%;
       height: 2px;
@@ -381,7 +380,6 @@
       margin: 1.75rem 0;
     }
 
-    /* ── Smart Day Dimming Setup ── */
     [data-section] {
       transition: opacity 0.4s ease, filter 0.4s ease;
     }
@@ -394,7 +392,7 @@
       filter: none;
     }
 
-    /* ── Timeline ── */
+    /* Timeline architecture */
     .timeline {
       display: grid;
       grid-template-columns: 110px 1fr;
@@ -435,20 +433,20 @@
       display: block;
     }
 
-    .t-morning { background: var(--morning-bg); color: var(--morning-fg); border-left-color: #c07830; }
-    .t-school  { background: var(--school-bg);  color: var(--school-fg);  border-left-color: #2a7ec0; }
-    .t-free    { background: var(--free-bg);    color: var(--free-fg);    border-left-color: #444440; }
-    .t-teach   { background: var(--teach-bg);   color: var(--teach-fg);   border-left-color: #5855c0; }
-    .t-pets    { background: var(--pets-bg);     color: var(--pets-fg);    border-left-color: #1a9060; }
-    .t-chores  { background: var(--chores-bg);  color: var(--chores-fg);  border-left-color: #1a6aaa; }
-    .t-night   { background: var(--night-bg);   color: var(--night-fg);   border-left-color: #902050; }
-    .t-sleep   { background: var(--sleep-bg);   color: var(--sleep-fg);   border-left-color: #2a6010; }
-    .t-church  { background: var(--church-bg);  color: var(--church-fg);  border-left-color: #5855c0; }
-    .t-custom  { background: var(--custom-bg);  color: var(--custom-fg);  border-left-color: #be95c4; }
+    /* Refactored clean color classes mapping */
+    .t-free     { background: var(--free-bg);     color: var(--free-fg);     border-left-color: #444440; }
+    .t-amber    { background: var(--amber-bg);    color: var(--amber-fg);    border-left-color: #c07830; }
+    .t-blue     { background: var(--blue-bg);     color: var(--blue-fg);     border-left-color: #2a7ec0; }
+    .t-teal     { background: var(--teal-bg);     color: var(--teal-fg);     border-left-color: #1a9060; }
+    .t-purple   { background: var(--purple-bg);   color: var(--purple-fg);   border-left-color: #5855c0; }
+    .t-pink     { background: var(--pink-bg);     color: var(--pink-fg);     border-left-color: #902050; }
+    .t-green    { background: var(--green-bg);    color: var(--green-fg);    border-left-color: #2a6010; }
+    .t-orange   { background: var(--orange-bg);   color: var(--orange-fg);   border-left-color: #c05520; }
+    .t-red      { background: var(--red-bg);      color: var(--red-fg);      border-left-color: #aa2020; }
+    .t-lavender { background: var(--lavender-bg); color: var(--lavender-fg); border-left-color: #be95c4; }
 
-    /* Inline Inline Edit Controls Block */
     .tl-inline-ctrls {
-      display: none; /* Toggled via edit mode */
+      display: none;
       gap: 4px;
       align-items: center;
       margin-top: 4px;
@@ -475,7 +473,6 @@
       color: #ff5555;
     }
 
-    /* Dynamic Color-Matched Glow Feature */
     .tl-block.live-current {
       position: relative;
       z-index: 5;
@@ -488,7 +485,7 @@
       100% { box-shadow: 0 0 8px color-mix(in srgb, currentColor 15%, transparent), inset 0 0 0 0.5px color-mix(in srgb, currentColor 10%, transparent); }
     }
 
-    /* ── Menu / As-needed Bespoke Checkboxes ── */
+    /* Grid architecture */
     .menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -586,15 +583,19 @@
       cursor: pointer;
       user-select: none;
     }
-    .pill.active { background: var(--pets-bg); color: var(--pets-fg); border-color: var(--pets-fg); }
+    .pill.active { background: var(--teal-bg); color: var(--teal-fg); border-color: var(--teal-fg); }
 
-    .c-teal   { color: #7ddcb8; }
-    .c-blue   { color: #8ec4f0; }
-    .c-pink   { color: #f0aec8; }
-    .c-purple { color: #b8b4f5; }
-    .c-amber  { color: #f0c07a; }
+    /* Expanded color palette tokens */
+    .c-amber    { color: #f0c07a; }
+    .c-blue     { color: #8ec4f0; }
+    .c-teal     { color: #7ddcb8; }
+    .c-purple   { color: #b8b4f5; }
+    .c-pink     { color: #f0aec8; }
+    .c-green    { color: #a8d47a; }
+    .c-orange   { color: #f0956a; }
+    .c-red      { color: #ff7575; }
+    .c-lavender { color: #e0aaff; }
 
-    /* Completion Info */
     .last-completed {
       font-size: 8.5px;
       color: var(--accent);
@@ -604,7 +605,6 @@
     }
     .menu-item.checked .last-completed { display: block; }
 
-    /* Inline Menu Editing */
     .menu-edit-tools {
       display: none;
       gap: 6px;
@@ -627,7 +627,6 @@
     .edit-item-btn:hover { color: var(--accent); }
     .del-item-btn:hover { color: #ff5555; }
 
-    /* ── Sleep note ── */
     .sleep-note {
       margin-top: 1.25rem;
       background: var(--bg2);
@@ -643,11 +642,10 @@
     }
     .sleep-note .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
-    /* ── Backup Section ── */
     .backup-section { margin-top: 0.5rem; }
     .backup-buttons { display: flex; gap: 10px; }
 
-    /* ── Modals Structure UI (Popups) ── */
+    /* Modal Architecture */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -744,7 +742,6 @@
       border-color: var(--accent);
     }
 
-    /* ── Integrated Sticky Next Up Dock ── */
     #next-up-dock {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -788,7 +785,6 @@
     #next-dock-title { color: var(--text); overflow: hidden; text-overflow: ellipsis; }
     #next-dock-timer { color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 500; flex-shrink: 0; }
 
-    /* ── Mobile ── */
     @media (max-width: 600px) {
       .wrap { padding: 1.25rem 1rem; padding-top: calc(1.25rem + env(safe-area-inset-top)); }
       .menu-grid { grid-template-columns: 1fr; }
@@ -828,13 +824,16 @@
   </div>
 
   <div class="legend">
-    <span class="leg"><span class="dot" style="background:#c07830;"></span>Morning</span>
-    <span class="leg"><span class="dot" style="background:#2a7ec0;"></span>School / commute</span>
-    <span class="leg"><span class="dot" style="background:#444440;"></span>Free time</span>
-    <span class="leg"><span class="dot" style="background:#5855c0;"></span>PalFish</span>
-    <span class="leg"><span class="dot" style="background:#1a9060;"></span>Pets</span>
-    <span class="leg"><span class="dot" style="background:#902050;"></span>Night</span>
-    <span class="leg"><span class="dot" style="background:#be95c4;"></span>Custom Blocks</span>
+    <span class="leg"><span class="dot" style="background:#444440;"></span>Free Time</span>
+    <span class="leg"><span class="dot" style="background:#c07830;"></span>Amber</span>
+    <span class="leg"><span class="dot" style="background:#2a7ec0;"></span>Blue</span>
+    <span class="leg"><span class="dot" style="background:#1a9060;"></span>Teal</span>
+    <span class="leg"><span class="dot" style="background:#5855c0;"></span>Purple</span>
+    <span class="leg"><span class="dot" style="background:#902050;"></span>Pink</span>
+    <span class="leg"><span class="dot" style="background:#2a6010;"></span>Green</span>
+    <span class="leg"><span class="dot" style="background:#c05520;"></span>Orange</span>
+    <span class="leg"><span class="dot" style="background:#aa2020;"></span>Red</span>
+    <span class="leg"><span class="dot" style="background:#be95c4;"></span>Lavender</span>
   </div>
 
   <div class="schedule-section" data-section="weekday">
@@ -842,9 +841,11 @@
       <div class="cat-selector-row" id="category-track-anchor">
         <button class="cat-btn active" data-cat="default">Default</button>
         <button class="cat-btn" data-cat="school">School Mode</button>
-        </div>
+        <button class="cat-btn" data-cat="weekend">Weekend</button>
+      </div>
       
       <div class="engine-controls-right">
+        <button class="add-habit-btn" id="edit-wake-time-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">Edit Wake Time</button>
         <button class="add-habit-btn" id="custom-add-cat-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">+ Add Schedule</button>
         <label class="hd-toggle-label" id="half-day-toggle-wrapper" style="display: none; margin-right: 10px;">
           <input type="checkbox" id="half-day-toggle"> Half-Day
@@ -858,7 +859,7 @@
 
   <div class="sleep-note">
     <span class="icon">🌙</span>
-    <span>Weekday base sleep: ~5.5 hrs (12:00 AM → 5:30 AM). Friday sleep is later · Clara night.</span>
+    <span>Weekday base sleep: ~5.5 hrs (12:00 AM to 5:30 AM). Friday sleep is later · Clara night. Autopiloting weekend routines when calendar hits Saturday.</span>
   </div>
 
   <div class="divider"></div>
@@ -892,7 +893,6 @@
     <button class="add-habit-btn" id="btn-add-as-needed-category" style="display:none; padding:4px 10px;">+ Add Menu Category</button>
   </div>
 
-  <!-- New Hobbies Section Below As Needed Section -->
   <div class="divider"></div>
   
   <div class="menu-header-row" style="margin-top: 0.5rem;">
@@ -967,13 +967,16 @@
     <div class="modal-field">
       <label>Block Classification Style Color</label>
       <select id="block-input-color">
-        <option value="t-free">Free Time (Dark Gray)</option>
-        <option value="t-morning">Morning Routine (Amber)</option>
-        <option value="t-pets">Pets Care Track (Teal)</option>
-        <option value="t-chores">Chores / Upkeep (Steel Blue)</option>
-        <option value="t-teach">PalFish Window (Purple)</option>
-        <option value="t-night">Night Window (Pink)</option>
-        <option value="t-custom">Dynamic Bespoke Block (Violet)</option>
+        <option value="t-free">Free Time</option>
+        <option value="t-amber">Amber</option>
+        <option value="t-blue">Blue</option>
+        <option value="t-teal">Teal</option>
+        <option value="t-purple">Purple</option>
+        <option value="t-pink">Pink</option>
+        <option value="t-green">Green</option>
+        <option value="t-orange">Orange</option>
+        <option value="t-red">Red</option>
+        <option value="t-lavender">Lavender</option>
       </select>
     </div>
 
@@ -1083,17 +1086,25 @@
       <input type="text" id="edit-task-name" placeholder="e.g., Clean fridge">
     </div>
     <div class="modal-field">
+      <label>Estimated Context Duration / Time Frame</label>
+      <input type="text" id="edit-task-duration" placeholder="e.g., 15~30 mins">
+    </div>
+    <div class="modal-field">
       <label>Hint (Optional)</label>
       <input type="text" id="edit-task-hint" placeholder="e.g., Check expiration dates">
     </div>
     <div class="modal-field">
       <label>Color Accent</label>
       <select id="edit-task-color">
-        <option value="c-teal">Teal (Pets / Leisure)</option>
-        <option value="c-blue">Blue (Room / Tech / Entertainment)</option>
-        <option value="c-pink">Pink (Kitchen / Deep / Music)</option>
-        <option value="c-purple">Purple (Bedding / Decor / Listening)</option>
-        <option value="c-amber">Amber (General)</option>
+        <option value="c-amber">Amber</option>
+        <option value="c-blue">Blue</option>
+        <option value="c-teal">Teal</option>
+        <option value="c-purple">Purple</option>
+        <option value="c-pink">Pink</option>
+        <option value="c-green">Green</option>
+        <option value="c-orange">Orange</option>
+        <option value="c-red">Red</option>
+        <option value="c-lavender">Lavender</option>
       </select>
     </div>
     <div class="modal-field">
@@ -1111,153 +1122,214 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
-    // ── 1. HARDCODED SCHEDULING ENGINES STATIC LAYOUT DEFINITIONS ──
     const BASE_DEFAULT_ROUTINE = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-morning" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-pets" },
+      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
+      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
       { start: 360, end: 960, name: "Bonus Day Off", sub: "School is out · complete freedom to rest, tackle projects, or sleep in", style: "t-free" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-chores" },
+      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-teach" },
+      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-night" }
+      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
 
     const STATIC_SCHOOL_NORMAL = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-morning" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-pets" },
-      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-school" },
-      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-school" },
-      { start: 435, end: 900, name: "School", sub: "", style: "t-school" },
-      { start: 900, end: 960, name: "Commute home", sub: "", style: "t-school" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-chores" },
+      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
+      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
+      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-blue" },
+      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-blue" },
+      { start: 435, end: 900, name: "School", sub: "", style: "t-blue" },
+      { start: 900, end: 960, name: "Commute home", sub: "", style: "t-blue" },
+      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-teach" },
+      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-night" }
+      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
 
     const STATIC_SCHOOL_HALFDAY = [
-      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-morning" },
-      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-pets" },
-      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-school" },
-      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-school" },
-      { start: 435, end: 690, name: "School (Half-Day)", sub: "", style: "t-school" },
-      { start: 690, end: 750, name: "Commute home", sub: "", style: "t-school" },
+      { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
+      { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
+      { start: 360, end: 420, name: "Commute to school", sub: "", style: "t-blue" },
+      { start: 420, end: 435, name: "Arrive + settle in", sub: "", style: "t-blue" },
+      { start: 435, end: 690, name: "School (Half-Day)", sub: "", style: "t-blue" },
+      { start: 690, end: 750, name: "Commute home", sub: "", style: "t-blue" },
       { start: 750, end: 960, name: "Bonus Free Window", sub: "Extra Clara window · rest · tackle as-needed list early", style: "t-free" },
-      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-chores" },
+      { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-teach" },
+      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
-      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-night" }
+      { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
 
-    // As Needed Menu Default Data
     const DEFAULT_AS_NEEDED = [
       {
         id: "cat_pets", title: "Pets",
         items: [
-          { id: "pet-brush", text: "Groom & brush dogs", hint: "4–6 PM preferred window", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-nails", text: "Dog nail trimming", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-flea", text: "Flea / tick preventatives", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-bath", text: "Bathing the dogs", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
-          { id: "pet-litter", text: "Litter box deep clean", hint: "", color: "c-teal", pills: ["Jiji", "Koichi"] }
+          { id: "pet-brush", text: "Groom & brush dogs", duration: "30~45 mins", hint: "4 to 6 PM preferred window", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-nails", text: "Dog nail trimming", duration: "15~20 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-flea", text: "Flea / tick preventatives", duration: "5 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-bath", text: "Bathing the dogs", duration: "45~60 mins", hint: "", color: "c-teal", pills: ["Cotton", "Snow", "Casper", "Powder"] },
+          { id: "pet-litter", text: "Litter box deep clean", duration: "20~30 mins", hint: "", color: "c-teal", pills: ["Jiji", "Koichi"] }
         ]
       },
       {
         id: "cat_bedding", title: "Bedding",
         items: [
-          { id: "bed-sheets", text: "Wash bedsheets + pillowcases", hint: "Suggested weekly", color: "c-purple", pills: [] },
-          { id: "bed-blankets", text: "Wash blankets", hint: "", color: "c-purple", pills: [] },
-          { id: "bed-inserts", text: "Wash pillow inserts", hint: "", color: "c-purple", pills: [] }
+          { id: "bed-sheets", text: "Wash bedsheets + pillowcases", duration: "60~90 mins", hint: "Suggested weekly", color: "c-purple", pills: [] },
+          { id: "bed-blankets", text: "Wash blankets", duration: "60~90 mins", hint: "", color: "c-purple", pills: [] },
+          { id: "bed-inserts", text: "Wash pillow inserts", duration: "40 mins", hint: "", color: "c-purple", pills: [] }
         ]
       },
       {
         id: "cat_kitchen", title: "Kitchen",
         items: [
-          { id: "kit-appliances", text: "Appliance upkeep", hint: "microwave · stove · air fryer", color: "c-pink", pills: [] },
-          { id: "kit-shelves", text: "Shelves + stock reorganization", hint: "", color: "c-pink", pills: [] }
+          { id: "kit-appliances", text: "Appliance upkeep", duration: "15~30 mins", hint: "microwave · stove · air fryer", color: "c-pink", pills: [] },
+          { id: "kit-shelves", text: "Shelves + stock reorganization", duration: "30 mins", hint: "", color: "c-pink", pills: [] }
         ]
       },
       {
         id: "cat_wardrobe", title: "Wardrobe",
         items: [
-          { id: "ward-closet", text: "Closet declutter + re-fold", hint: "", color: "c-purple", pills: [] },
-          { id: "ward-shoes", text: "Shoe cleaning", hint: "", color: "c-purple", pills: [] }
+          { id: "ward-closet", text: "Closet declutter + re-fold", duration: "45 mins", hint: "", color: "c-purple", pills: [] },
+          { id: "ward-shoes", text: "Shoe cleaning", duration: "20 mins", hint: "", color: "c-purple", pills: [] }
         ]
       },
       {
         id: "cat_room", title: "Room & Desk",
         items: [
-          { id: "room-aircon", text: "Aircon cleaning", hint: "", color: "c-blue", pills: [] },
-          { id: "room-windows", text: "Window cleaning", hint: "", color: "c-blue", pills: [] },
-          { id: "room-sofabed", text: "Sofabed cleaning", hint: "", color: "c-blue", pills: [] },
-          { id: "room-peripherals", text: "Keyboard + mouse wipe-down", hint: "", color: "c-blue", pills: [] }
+          { id: "room-aircon", text: "Aircon cleaning", duration: "30 mins", hint: "", color: "c-blue", pills: [] },
+          { id: "room-windows", text: "Window cleaning", duration: "30 mins", hint: "", color: "c-blue", pills: [] },
+          { id: "room-sofabed", text: "Sofabed cleaning", duration: "20 mins", hint: "", color: "c-blue", pills: [] },
+          { id: "room-peripherals", text: "Keyboard + mouse wipe-down", duration: "10 mins", hint: "", color: "c-blue", pills: [] }
         ]
       },
       {
         id: "cat_tech", title: "Tech & Workspace",
         items: [
-          { id: "tech-screens", text: "Screen cleaning", hint: "", color: "c-blue", pills: [] },
-          { id: "tech-files", text: "Digital file purge + organization", hint: "including photos", color: "c-blue", pills: [] }
+          { id: "tech-screens", text: "Screen cleaning", duration: "5 mins", hint: "", color: "c-blue", pills: [] },
+          { id: "tech-files", text: "Digital file purge + organization", duration: "30~60 mins", hint: "including photos", color: "c-blue", pills: [] }
         ]
       },
       {
         id: "cat_decor", title: "Decor",
         items: [
-          { id: "decor-dusting", text: "Figure + shelf dusting", hint: "", color: "c-purple", pills: [] }
+          { id: "decor-dusting", text: "Figure + shelf dusting", duration: "20~40 mins", hint: "", color: "c-purple", pills: [] }
         ]
       },
       {
         id: "cat_deep", title: "Deep Cleans",
         items: [
-          { id: "deep-bathroom", text: "Bathroom deep clean", hint: "", color: "c-pink", pills: [] },
-          { id: "deep-fridge", text: "Fridge clean-out", hint: "", color: "c-pink", pills: [] }
+          { id: "deep-bathroom", text: "Bathroom deep clean", duration: "60 mins", hint: "", color: "c-pink", pills: [] },
+          { id: "deep-fridge", text: "Fridge clean-out", duration: "40 mins", hint: "", color: "c-pink", pills: [] }
         ]
       }
     ];
 
-    // Default Hobbies and Media Data
+    /* Completely overhauled structure */
     const DEFAULT_HOBBIES = [
+      {
+        id: "cat_creativity", title: "Creativity",
+        items: [
+          { id: "hb-cr-1", text: "Write Poetry", hint: "", color: "c-purple", pills: [] },
+          { id: "hb-cr-2", text: "Write a Song", hint: "", color: "c-purple", pills: [] },
+          { id: "hb-cr-3", text: "Draw", hint: "", color: "c-purple", pills: [] },
+          { id: "hb-cr-4", text: "Code", hint: "", color: "c-purple", pills: [] }
+        ]
+      },
+      {
+        id: "cat_love_clara", title: "Love (Clara)",
+        items: [
+          { id: "hb-lv-1", text: "Make something for her (craft / poem/ drawing / song / letter)", hint: "", color: "c-pink", pills: [] },
+          { id: "hb-lv-2", text: "Add to Clara dictionary (words / meanings / inside language)", hint: "", color: "c-pink", pills: [] },
+          { id: "hb-lv-3", text: "Write down something you love about her", hint: "", color: "c-pink", pills: [] }
+        ]
+      },
       {
         id: "cat_music", title: "Music",
         items: [
-          { id: "hobby-music-playlist", text: "Curate & update discovery feeds", hint: "Sort new tracks into layout stacks", color: "c-pink", pills: [] },
-          { id: "hobby-music-session", text: "Focused album listening window", hint: "High-fidelity playthrough zero-distractions", color: "c-pink", pills: [] }
+          { id: "hb-mu-1", text: "Play an instrument (Guitar, Piano, Bass, Drums)", hint: "", color: "c-blue", pills: [] },
+          { id: "hb-mu-2", text: "Learn a song", hint: "", color: "c-blue", pills: [] },
+          { id: "hb-mu-3", text: "Practice / review / refresh song memory", hint: "", color: "c-blue", pills: [] }
         ]
       },
       {
-        id: "cat_entertainment", title: "Entertainment",
+        id: "cat_literature", title: "Literature",
         items: [
-          { id: "hobby-ent-watchlist", text: "Catch up on queued series entries", hint: "Check seasonal rotation releases", color: "c-blue", pills: [] },
-          { id: "hobby-ent-gaming", text: "Bespoke sandbox / strategy session", hint: "Casual structural pacing limits applied", color: "c-blue", pills: [] }
+          { id: "hb-li-1", text: "Manga", hint: "", color: "c-teal", pills: [] },
+          { id: "hb-li-2", text: "Novel", hint: "", color: "c-teal", pills: [] },
+          { id: "hb-li-3", text: "Comic", hint: "", color: "c-teal", pills: [] },
+          { id: "hb-li-4", text: "Webcomic", hint: "", color: "c-teal", pills: [] },
+          { id: "hb-li-5", text: "Articles / Essays", hint: "", color: "c-teal", pills: [] }
         ]
       },
       {
-        id: "cat_leisure", title: "Leisure",
+        id: "cat_film_tv", title: "Film and TV",
         items: [
-          { id: "hobby-leisure-read", text: "Deep fiction / analytical reading", hint: "Track structural subplots or worldbuilding templates", color: "c-teal", pills: [] },
-          { id: "hobby-leisure-study", text: "Aesthetic mapping research logs", hint: "Analyze layout components or district world concepts", color: "c-teal", pills: [] }
+          { id: "hb-fi-1", text: "Movie", hint: "", color: "c-amber", pills: [] },
+          { id: "hb-fi-2", text: "Documentary", hint: "", color: "c-amber", pills: [] },
+          { id: "hb-fi-3", text: "Series", hint: "", color: "c-amber", pills: [] },
+          { id: "hb-fi-4", text: "Anime", hint: "", color: "c-amber", pills: [] }
         ]
       },
       {
-        id: "cat_listening", title: "Listening",
+        id: "cat_other_media", title: "Other Media",
         items: [
-          { id: "hobby-listen-podcast", text: "Queue up commentary backlogs", hint: "Run in parallel focus background slots", color: "c-purple", pills: [] },
-          { id: "hobby-listen-audiobook", text: "Progress through active narrative chapters", hint: "Sync with manual low-stress tasks", color: "c-purple", pills: [] }
+          { id: "hb-om-1", text: "Podcasts", hint: "", color: "c-lavender", pills: [] },
+          { id: "hb-om-2", text: "Music", hint: "", color: "c-lavender", pills: [] },
+          { id: "hb-om-3", text: "YouTube", hint: "", color: "c-lavender", pills: [] }
+        ]
+      },
+      {
+        id: "cat_learning", title: "Learning",
+        items: [
+          { id: "hb-le-1", text: "Learn a small skill", hint: "", color: "c-green", pills: [] },
+          { id: "hb-le-2", text: "Watch tutorials (intentional learning)", hint: "", color: "c-green", pills: [] },
+          { id: "hb-le-3", text: "Explore a topic of interest", hint: "", color: "c-green", pills: [] }
         ]
       }
     ];
 
-
-    // ── 2. APPLICATION GLOBAL STATE VARIABLES ──
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
     let isEditModeActive = false;
     let isHalfDayChecked = localStorage.getItem('db_half_day_toggle') === 'true';
 
-    let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules')) || {
-      default: { dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)) }
-    };
+    let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
+    if (!dynamicSchedules) {
+      dynamicSchedules = {
+        default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)) },
+        weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] }
+      };
+    }
+    if (!dynamicSchedules.weekend) {
+      dynamicSchedules.weekend = { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] };
+    }
+
+    // Weekend Automation Tracker
+    function checkWeekendAutomation() {
+      const currentDayNum = new Date().getDay(); // 0 = Sunday, 6 = Saturday
+      const isWeekendNow = (currentDayNum === 0 || currentDayNum === 6);
+      let lastWeekdayCat = localStorage.getItem('db_last_weekday_category') || 'default';
+      
+      if (isWeekendNow) {
+        if (currentActiveCategory !== 'weekend') {
+          if (currentActiveCategory === 'default' || currentActiveCategory === 'school' || currentActiveCategory.startsWith('cat_')) {
+            localStorage.setItem('db_last_weekday_category', currentActiveCategory);
+          }
+          currentActiveCategory = 'weekend';
+          localStorage.setItem('db_active_category', 'weekend');
+        }
+      } else {
+        if (currentActiveCategory === 'weekend') {
+          currentActiveCategory = lastWeekdayCat;
+          localStorage.setItem('db_active_category', currentActiveCategory);
+        } else {
+          localStorage.setItem('db_last_weekday_category', currentActiveCategory);
+        }
+      }
+    }
+
+    checkWeekendAutomation();
 
     let habitCustomList = JSON.parse(localStorage.getItem('db_habit_custom_list')) || []; 
     const todayStr = new Date().toISOString().split('T')[0];
@@ -1268,18 +1340,13 @@
       localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
     }
 
-    // Dynamic As Needed Engine State
     let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
-    
-    // Dynamic Hobbies Engine State
     let hobbiesData = JSON.parse(localStorage.getItem('db_hobbies')) || DEFAULT_HOBBIES;
 
     let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
     let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
     let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
 
-
-    // ── 3. INTERNAL ENGINE HELPER FUNCTIONS (TIME PROCESSING) ──
     function parseMinutesToTimeStr(totalMinutes) {
       if (totalMinutes === 1440) return "12:00 AM";
       let hours = Math.floor(totalMinutes / 60);
@@ -1303,7 +1370,6 @@
       now.setHours(0,0,0,0);
       const diffTime = Math.abs(now - date);
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      
       if (diffDays === 0) return "Today";
       if (diffDays === 1) return "1 day ago";
       return `${diffDays} days ago`;
@@ -1314,7 +1380,6 @@
       return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     }
 
-    // ── 4. TIMELINE STRUCTURAL RECALCULATION & RENDERING ENGINE ──
     function getGapsForSchedule(scheduleObj) {
       let currentMarker = scheduleObj.dayStart;
       let gaps = [];
@@ -1343,6 +1408,9 @@
       if (currentActiveCategory === 'default') {
         activeTrackData = dynamicSchedules.default.blocks;
         isCurrentTrackEditable = true;
+      } else if (currentActiveCategory === 'weekend') {
+        activeTrackData = dynamicSchedules.weekend.blocks;
+        isCurrentTrackEditable = true;
       } else if (currentActiveCategory === 'school') {
         activeTrackData = isHalfDayChecked ? STATIC_SCHOOL_HALFDAY : STATIC_SCHOOL_NORMAL;
         isCurrentTrackEditable = false;
@@ -1352,7 +1420,7 @@
       }
 
       let dayStartLimit = 330; 
-      if (currentActiveCategory !== 'default' && currentActiveCategory !== 'school' && dynamicSchedules[currentActiveCategory]) {
+      if (dynamicSchedules[currentActiveCategory]) {
         dayStartLimit = dynamicSchedules[currentActiveCategory].dayStart;
       }
 
@@ -1391,7 +1459,7 @@
       mergedSequence.forEach((block, idx) => {
         const timeNode = document.createElement('div');
         timeNode.className = 'tl-time';
-        timeNode.innerHTML = `${parseMinutesToTimeStr(block.start)}<br>– ${parseMinutesToTimeStr(block.end)}`;
+        timeNode.innerHTML = `${parseMinutesToTimeStr(block.start)}<br> to ${parseMinutesToTimeStr(block.end)}`;
 
         const blockContainer = document.createElement('div');
         blockContainer.className = 'tl-block-container';
@@ -1433,8 +1501,6 @@
       executeLiveTimelineTrackingUpdates();
     }
 
-
-    // ── 5. DISPATCH ACTION HANDLERS & INLINE BLOCK OPERATIONS ──
     let selectedGapContext = null; 
     let currentTargetEditingBlockStart = null; 
 
@@ -1495,13 +1561,13 @@
         selectGapField.style.display = 'flex';
         document.getElementById('block-input-title').value = '';
         document.getElementById('block-input-sub').value = '';
-        document.getElementById('block-input-color').value = 't-custom';
+        document.getElementById('block-input-color').value = 't-free';
 
         const gaps = getGapsForSchedule(dynamicSchedules[currentActiveCategory]);
         gaps.forEach(g => {
           const opt = document.createElement('option');
           opt.value = `${g.start}-${g.end}`;
-          opt.textContent = `${parseMinutesToTimeStr(g.start)} – ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
+          opt.textContent = `${parseMinutesToTimeStr(g.start)} to ${parseMinutesToTimeStr(g.end)} (${g.duration}m free)`;
           if (g.start === gapStart && g.end === gapEnd) opt.selected = true;
           selectGapDropdown.appendChild(opt);
         });
@@ -1520,8 +1586,6 @@
       return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
     }
 
-
-    // ── 6. DYNAMIC BLOCK MANAGEMENT DISPATCH SAVE / STORAGE INTERFACES ──
     document.getElementById('btn-block-cancel').addEventListener('click', () => {
       document.getElementById('modal-block-editor').style.display = 'none';
     });
@@ -1677,7 +1741,6 @@
       }
     }
 
-    // ── 7. MUTUAL EXCLUSION CATEGORY SELECTOR UI TRACK MATRIX OPERATIONS ──
     function drawCategorySelectorsLayoutButtons() {
       const trackAnchor = document.getElementById('category-track-anchor');
       trackAnchor.innerHTML = '';
@@ -1694,8 +1757,14 @@
       schoolBtn.addEventListener('click', () => updateActiveCategoryContextState('school'));
       trackAnchor.appendChild(schoolBtn);
 
+      const weekendBtn = document.createElement('button');
+      weekendBtn.className = `cat-btn ${currentActiveCategory === 'weekend' ? 'active' : ''}`;
+      weekendBtn.textContent = "Weekend";
+      weekendBtn.addEventListener('click', () => updateActiveCategoryContextState('weekend'));
+      trackAnchor.appendChild(weekendBtn);
+
       Object.keys(dynamicSchedules).forEach(key => {
-        if (key === 'default') return;
+        if (key === 'default' || key === 'weekend') return;
         const customBtn = document.createElement('button');
         customBtn.className = `cat-btn ${currentActiveCategory === key ? 'active' : ''}`;
         customBtn.innerHTML = `${dynamicSchedules[key].name} <span class="del-cat" data-target="${key}">×</span>`;
@@ -1718,7 +1787,7 @@
     }
 
     function updateActiveCategoryContextState(targetCategoryKey) {
-      currentActiveCategory = currentActiveCategory === targetCategoryKey ? 'default' : targetCategoryKey;
+      currentActiveCategory = targetCategoryKey;
       localStorage.setItem('db_active_category', currentActiveCategory);
       
       document.getElementById('half-day-toggle-wrapper').style.display = (currentActiveCategory === 'school') ? 'flex' : 'none';
@@ -1726,14 +1795,13 @@
       autoRebuildTimelineTrack();
     }
 
-
-    // ── 8. NON-PERSISTENT INTERACTIVE EDIT MODE ENGINE TOGGLE COORD ──
     const editModeToggleBtn = document.getElementById('edit-mode-toggle');
     editModeToggleBtn.addEventListener('click', () => {
       isEditModeActive = !isEditModeActive;
       editModeToggleBtn.classList.toggle('active');
       document.body.classList.toggle('edit-mode-active');
       document.getElementById('custom-add-cat-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
+      document.getElementById('edit-wake-time-btn').style.display = isEditModeActive ? 'inline-block' : 'none';
       document.getElementById('btn-add-as-needed-category').style.display = isEditModeActive ? 'inline-block' : 'none';
       document.getElementById('btn-add-hobbies-category').style.display = isEditModeActive ? 'inline-block' : 'none';
       
@@ -1743,8 +1811,22 @@
       renderHobbiesMenu();
     });
 
+    document.getElementById('edit-wake-time-btn').addEventListener('click', () => {
+      const activeSched = dynamicSchedules[currentActiveCategory];
+      if (!activeSched) return alert("This setup category start time cannot be modified directly.");
+      
+      const currentWakeTime = convertMinutesTo24hInput(activeSched.dayStart);
+      const newTime = prompt(`Change target wake up start time for [${activeSched.name}]:`, currentWakeTime);
+      if (newTime && newTime.includes(':')) {
+        const minutes = parseTimeStrToMinutes(newTime);
+        if (minutes >= 0 && minutes <= 1440) {
+          activeSched.dayStart = minutes;
+          localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+          autoRebuildTimelineTrack();
+        }
+      }
+    });
 
-    // ── 9. DYNAMIC CATEGORY CREATION MODAL CALL INTERFACES ──
     document.getElementById('custom-add-cat-btn').addEventListener('click', () => {
       document.getElementById('new-sched-name').value = '';
       document.getElementById('modal-add-schedule').style.display = 'flex';
@@ -1776,12 +1858,10 @@
       autoRebuildTimelineTrack();
     });
 
-    // ── 10. DAILY MINI-CHECKLIST DYNAMIC PIP SECTOR ENGINE COORDS (Rating Style with Zero Setting Support) ──
     function handlePipInteraction(groupName, clickedIdx, totalPips) {
       const firstKey = `${groupName}-0`;
       const secondKey = `${groupName}-1`;
       
-      // Zero Out Logic: If clicking the 1st pip and it's active but the 2nd pip isn't, toggle it to zero.
       if (clickedIdx === 0 && habitActivityLog.checks[firstKey] && !habitActivityLog.checks[secondKey]) {
         delete habitActivityLog.checks[firstKey];
       } else {
@@ -1855,7 +1935,6 @@
         container.appendChild(addNewHabitActionBtn);
       }
 
-      // Rebind Fixed Habit Logic (Rating Style)
       document.querySelectorAll('.habit-group[data-fixed="true"]').forEach(groupWrap => {
         const groupName = groupWrap.getAttribute('data-habit');
         const pips = groupWrap.querySelectorAll('.habit-pip');
@@ -1901,8 +1980,6 @@
       renderHabitsMatrixInterfaceTrack();
     });
 
-
-    // ── 11. DYNAMIC AS NEEDED & HOBBIES MENU ENGINES (Universal Generator Function) ──
     function buildFlexibleMenuEngine(targetDataArray, targetGridId, progressFillId, contextSectionToken) {
       const grid = document.getElementById(targetGridId);
       grid.innerHTML = '';
@@ -1939,12 +2016,14 @@
             completionHTML = `<span class="last-completed">Last Completed: ${getFormattedDate(completedDates[item.id])} (${getRelativeTime(completedDates[item.id])})</span>`;
           }
 
+          let durationDisplay = item.duration ? ` <span style="opacity:0.75; font-size:10px; font-weight:500; letter-spacing:0.02em;">(${item.duration})</span>` : '';
+
           const label = document.createElement('label');
           label.className = `menu-item ${item.color} ${isChecked ? 'checked' : ''}`;
           label.innerHTML = `
             <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''}>
             <span class="label-text">
-              ${item.text}
+              <span>${item.text}${durationDisplay}</span>
               ${item.hint ? `<span class="hint">${item.hint}</span>` : ''}
               ${completionHTML}
             </span>
@@ -2125,15 +2204,17 @@
         const task = cat.items.find(i => i.id === taskId);
         document.getElementById('edit-task-id').value = task.id;
         document.getElementById('edit-task-name').value = task.text;
-        document.getElementById('edit-task-hint').value = task.hint;
+        document.getElementById('edit-task-duration').value = task.duration || '';
+        document.getElementById('edit-task-hint').value = task.hint || '';
         document.getElementById('edit-task-color').value = task.color;
-        document.getElementById('edit-task-pills').value = task.pills.join(', ');
+        document.getElementById('edit-task-pills').value = task.pills ? task.pills.join(', ') : '';
       } else {
         document.getElementById('task-modal-title').textContent = 'Add Task';
         document.getElementById('edit-task-id').value = '';
         document.getElementById('edit-task-name').value = '';
+        document.getElementById('edit-task-duration').value = '';
         document.getElementById('edit-task-hint').value = '';
-        document.getElementById('edit-task-color').value = 'c-teal';
+        document.getElementById('edit-task-color').value = 'c-amber';
         document.getElementById('edit-task-pills').value = '';
       }
       document.getElementById('modal-edit-task').style.display = 'flex';
@@ -2145,6 +2226,7 @@
       const taskId = document.getElementById('edit-task-id').value;
       const context = document.getElementById('edit-task-section-context').value;
       const text = document.getElementById('edit-task-name').value.trim();
+      const duration = document.getElementById('edit-task-duration').value.trim();
       const hint = document.getElementById('edit-task-hint').value.trim();
       const color = document.getElementById('edit-task-color').value;
       const pillsRaw = document.getElementById('edit-task-pills').value;
@@ -2156,9 +2238,9 @@
       const cat = dataset.find(c => c.id === catId);
       if (taskId) {
         const task = cat.items.find(i => i.id === taskId);
-        task.text = text; task.hint = hint; task.color = color; task.pills = pills;
+        task.text = text; task.duration = duration; task.hint = hint; task.color = color; task.pills = pills;
       } else {
-        cat.items.push({ id: 'task_' + Date.now(), text, hint, color, pills });
+        cat.items.push({ id: 'task_' + Date.now(), text, duration, hint, color, pills });
       }
       saveDataEngineContext(context);
       document.getElementById('modal-edit-task').style.display = 'none';
@@ -2174,7 +2256,6 @@
       }
     }
 
-    // Ledger Logic
     let pfClassCount = parseInt(localStorage.getItem('palfishClassCount')) || 0;
     const pfCountEl = document.getElementById('pf-count');
     const pfEarningsEl = document.getElementById('pf-earnings');
@@ -2192,7 +2273,6 @@
       if (pfClassCount > 0) { pfClassCount--; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger(); }
     });
 
-    // Reset Week
     document.getElementById('reset-week-btn').addEventListener('click', () => {
       if (confirm('Clear all task selections, completed dates, ledger metrics, and pet pills for the new week?')) {
         savedStates = {}; savedPills = {}; completedDates = {};
@@ -2206,8 +2286,6 @@
       }
     });
 
-
-    // ── 12. RUNTIME CLOCK MATRIX ──
     function updateClock() {
       const now = new Date();
       const optionsDay = { weekday: 'long' };
@@ -2215,8 +2293,6 @@
       document.getElementById('live-header-meta').textContent = `Drei · ${now.toLocaleDateString('en-US', optionsDay)} · ${now.toLocaleTimeString('en-US', optionsTime)}`;
     }
 
-
-    // ── 13. STICKY DOCK ACTIVE TRACK REAL-TIME DATA CALCULATION ──
     function executeLiveTimelineTrackingUpdates() {
       const now = new Date();
       const currentDay = now.getDay();
@@ -2233,7 +2309,7 @@
         const cleanNode = el.cloneNode(true);
         const sub = cleanNode.querySelector('.sub');
         if (sub) sub.remove();
-        const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('—')[0].trim();
+        const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('-')[0].trim();
         todayBlocks.push({ element: el, name: parsedTitle, start, end });
       });
 
@@ -2260,18 +2336,16 @@
       const dockTitle = document.getElementById('next-dock-title');
       const dockTimer = document.getElementById('next-dock-timer');
 
-      if (currentDay >= 1 && currentDay <= 5 && nextBlock) {
+      if (nextBlock) {
         let timeStr = calculatedDiff >= 60 ? `in ${Math.floor(calculatedDiff / 60)}h ${calculatedDiff % 60}m` : `in ${calculatedDiff}m`;
         dockTitle.textContent = nextBlock.name;
         dockTimer.textContent = timeStr;
       } else {
-        dockTitle.textContent = 'Routines completed / Weekend tracking idle';
+        dockTitle.textContent = 'Routines completed / Tracking idle';
         dockTimer.textContent = '--';
       }
     }
 
-
-    // ── 14. DATA STORAGE INTEGRITY BACKUP ARCHIVE MANAGEMENT ──
     const exportBtn = document.getElementById('export-json-btn');
     const importBtn = document.getElementById('import-json-btn');
     const importFileInput = document.getElementById('import-json-file');
@@ -2327,10 +2401,8 @@
       reader.readAsText(file);
     });
 
-    // ── 15. CORES INITIALIZATION PIPELINE ──
     updateClock();
     renderPalFishLedger();
-    
     drawCategorySelectorsLayoutButtons();
     autoRebuildTimelineTrack();
     renderHabitsMatrixInterfaceTrack();
