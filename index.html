@@ -2475,24 +2475,29 @@
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
           if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
 
-          alert('Data metrics imported successfully! Updating your workspace dashboard...');
+          alert("Backup data restored successfully. Reloading interface...");
           window.location.reload();
-        } catch (err) { alert('Could not parse layout data. Validation tracking checksum failure.'); }
+        } catch (error) {
+          alert("Failed to read the uploaded backup file. Ensure it is a valid JSON export.");
+        }
       };
       reader.readAsText(file);
     });
 
+    // Initial Dashboard Setup Render Engine Execution
     updateClock();
     renderLegend();
-    renderPalFishLedger();
     drawCategorySelectorsLayoutButtons();
     autoRebuildTimelineTrack();
     renderHabitsMatrixInterfaceTrack();
     renderAsNeededMenu();
     renderHobbiesMenu();
+    renderPalFishLedger();
 
+    // Routine Live Interlock Intervals
     setInterval(updateClock, 1000);
-    setInterval(executeLiveTimelineTrackingUpdates, 20000);
+    setInterval(executeLiveTimelineTrackingUpdates, 30000);
+
   });
 </script>
 </body>
