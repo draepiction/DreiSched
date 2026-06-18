@@ -251,6 +251,13 @@
       color: #ff5555;
     }
     
+    .subcat-management-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .hd-toggle-label {
       font-size: 9.5px;
       color: var(--muted);
@@ -277,6 +284,29 @@
     .hd-toggle-label input:checked {
       background: var(--accent);
       border-color: var(--accent);
+    }
+    .subcat-inline-edit {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 0.5px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg2);
+    }
+    .subcat-inline-edit span {
+      font-size: 9.5px;
+      color: var(--text);
+    }
+    .subcat-action-icon {
+      cursor: pointer;
+      font-size: 10px;
+      opacity: 0.6;
+      padding: 0 2px;
+    }
+    .subcat-action-icon:hover {
+      opacity: 1;
+      color: var(--accent);
     }
 
     .engine-controls-right {
@@ -848,11 +878,10 @@
       </div>
       
       <div class="engine-controls-right">
+        <div class="subcat-management-container" id="dynamic-subcat-zone"></div>
+        <button class="add-habit-btn" id="custom-add-subcat-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">+ Add Subcategory</button>
         <button class="add-habit-btn" id="edit-wake-time-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">Edit Wake Time</button>
         <button class="add-habit-btn" id="custom-add-cat-btn" style="display:none; font-size:10px; padding:4px 8px; border-style:solid; margin-right:6px;">+ Add Schedule</button>
-        <label class="hd-toggle-label" id="half-day-toggle-wrapper" style="display: none; margin-right: 10px;">
-          <input type="checkbox" id="half-day-toggle"> Half-Day
-        </label>
         <button id="edit-mode-toggle" class="edit-mode-btn">Edit Mode</button>
       </div>
     </div>
@@ -1283,7 +1312,6 @@
 
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
     let isEditModeActive = false;
-    let isHalfDayChecked = localStorage.getItem('db_half_day_toggle') === 'true';
 
     // Core Custom Category Color Mappings
     let colorLabels = JSON.parse(localStorage.getItem('db_color_labels')) || {
@@ -1302,13 +1330,25 @@
     let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
     if (!dynamicSchedules) {
       dynamicSchedules = {
-        default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)) },
-        weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] }
+        default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)), subcategories: [] },
+        school: {
+          name: "School Mode",
+          dayStart: 330,
+          blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_NORMAL)),
+          subcategories: [
+            { id: "half_day", name: "Half-Day", visible: true, active: (localStorage.getItem('db_half_day_toggle') === 'true'), blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_HALFDAY)) }
+          ]
+        },
+        weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }], subcategories: [] }
       };
     }
-    if (!dynamicSchedules.weekend) {
-      dynamicSchedules.weekend = { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }] };
-    }
+
+    // Ensure all schedules have the subcategories field
+    Object.keys(dynamicSchedules).forEach(key => {
+      if (!dynamicSchedules[key].subcategories) {
+        dynamicSchedules[key].subcategories = [];
+      }
+    });
 
     function checkWeekendAutomation() {
       const currentDayNum = new Date().getDay(); 
@@ -1460,20 +1500,17 @@
       container.innerHTML = '';
 
       let activeTrackData = [];
-      let isCurrentTrackEditable = false;
+      let isCurrentTrackEditable = true;
 
-      if (currentActiveCategory === 'default') {
-        activeTrackData = dynamicSchedules.default.blocks;
-        isCurrentTrackEditable = true;
-      } else if (currentActiveCategory === 'weekend') {
-        activeTrackData = dynamicSchedules.weekend.blocks;
-        isCurrentTrackEditable = true;
-      } else if (currentActiveCategory === 'school') {
-        activeTrackData = isHalfDayChecked ? STATIC_SCHOOL_HALFDAY : STATIC_SCHOOL_NORMAL;
-        isCurrentTrackEditable = false;
-      } else if (dynamicSchedules[currentActiveCategory]) {
-        activeTrackData = dynamicSchedules[currentActiveCategory].blocks;
-        isCurrentTrackEditable = true;
+      const activeSched = dynamicSchedules[currentActiveCategory];
+      if (activeSched) {
+        activeTrackData = activeSched.blocks;
+        if (activeSched.subcategories) {
+          const currentActiveSub = activeSched.subcategories.find(s => s.active && s.visible);
+          if (currentActiveSub) {
+            activeTrackData = currentActiveSub.blocks;
+          }
+        }
       }
 
       let dayStartLimit = 330; 
@@ -1556,6 +1593,7 @@
 
       if (isCurrentTrackEditable) bindEditableBlockListeners(mergedSequence);
       executeLiveTimelineTrackingUpdates();
+      renderSubcategoriesPane();
     }
 
     let selectedGapContext = null; 
@@ -1576,7 +1614,14 @@
         btn.addEventListener('click', () => {
           const startVal = parseInt(btn.getAttribute('data-start'));
           const activeSched = dynamicSchedules[currentActiveCategory];
-          const targetBlock = activeSched.blocks.find(b => b.start === startVal);
+          let targetBlock = null;
+          const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
+          if (currentActiveSub) {
+            targetBlock = currentActiveSub.blocks.find(b => b.start === startVal);
+          } else {
+            targetBlock = activeSched.blocks.find(b => b.start === startVal);
+          }
+          
           if (targetBlock) {
             selectedGapContext = null;
             currentTargetEditingBlockStart = startVal;
@@ -1665,6 +1710,12 @@
 
     document.getElementById('btn-block-save').addEventListener('click', () => {
       const activeSched = dynamicSchedules[currentActiveCategory];
+      let targetBlocksArray = activeSched.blocks;
+      const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
+      if (currentActiveSub) {
+        targetBlocksArray = currentActiveSub.blocks;
+      }
+
       const title = document.getElementById('block-input-title').value.trim() || "Bespoke Task Block";
       const subtitle = document.getElementById('block-input-sub').value.trim();
       const styleClass = document.getElementById('block-input-color').value;
@@ -1684,11 +1735,11 @@
 
         if (finalEnd <= finalStart || finalEnd > 1440) return alert("Layout Error: Out of bounds tracking window detected.");
 
-        let overlapFound = activeSched.blocks.filter(b => b.start !== currentTargetEditingBlockStart).some(b => (finalStart < b.end && finalEnd > b.start));
+        let overlapFound = targetBlocksArray.filter(b => b.start !== currentTargetEditingBlockStart).some(b => (finalStart < b.end && finalEnd > b.start));
         if (overlapFound) return alert("Overlap Prevention Block: Requested time constraints collide with another block.");
 
-        let idx = activeSched.blocks.findIndex(b => b.start === currentTargetEditingBlockStart);
-        activeSched.blocks[idx] = { start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass };
+        let idx = targetBlocksArray.findIndex(b => b.start === currentTargetEditingBlockStart);
+        targetBlocksArray[idx] = { start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass };
       } else if (selectedGapContext) {
         if (allocationMethod === 'duration') {
           const durationVal = parseInt(document.getElementById('block-input-duration').value);
@@ -1703,7 +1754,7 @@
             return alert("Boundary Violation: Time blocks must remain within the selected unallocated window.");
           }
         }
-        activeSched.blocks.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
+        targetBlocksArray.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
       } else {
         const [gStart, gEnd] = document.getElementById('block-smart-gap-select').value.split('-').map(Number);
 
@@ -1719,10 +1770,10 @@
           if (finalStart < gStart || finalEnd > gEnd || finalEnd <= finalStart) return alert("Boundary Violation.");
         }
 
-        activeSched.blocks.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
+        targetBlocksArray.push({ start: finalStart, end: finalEnd, name: title, sub: subtitle, style: styleClass });
       }
 
-      activeSched.blocks.sort((a, b) => a.start - b.start);
+      targetBlocksArray.sort((a, b) => a.start - b.start);
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
       document.getElementById('modal-block-editor').style.display = 'none';
       autoRebuildTimelineTrack();
@@ -1767,24 +1818,36 @@
 
     document.getElementById('btn-del-strat-confirm').addEventListener('click', () => {
       const activeSched = dynamicSchedules[currentActiveCategory];
+      let targetBlocksArray = activeSched.blocks;
+      const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
+      if (currentActiveSub) {
+        targetBlocksArray = currentActiveSub.blocks;
+      }
+
       const strategySelection = document.getElementById('delete-strategy-selection').value;
-      const targetBlock = activeSched.blocks.find(b => b.start === targetDeleteBlockStartVal);
+      const targetBlock = targetBlocksArray.find(b => b.start === targetDeleteBlockStartVal);
 
       if (!targetBlock) return;
 
       if (strategySelection === 'revert_free') {
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
+        targetBlocksArray = targetBlocksArray.filter(b => b.start !== targetDeleteBlockStartVal);
       } else if (strategySelection.startsWith('extend_prev')) {
-        let prevBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
+        let prevBlockObj = targetBlocksArray.find(b => b.start === parseInt(strategySelection.split('-')[1]));
         if (prevBlockObj) prevBlockObj.end = targetBlock.end; 
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
+        targetBlocksArray = targetBlocksArray.filter(b => b.start !== targetDeleteBlockStartVal);
       } else if (strategySelection.startsWith('extend_next')) {
-        let nextBlockObj = activeSched.blocks.find(b => b.start === parseInt(strategySelection.split('-')[1]));
+        let nextBlockObj = targetBlocksArray.find(b => b.start === parseInt(strategySelection.split('-')[1]));
         if (nextBlockObj) nextBlockObj.start = targetBlock.start;
-        activeSched.blocks = activeSched.blocks.filter(b => b.start !== targetDeleteBlockStartVal);
+        targetBlocksArray = targetBlocksArray.filter(b => b.start !== targetDeleteBlockStartVal);
       }
 
-      activeSched.blocks.sort((a, b) => a.start - b.start);
+      if (currentActiveSub) {
+        currentActiveSub.blocks = targetBlocksArray;
+      } else {
+        activeSched.blocks = targetBlocksArray;
+      }
+
+      targetBlocksArray.sort((a, b) => a.start - b.start);
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
       document.getElementById('modal-delete-strategy').style.display = 'none';
       autoRebuildTimelineTrack();
@@ -1792,13 +1855,19 @@
 
     function executeChronologicalShift(startVal, directionOffset) {
       const activeSched = dynamicSchedules[currentActiveCategory];
-      let idx = activeSched.blocks.findIndex(b => b.start === startVal);
+      let targetBlocksArray = activeSched.blocks;
+      const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
+      if (currentActiveSub) {
+        targetBlocksArray = currentActiveSub.blocks;
+      }
+
+      let idx = targetBlocksArray.findIndex(b => b.start === startVal);
       if (idx === -1) return;
 
       let targetIdx = idx + directionOffset;
-      if (targetIdx >= 0 && targetIdx < activeSched.blocks.length) {
-        let targetBlock = activeSched.blocks[targetIdx];
-        let currentBlock = activeSched.blocks[idx];
+      if (targetIdx >= 0 && targetIdx < targetBlocksArray.length) {
+        let targetBlock = targetBlocksArray[targetIdx];
+        let currentBlock = targetBlocksArray[idx];
         let currentDuration = currentBlock.end - currentBlock.start;
         let targetDuration = targetBlock.end - targetBlock.start;
 
@@ -1813,7 +1882,7 @@
           currentBlock.start = targetBlock.end;
           currentBlock.end = currentBlock.start + currentDuration;
         }
-        activeSched.blocks.sort((a, b) => a.start - b.start);
+        targetBlocksArray.sort((a, b) => a.start - b.start);
         localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
         autoRebuildTimelineTrack();
       }
@@ -1823,29 +1892,16 @@
       const trackAnchor = document.getElementById('category-track-anchor');
       trackAnchor.innerHTML = '';
 
-      const defaultBtn = document.createElement('button');
-      defaultBtn.className = `cat-btn ${currentActiveCategory === 'default' ? 'active' : ''}`;
-      defaultBtn.textContent = "Default";
-      defaultBtn.addEventListener('click', () => updateActiveCategoryContextState('default'));
-      trackAnchor.appendChild(defaultBtn);
-
-      const schoolBtn = document.createElement('button');
-      schoolBtn.className = `cat-btn ${currentActiveCategory === 'school' ? 'active' : ''}`;
-      schoolBtn.textContent = "School Mode";
-      schoolBtn.addEventListener('click', () => updateActiveCategoryContextState('school'));
-      trackAnchor.appendChild(schoolBtn);
-
-      const weekendBtn = document.createElement('button');
-      weekendBtn.className = `cat-btn ${currentActiveCategory === 'weekend' ? 'active' : ''}`;
-      weekendBtn.textContent = "Weekend";
-      weekendBtn.addEventListener('click', () => updateActiveCategoryContextState('weekend'));
-      trackAnchor.appendChild(weekendBtn);
-
       Object.keys(dynamicSchedules).forEach(key => {
-        if (key === 'default' || key === 'weekend') return;
+        const sched = dynamicSchedules[key];
         const customBtn = document.createElement('button');
         customBtn.className = `cat-btn ${currentActiveCategory === key ? 'active' : ''}`;
-        customBtn.innerHTML = `${dynamicSchedules[key].name} <span class="del-cat" data-target="${key}">×</span>`;
+        
+        if (key === 'default' || key === 'school' || key === 'weekend') {
+          customBtn.textContent = sched.name;
+        } else {
+          customBtn.innerHTML = `${sched.name} <span class="del-cat" data-target="${key}">×</span>`;
+        }
         
         customBtn.addEventListener('click', (e) => {
           if (e.target.classList.contains('del-cat')) {
@@ -1867,11 +1923,123 @@
     function updateActiveCategoryContextState(targetCategoryKey) {
       currentActiveCategory = targetCategoryKey;
       localStorage.setItem('db_active_category', currentActiveCategory);
-      
-      document.getElementById('half-day-toggle-wrapper').style.display = (currentActiveCategory === 'school') ? 'flex' : 'none';
       drawCategorySelectorsLayoutButtons();
       autoRebuildTimelineTrack();
     }
+
+    function renderSubcategoriesPane() {
+      const container = document.getElementById('dynamic-subcat-zone');
+      container.innerHTML = '';
+      
+      const activeSched = dynamicSchedules[currentActiveCategory];
+      if (!activeSched || !activeSched.subcategories) return;
+
+      activeSched.subcategories.forEach((sub, sIdx) => {
+        if (!isEditModeActive && !sub.visible) return;
+
+        if (isEditModeActive) {
+          const editableWrap = document.createElement('div');
+          editableWrap.className = 'subcat-inline-edit';
+          
+          const visibilityCheck = document.createElement('input');
+          visibilityCheck.type = 'checkbox';
+          visibilityCheck.checked = sub.visible;
+          visibilityCheck.title = "Toggle Visibility (Hide without deleting)";
+          visibilityCheck.addEventListener('change', (e) => {
+            sub.visible = e.target.checked;
+            if (!sub.visible && sub.active) {
+              sub.active = false;
+            }
+            localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+            autoRebuildTimelineTrack();
+          });
+          editableWrap.appendChild(visibilityCheck);
+
+          const titleSpan = document.createElement('span');
+          titleSpan.textContent = sub.name;
+          editableWrap.appendChild(titleSpan);
+
+          const renameIcon = document.createElement('span');
+          renameIcon.className = 'subcat-action-icon';
+          renameIcon.textContent = '✏️';
+          renameIcon.title = "Rename Subcategory";
+          renameIcon.addEventListener('click', () => {
+            const newName = prompt("Enter a new subcategory name:", sub.name);
+            if (newName && newName.trim()) {
+              sub.name = newName.trim();
+              localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+              autoRebuildTimelineTrack();
+            }
+          });
+          editableWrap.appendChild(renameIcon);
+
+          if (sub.id !== 'half_day') {
+            const deleteIcon = document.createElement('span');
+            deleteIcon.className = 'subcat-action-icon';
+            deleteIcon.style.color = '#ff5555';
+            deleteIcon.textContent = '×';
+            deleteIcon.title = "Delete Subcategory Track";
+            deleteIcon.addEventListener('click', () => {
+              if (confirm(`Permanently drop the "${sub.name}" subcategory array context?`)) {
+                activeSched.subcategories.splice(sIdx, 1);
+                localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+                autoRebuildTimelineTrack();
+              }
+            });
+            editableWrap.appendChild(deleteIcon);
+          }
+          container.appendChild(editableWrap);
+        } else {
+          const label = document.createElement('label');
+          label.className = 'hd-toggle-label';
+          
+          const radioInput = document.createElement('input');
+          radioInput.type = 'checkbox';
+          radioInput.checked = sub.active;
+          
+          radioInput.addEventListener('change', (e) => {
+            activeSched.subcategories.forEach(s => s.active = false);
+            sub.active = e.target.checked;
+            if (currentActiveCategory === 'school' && sub.id === 'half_day') {
+              localStorage.setItem('db_half_day_toggle', sub.active ? 'true' : 'false');
+            }
+            localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+            autoRebuildTimelineTrack();
+          });
+          
+          label.appendChild(radioInput);
+          label.appendChild(document.createTextNode(` ${sub.name}`));
+          container.appendChild(label);
+        }
+      });
+
+      const addSubcatBtn = document.getElementById('custom-add-subcat-btn');
+      if (isEditModeActive && activeSched.subcategories.length < 2) {
+        addSubcatBtn.style.display = 'inline-block';
+      } else {
+        addSubcatBtn.style.display = 'none';
+      }
+    }
+
+    document.getElementById('custom-add-subcat-btn').addEventListener('click', () => {
+      const activeSched = dynamicSchedules[currentActiveCategory];
+      if (!activeSched) return;
+      if (activeSched.subcategories.length >= 2) return alert("Maximum subcategory capacity constraint threshold (2 subcategories) achieved.");
+
+      const subcatName = prompt("Enter subcategory timeline designation filter moniker:");
+      if (!subcatName || !subcatName.trim()) return;
+
+      activeSched.subcategories.push({
+        id: 'sub_' + Date.now(),
+        name: subcatName.trim(),
+        visible: true,
+        active: false,
+        blocks: JSON.parse(JSON.stringify(activeSched.blocks))
+      });
+
+      localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
+      autoRebuildTimelineTrack();
+    });
 
     const editModeToggleBtn = document.getElementById('edit-mode-toggle');
     editModeToggleBtn.addEventListener('click', () => {
@@ -1922,19 +2090,11 @@
       if (totalStartMin < 0 || totalStartMin > 900) return alert("Boundary Restriction: Start must be between 12:00 AM and 3:00 PM.");
 
       const unifiedKeyId = 'cat_' + Date.now();
-      dynamicSchedules[unifiedKeyId] = { name: nameInput, dayStart: totalStartMin, blocks: [] };
+      dynamicSchedules[unifiedKeyId] = { name: nameInput, dayStart: totalStartMin, blocks: [], subcategories: [] };
 
       localStorage.setItem('db_dynamic_schedules', JSON.stringify(dynamicSchedules));
       document.getElementById('modal-add-schedule').style.display = 'none';
       updateActiveCategoryContextState(unifiedKeyId);
-    });
-
-    const hdToggleInput = document.getElementById('half-day-toggle');
-    hdToggleInput.checked = isHalfDayChecked;
-    hdToggleInput.addEventListener('change', (e) => {
-      isHalfDayChecked = e.target.checked;
-      localStorage.setItem('db_half_day_toggle', isHalfDayChecked ? 'true' : 'false');
-      autoRebuildTimelineTrack();
     });
 
     function handlePipInteraction(groupName, clickedIdx, totalPips) {
@@ -2374,7 +2534,6 @@
 
     function executeLiveTimelineTrackingUpdates() {
       const now = new Date();
-      const currentDay = now.getDay();
       const currentMinutes = (now.getHours() * 60) + now.getMinutes();
 
       document.querySelectorAll('.tl-block.live-current').forEach(el => el.classList.remove('live-current'));
@@ -2467,37 +2626,35 @@
           if (importedData.dashboardLastCompleted) localStorage.setItem('dashboardLastCompleted', JSON.stringify(importedData.dashboardLastCompleted));
           if (importedData.db_as_needed) localStorage.setItem('db_as_needed', JSON.stringify(importedData.db_as_needed));
           if (importedData.db_hobbies) localStorage.setItem('db_hobbies', JSON.stringify(importedData.db_hobbies));
-          if (importedData.palfishClassCount !== null) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
+          if (importedData.palfishClassCount) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
           if (importedData.db_dynamic_schedules) localStorage.setItem('db_dynamic_schedules', JSON.stringify(importedData.db_dynamic_schedules));
           if (importedData.db_habit_custom_list) localStorage.setItem('db_habit_custom_list', JSON.stringify(importedData.db_habit_custom_list));
           if (importedData.db_habit_activity_log) localStorage.setItem('db_habit_activity_log', JSON.stringify(importedData.db_habit_activity_log));
           if (importedData.db_active_category) localStorage.setItem('db_active_category', importedData.db_active_category);
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
           if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
-
-          alert("Backup data restored successfully. Reloading interface...");
+          
+          alert("Backup data restored successfully.");
           window.location.reload();
-        } catch (error) {
-          alert("Failed to read the uploaded backup file. Ensure it is a valid JSON export.");
+        } catch(err) {
+          alert("Error decoding file stream structure.");
         }
       };
       reader.readAsText(file);
     });
 
-    // Initial Dashboard Setup Render Engine Execution
+    // App Initialization sequence
     updateClock();
-    renderLegend();
+    setInterval(updateClock, 1000);
+    setInterval(executeLiveTimelineTrackingUpdates, 30000);
+
     drawCategorySelectorsLayoutButtons();
+    renderLegend();
     autoRebuildTimelineTrack();
     renderHabitsMatrixInterfaceTrack();
     renderAsNeededMenu();
     renderHobbiesMenu();
     renderPalFishLedger();
-
-    // Routine Live Interlock Intervals
-    setInterval(updateClock, 1000);
-    setInterval(executeLiveTimelineTrackingUpdates, 30000);
-
   });
 </script>
 </body>
