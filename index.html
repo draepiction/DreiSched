@@ -78,6 +78,175 @@
       text-transform: uppercase;
     }
 
+    /* Calendar Integration Styling */
+    .calendar-preview-section {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 1.5rem;
+    }
+    .calendar-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .upcoming-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      background: var(--bg);
+      border-left: 2px solid var(--muted);
+    }
+    .upcoming-item.prep-window {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .upcoming-item.target-day {
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: 500;
+    }
+    .upcoming-meta {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Calendar Modal Grid System */
+    .calendar-grid-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .calendar-grid-cells {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+    .calendar-cell {
+      aspect-ratio: 1;
+      border: 0.5px solid var(--border);
+      background: var(--bg);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .calendar-cell:hover {
+      border-color: var(--accent);
+    }
+    .calendar-cell.empty {
+      opacity: 0.2;
+      cursor: default;
+    }
+    .calendar-cell.has-event {
+      border-color: var(--muted);
+      font-weight: 500;
+    }
+    .calendar-cell.in-prep {
+      background: rgba(240, 192, 122, 0.05);
+    }
+    .calendar-cell.selected {
+      background: var(--bg3) !important;
+      border-color: var(--accent) !important;
+    }
+    .calendar-modal-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 600px) {
+      .calendar-modal-layout {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .day-manager-panel {
+      border-top: 0.5px solid var(--border);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+    @media (min-width: 600px) {
+      .day-manager-panel {
+        border-top: none;
+        padding-top: 0;
+        border-left: 0.5px solid var(--border);
+        padding-left: 14px;
+      }
+    }
+    
+    /* Calendar List & Color Dot System */
+    .cell-dots {
+      display: flex;
+      gap: 3px;
+      position: absolute;
+      bottom: 4px;
+      justify-content: center;
+      width: 100%;
+    }
+    .cell-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .bg-c-accent { background-color: var(--accent); }
+    .bg-c-amber { background-color: #f0c07a; }
+    .bg-c-blue { background-color: #8ec4f0; }
+    .bg-c-teal { background-color: #7ddcb8; }
+    .bg-c-purple { background-color: #b8b4f5; }
+    .bg-c-pink { background-color: #f0aec8; }
+    .bg-c-green { background-color: #a8d47a; }
+    .bg-c-orange { background-color: #f0956a; }
+    .bg-c-red { background-color: #ff7575; }
+    .bg-c-lavender { background-color: #e0aaff; }
+
+    .day-event-item {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .day-event-item:hover {
+      border-color: var(--accent);
+    }
+    .day-event-item-title {
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .day-event-item-meta {
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
     /* Habits setup */
     .habit-container {
       display: flex;
@@ -713,6 +882,9 @@
       max-height: 90vh;
       overflow-y: auto;
     }
+    .modal-card.wide {
+      max-width: 720px;
+    }
     .modal-title {
       font-family: var(--font-display);
       font-size: 1.4rem;
@@ -734,7 +906,7 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-    .modal-field input[type="text"], .modal-field select, .modal-field input[type="time"] {
+    .modal-field input[type="text"], .modal-field select, .modal-field input[type="time"], .modal-field input[type="number"] {
       background: var(--bg);
       border: 0.5px solid var(--border);
       border-radius: 4px;
@@ -744,7 +916,7 @@
       padding: 8px;
       width: 100%;
     }
-    .modal-field input[type="text"]:focus, .modal-field select:focus, .modal-field input[type="time"]:focus {
+    .modal-field input[type="text"]:focus, .modal-field select:focus, .modal-field input[type="time"]:focus, .modal-field input[type="number"]:focus {
       border-color: var(--accent);
       outline: none;
     }
@@ -867,6 +1039,15 @@
     </div>
   </div>
 
+  <div class="calendar-preview-section">
+    <div class="calendar-preview-header">
+      <div class="section-label">Upcoming Special Days (Next 30 Days Limit)</div>
+      <button class="add-habit-btn" id="open-calendar-modal-btn">Open Full Calendar View</button>
+    </div>
+    <div class="upcoming-list" id="calendar-upcoming-hook">
+      </div>
+  </div>
+
   <div class="legend"></div>
 
   <div class="schedule-section" data-section="weekday">
@@ -960,6 +1141,95 @@
       <span id="next-dock-title">Checking upcoming routine...</span>
     </div>
     <span id="next-dock-timer">--</span>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-full-calendar">
+  <div class="modal-card wide">
+    <div class="modal-title" id="calendar-month-title">Calendar View</div>
+    
+    <div class="calendar-modal-layout">
+      <div>
+        <div class="calendar-grid-header">
+          <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
+        </div>
+        <div class="calendar-grid-cells" id="calendar-cells-target"></div>
+        <div style="display:flex; justify-content:space-between;">
+          <button class="reset-btn" id="cal-prev-month-btn">← Prev</button>
+          <button class="reset-btn" id="cal-next-month-btn">Next →</button>
+        </div>
+      </div>
+      
+      <div class="day-manager-panel">
+        <div class="section-label" style="margin-bottom:10px;" id="selected-date-indicator">Select a date</div>
+        
+        <div id="day-events-list"></div>
+        <button class="add-habit-btn" id="cal-add-new-btn" style="display:none; width:100%; margin-top:10px; padding: 6px;">+ Add New Event</button>
+
+        <div id="day-editor-form" style="display:none; margin-top: 15px; border-top: 0.5px solid var(--border); padding-top: 15px;">
+          <div class="modal-field">
+            <label>Event Title</label>
+            <input type="text" id="cal-day-title" placeholder="e.g., Exam Deadline, Project">
+          </div>
+
+          <div class="modal-field modal-row-split">
+            <div>
+              <label>Color Tag</label>
+              <select id="cal-day-color">
+                <option value="c-accent">Default Accent</option>
+                <option value="c-amber">Amber</option>
+                <option value="c-blue">Blue</option>
+                <option value="c-teal">Teal</option>
+                <option value="c-purple">Purple</option>
+                <option value="c-pink">Pink</option>
+                <option value="c-green">Green</option>
+                <option value="c-orange">Orange</option>
+                <option value="c-red">Red</option>
+                <option value="c-lavender">Lavender</option>
+              </select>
+            </div>
+            <div>
+              <label>Repeat Routine</label>
+              <select id="cal-day-repeat">
+                <option value="none">Does not repeat</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="modal-field" style="flex-direction:row; align-items:center; gap:8px;">
+            <input type="checkbox" id="cal-prep-toggle" style="width:14px; height:14px; accent-color:var(--accent);">
+            <label for="cal-prep-toggle" style="cursor:pointer;">Enable Preparation Window</label>
+          </div>
+          
+          <div class="modal-field" id="cal-prep-days-field" style="display:none;">
+            <label>Preparation Window Length (Days before)</label>
+            <input type="number" id="cal-prep-days" value="3" min="1" max="14">
+          </div>
+          
+          <div style="display:flex; gap:8px; margin-top:1rem; flex-wrap:wrap;">
+            <button class="reset-btn" id="cal-save-day-btn" style="border-color:var(--accent); color:var(--text); flex-grow:1;">Save Event</button>
+            <button class="reset-btn" id="cal-cancel-btn" style="flex-grow:1;">Cancel</button>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="reset-btn" id="cal-remove-occurrence-btn" style="border-color:#ff5555; color:#ff5555; display:none; flex-grow:1;">Delete Just This Day</button>
+            <button class="reset-btn" id="cal-remove-series-btn" style="border-color:#ff5555; color:#ff5555; display:none; flex-grow:1;">Delete Entire Series</button>
+            <button class="reset-btn" id="cal-remove-single-btn" style="border-color:#ff5555; color:#ff5555; display:none; flex-grow:1;">Delete Event</button>
+          </div>
+        </div>
+
+        <div id="day-editor-placeholder" style="color:var(--muted); font-size:11px; text-align:center; padding:2rem 0;">
+          Click on any calendar grid square to view dates, structure events, or track items.
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="border-top:0.5px solid var(--border); padding-top:10px; margin-top:1rem;">
+      <button class="reset-btn" id="close-calendar-modal-btn">Close View</button>
+    </div>
   </div>
 </div>
 
@@ -1143,6 +1413,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     
+    // Constant routine block mappings
     const BASE_DEFAULT_ROUTINE = [
       { start: 330, end: 345, name: "Wake up · sofa → bed · desk + chair · morning skincare", sub: "", style: "t-amber" },
       { start: 345, end: 360, name: "Feed cats", sub: "", style: "t-teal" },
@@ -1315,16 +1586,15 @@
 
     // Core Custom Category Color Mappings
     let colorLabels = JSON.parse(localStorage.getItem('db_color_labels')) || {
-      't-free': 'Free Time',
-      't-amber': 'Amber',
-      't-blue': 'Blue',
-      't-teal': 'Teal',
-      't-purple': 'Purple',
-      't-pink': 'Pink',
-      't-green': 'Green',
-      't-orange': 'Orange',
-      't-red': 'Red',
-      't-lavender': 'Lavender'
+      't-free': 'Free Time', 't-amber': 'Amber', 't-blue': 'Blue', 't-teal': 'Teal',
+      't-purple': 'Purple', 't-pink': 'Pink', 't-green': 'Green', 't-orange': 'Orange',
+      't-red': 'Red', 't-lavender': 'Lavender'
+    };
+    
+    const CAL_COLORS = {
+      'c-amber': '#f0c07a', 'c-blue': '#8ec4f0', 'c-teal': '#7ddcb8', 'c-purple': '#b8b4f5',
+      'c-pink': '#f0aec8', 'c-green': '#a8d47a', 'c-orange': '#f0956a', 'c-red': '#ff7575',
+      'c-lavender': '#e0aaff', 'c-accent': 'var(--accent)'
     };
 
     let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
@@ -1343,11 +1613,8 @@
       };
     }
 
-    // Ensure all schedules have the subcategories field
     Object.keys(dynamicSchedules).forEach(key => {
-      if (!dynamicSchedules[key].subcategories) {
-        dynamicSchedules[key].subcategories = [];
-      }
+      if (!dynamicSchedules[key].subcategories) dynamicSchedules[key].subcategories = [];
     });
 
     function checkWeekendAutomation() {
@@ -1372,7 +1639,6 @@
         }
       }
     }
-
     checkWeekendAutomation();
 
     let habitCustomList = JSON.parse(localStorage.getItem('db_habit_custom_list')) || []; 
@@ -1386,10 +1652,401 @@
 
     let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
     let hobbiesData = JSON.parse(localStorage.getItem('db_hobbies')) || DEFAULT_HOBBIES;
-
     let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
     let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
     let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
+
+    /* -------------------------------------------------------------
+       CALENDAR MODULE ENGINE V2 (Recurring Events Logic)
+       ------------------------------------------------------------- */
+    let calendarEvents = JSON.parse(localStorage.getItem('db_calendar_events_v2'));
+    if (!calendarEvents) {
+      let oldEvents = JSON.parse(localStorage.getItem('db_calendar_events')) || {};
+      calendarEvents = [];
+      if (!Array.isArray(oldEvents)) {
+        Object.keys(oldEvents).forEach(dateStr => {
+          calendarEvents.push({
+            id: 'evt_' + Date.now() + Math.random().toString(36).substr(2, 5),
+            date: dateStr,
+            title: oldEvents[dateStr].title,
+            color: 'c-accent',
+            repeat: 'none',
+            prepEnabled: oldEvents[dateStr].prepEnabled,
+            prepDays: oldEvents[dateStr].prepDays,
+            exceptions: []
+          });
+        });
+      } else {
+        calendarEvents = oldEvents;
+      }
+      localStorage.setItem('db_calendar_events_v2', JSON.stringify(calendarEvents));
+    }
+
+    let calendarCurrentDate = new Date();
+    let calendarSelectedDateStr = null;
+    let editingEventId = null;
+
+    function saveCalendarState() {
+      localStorage.setItem('db_calendar_events_v2', JSON.stringify(calendarEvents));
+      renderUpcomingDays();
+      renderCalendarGrid();
+      if (calendarSelectedDateStr) populateDayEditorList(calendarSelectedDateStr);
+    }
+
+    // Engine to generate date instances for all active repeating events
+    function generateEventInstances(startDateObj, endDateObj) {
+      let instances = [];
+      calendarEvents.forEach(evt => {
+        let currentObj = new Date(evt.date + 'T00:00:00');
+        if (!evt.exceptions) evt.exceptions = [];
+        
+        // Fast-forward processing loops
+        if (evt.repeat === 'weekly') { while(currentObj < startDateObj) currentObj.setDate(currentObj.getDate() + 7); } 
+        else if (evt.repeat === 'biweekly') { while(currentObj < startDateObj) currentObj.setDate(currentObj.getDate() + 14); } 
+        else if (evt.repeat === 'monthly') { while(currentObj < startDateObj) currentObj.setMonth(currentObj.getMonth() + 1); } 
+        else if (evt.repeat === 'yearly') { while(currentObj < startDateObj) currentObj.setFullYear(currentObj.getFullYear() + 1); }
+
+        let iters = 0;
+        while (currentObj <= endDateObj && iters < 800) {
+          let dStr = currentObj.toISOString().split('T')[0];
+          if (currentObj >= startDateObj) {
+            if (!evt.exceptions.includes(dStr)) {
+              instances.push({ dateStr: dStr, dateObj: new Date(currentObj), event: evt });
+            }
+          }
+          if (evt.repeat === 'none') break;
+          if (evt.repeat === 'weekly') currentObj.setDate(currentObj.getDate() + 7);
+          else if (evt.repeat === 'biweekly') currentObj.setDate(currentObj.getDate() + 14);
+          else if (evt.repeat === 'monthly') currentObj.setMonth(currentObj.getMonth() + 1);
+          else if (evt.repeat === 'yearly') currentObj.setFullYear(currentObj.getFullYear() + 1);
+          iters++;
+        }
+      });
+      return instances;
+    }
+
+    function renderUpcomingDays() {
+      const targetHook = document.getElementById('calendar-upcoming-hook');
+      targetHook.innerHTML = '';
+
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      const limitDate = new Date(now);
+      limitDate.setDate(limitDate.getDate() + 30); // 30 Day Max Preview Window
+
+      let instances = generateEventInstances(now, limitDate);
+      instances.sort((a, b) => a.dateObj - b.dateObj);
+
+      let activeItems = [];
+      let displayCount = 0;
+
+      for (let i = 0; i < instances.length; i++) {
+        if (displayCount >= 3) break; // Hard limit 3 upcoming dates
+        let inst = instances[i];
+
+        const diffTime = inst.dateObj - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        let isTargetDay = (diffDays === 0);
+        let isPrepActive = false;
+
+        if (inst.event.prepEnabled && diffDays > 0 && diffDays <= inst.event.prepDays) {
+          isPrepActive = true;
+        }
+
+        activeItems.push({ ...inst, diffDays, isTargetDay, isPrepActive });
+        displayCount++;
+      }
+
+      if (activeItems.length === 0) {
+        targetHook.innerHTML = `<div style="color:var(--muted); font-size:11px; padding:4px 0;">No imminent dates found within the next 30 day window limit.</div>`;
+        return;
+      }
+
+      activeItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = `upcoming-item ${item.isTargetDay ? 'target-day' : ''} ${item.isPrepActive ? 'prep-window' : ''}`;
+        
+        let colorHex = CAL_COLORS[item.event.color] || 'var(--accent)';
+        div.style.borderLeftColor = colorHex;
+
+        let labelSuffix = '';
+        if (item.isTargetDay) labelSuffix = ` · [TODAY]`;
+        else if (item.isPrepActive) labelSuffix = ` · [PREP: ${item.diffDays}d out]`;
+        else labelSuffix = ` · [${item.diffDays} days left]`;
+
+        let repIcon = item.event.repeat !== 'none' ? ' 🔄' : '';
+
+        div.innerHTML = `
+          <span>${item.event.title}${repIcon}${labelSuffix}</span>
+          <span class="upcoming-meta">${item.dateStr}</span>
+        `;
+        targetHook.appendChild(div);
+      });
+    }
+
+    function renderCalendarGrid() {
+      const targetGrid = document.getElementById('calendar-cells-target');
+      const titleLabel = document.getElementById('calendar-month-title');
+      targetGrid.innerHTML = '';
+
+      const year = calendarCurrentDate.getFullYear();
+      const month = calendarCurrentDate.getMonth();
+
+      titleLabel.innerHTML = `${calendarCurrentDate.toLocaleString('en-US', { month: 'long' })} <em>${year}</em>`;
+
+      const firstDayIdx = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+      const startDate = new Date(year, month, 1);
+      const endDate = new Date(year, month + 1, 0);
+
+      // We look slightly ahead to process Prep Window displays
+      let extendedEnd = new Date(endDate);
+      extendedEnd.setDate(extendedEnd.getDate() + 14);
+
+      let gridInstances = generateEventInstances(startDate, extendedEnd);
+      let map = {};
+      gridInstances.forEach(inst => {
+        if (!map[inst.dateStr]) map[inst.dateStr] = [];
+        map[inst.dateStr].push(inst.event);
+      });
+
+      for (let i = 0; i < firstDayIdx; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'calendar-cell empty';
+        targetGrid.appendChild(emptyCell);
+      }
+
+      for (let day = 1; day <= totalDays; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        cell.textContent = day;
+
+        const loopDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const loopDateObj = new Date(loopDateStr + 'T00:00:00');
+        
+        let evts = map[loopDateStr] || [];
+        
+        if (evts.length > 0) {
+          cell.classList.add('has-event');
+          let dotsWrap = document.createElement('div');
+          dotsWrap.className = 'cell-dots';
+          
+          evts.slice(0, 3).forEach(e => {
+            let dot = document.createElement('div');
+            dot.className = `cell-dot bg-${e.color}`;
+            dotsWrap.appendChild(dot);
+          });
+          if (evts.length > 3) {
+             let dotPlus = document.createElement('div');
+             dotPlus.className = 'cell-dot bg-c-accent';
+             dotPlus.style.opacity = 0.5;
+             dotsWrap.appendChild(dotPlus);
+          }
+          cell.appendChild(dotsWrap);
+        } else {
+          // Verify if it falls under any active prep windows for upcoming items
+          let isPrepDay = false;
+          gridInstances.forEach(inst => {
+            if (inst.event.prepEnabled) {
+              const diffTime = inst.dateObj - loopDateObj;
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              if (diffDays > 0 && diffDays <= inst.event.prepDays) {
+                isPrepDay = true;
+              }
+            }
+          });
+          if (isPrepDay) cell.classList.add('in-prep');
+        }
+
+        if (calendarSelectedDateStr === loopDateStr) {
+          cell.classList.add('selected');
+        }
+
+        cell.addEventListener('click', () => selectCalendarGridDate(loopDateStr));
+        targetGrid.appendChild(cell);
+      }
+    }
+
+    function selectCalendarGridDate(dateStr) {
+      calendarSelectedDateStr = dateStr;
+      renderCalendarGrid(); // Refresh to update selection active class
+
+      document.getElementById('selected-date-indicator').textContent = `Events on ${dateStr}`;
+      document.getElementById('day-editor-placeholder').style.display = 'none';
+      document.getElementById('day-editor-form').style.display = 'none';
+      document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+      
+      populateDayEditorList(dateStr);
+    }
+
+    function populateDayEditorList(dateStr) {
+      const listContainer = document.getElementById('day-events-list');
+      listContainer.innerHTML = '';
+      
+      const targetObj = new Date(dateStr + 'T00:00:00');
+      let instances = generateEventInstances(targetObj, targetObj);
+
+      if (instances.length === 0) {
+        listContainer.innerHTML = `<div style="font-size:11px; color:var(--muted); text-align:center; padding:10px 0;">No designated events logged for this date.</div>`;
+      } else {
+        instances.forEach(inst => {
+          const item = document.createElement('div');
+          item.className = 'day-event-item';
+          
+          let repeatLabel = inst.event.repeat !== 'none' ? ` · Repeats ${inst.event.repeat}` : '';
+          
+          item.innerHTML = `
+            <div>
+               <div class="day-event-item-title">
+                 <span class="cell-dot bg-${inst.event.color}"></span>
+                 ${inst.event.title}
+               </div>
+               <div class="day-event-item-meta">Event Options${repeatLabel}</div>
+            </div>
+            <span style="font-size:10px; color:var(--accent);">Edit →</span>
+          `;
+          item.addEventListener('click', () => openEditorForm(inst.event));
+          listContainer.appendChild(item);
+        });
+      }
+    }
+
+    function openEditorForm(eventObj = null) {
+      document.getElementById('day-editor-form').style.display = 'block';
+      document.getElementById('cal-add-new-btn').style.display = 'none';
+      document.getElementById('day-events-list').innerHTML = ''; // Collapse list while editing
+
+      const singleBtn = document.getElementById('cal-remove-single-btn');
+      const seriesBtn = document.getElementById('cal-remove-series-btn');
+      const occurBtn = document.getElementById('cal-remove-occurrence-btn');
+      
+      if (eventObj) {
+        editingEventId = eventObj.id;
+        document.getElementById('cal-day-title').value = eventObj.title;
+        document.getElementById('cal-day-color').value = eventObj.color;
+        document.getElementById('cal-day-repeat').value = eventObj.repeat;
+        document.getElementById('cal-prep-toggle').checked = eventObj.prepEnabled;
+        document.getElementById('cal-prep-days').value = eventObj.prepDays || 3;
+        
+        if (eventObj.repeat === 'none') {
+          singleBtn.style.display = 'inline-block';
+          seriesBtn.style.display = 'none'; occurBtn.style.display = 'none';
+        } else {
+          singleBtn.style.display = 'none';
+          seriesBtn.style.display = 'inline-block'; occurBtn.style.display = 'inline-block';
+        }
+      } else {
+        editingEventId = null;
+        document.getElementById('cal-day-title').value = '';
+        document.getElementById('cal-day-color').value = 'c-accent';
+        document.getElementById('cal-day-repeat').value = 'none';
+        document.getElementById('cal-prep-toggle').checked = false;
+        document.getElementById('cal-prep-days').value = 3;
+        
+        singleBtn.style.display = 'none'; seriesBtn.style.display = 'none'; occurBtn.style.display = 'none';
+      }
+      triggerPrepDaysInputVisibility();
+    }
+
+    function triggerPrepDaysInputVisibility() {
+      const isChecked = document.getElementById('cal-prep-toggle').checked;
+      document.getElementById('cal-prep-days-field').style.display = isChecked ? 'flex' : 'none';
+    }
+
+    // Modal Interaction Event Listeners
+    document.getElementById('open-calendar-modal-btn').addEventListener('click', () => {
+      document.getElementById('modal-full-calendar').style.display = 'flex';
+      calendarCurrentDate = new Date(); // Enforce current month load requirement
+      calendarSelectedDateStr = null;
+      document.getElementById('day-events-list').innerHTML = '';
+      document.getElementById('day-editor-form').style.display = 'none';
+      document.getElementById('cal-add-new-btn').style.display = 'none';
+      document.getElementById('day-editor-placeholder').style.display = 'block';
+      document.getElementById('selected-date-indicator').textContent = "Select a date";
+      renderCalendarGrid();
+    });
+
+    document.getElementById('close-calendar-modal-btn').addEventListener('click', () => {
+      document.getElementById('modal-full-calendar').style.display = 'none';
+    });
+    document.getElementById('cal-prev-month-btn').addEventListener('click', () => {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
+      renderCalendarGrid();
+    });
+    document.getElementById('cal-next-month-btn').addEventListener('click', () => {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
+      renderCalendarGrid();
+    });
+
+    document.getElementById('cal-prep-toggle').addEventListener('change', triggerPrepDaysInputVisibility);
+
+    document.getElementById('cal-add-new-btn').addEventListener('click', () => { openEditorForm(); });
+    document.getElementById('cal-cancel-btn').addEventListener('click', () => { 
+      document.getElementById('day-editor-form').style.display = 'none';
+      if (calendarSelectedDateStr) populateDayEditorList(calendarSelectedDateStr);
+      document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+    });
+
+    document.getElementById('cal-save-day-btn').addEventListener('click', () => {
+      if (!calendarSelectedDateStr) return;
+      const titleVal = document.getElementById('cal-day-title').value.trim();
+      
+      if (!titleVal) { return alert("Please enter a valid title."); }
+
+      const eventData = {
+        title: titleVal,
+        color: document.getElementById('cal-day-color').value,
+        repeat: document.getElementById('cal-day-repeat').value,
+        prepEnabled: document.getElementById('cal-prep-toggle').checked,
+        prepDays: parseInt(document.getElementById('cal-prep-days').value) || 3
+      };
+
+      if (editingEventId) {
+        let ev = calendarEvents.find(e => e.id === editingEventId);
+        if (ev) Object.assign(ev, eventData);
+      } else {
+        calendarEvents.push({
+          id: 'evt_' + Date.now() + Math.random().toString(36).substr(2, 5),
+          date: calendarSelectedDateStr,
+          exceptions: [],
+          ...eventData
+        });
+      }
+
+      document.getElementById('day-editor-form').style.display = 'none';
+      document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+      saveCalendarState();
+    });
+
+    // Deletion Listeners Route
+    document.getElementById('cal-remove-single-btn').addEventListener('click', () => {
+       calendarEvents = calendarEvents.filter(e => e.id !== editingEventId);
+       document.getElementById('day-editor-form').style.display = 'none';
+       document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+       saveCalendarState();
+    });
+    document.getElementById('cal-remove-series-btn').addEventListener('click', () => {
+       if(confirm("Confirm purge of this entire repeating calendar series block?")) {
+         calendarEvents = calendarEvents.filter(e => e.id !== editingEventId);
+         document.getElementById('day-editor-form').style.display = 'none';
+         document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+         saveCalendarState();
+       }
+    });
+    document.getElementById('cal-remove-occurrence-btn').addEventListener('click', () => {
+       let ev = calendarEvents.find(e => e.id === editingEventId);
+       if (ev && calendarSelectedDateStr) {
+         if (!ev.exceptions) ev.exceptions = [];
+         ev.exceptions.push(calendarSelectedDateStr);
+         document.getElementById('day-editor-form').style.display = 'none';
+         document.getElementById('cal-add-new-btn').style.display = 'inline-block';
+         saveCalendarState();
+       }
+    });
+
+    renderUpcomingDays();
+    /* ---- END OF CALENDAR MODULE ENGINE CORE ---- */
 
     function parseMinutesToTimeStr(totalMinutes) {
       if (totalMinutes === 1440) return "12:00 AM";
@@ -1443,7 +2100,6 @@
       return gaps;
     }
 
-    // Dynamic UI Color Legend Engine
     function renderLegend() {
       const legendContainer = document.querySelector('.legend');
       legendContainer.innerHTML = '';
@@ -2024,7 +2680,7 @@
     document.getElementById('custom-add-subcat-btn').addEventListener('click', () => {
       const activeSched = dynamicSchedules[currentActiveCategory];
       if (!activeSched) return;
-      if (activeSched.subcategories.length >= 2) return alert("Maximum subcategory capacity constraint threshold (2 subcategories) achieved.");
+      if (activeSched.subcategories.length >= 2) return alert("Maximum subcategory capacity constraint threshold achieved.");
 
       const subcatName = prompt("Enter subcategory timeline designation filter moniker:");
       if (!subcatName || !subcatName.trim()) return;
@@ -2601,7 +3257,8 @@
         db_habit_activity_log: JSON.parse(localStorage.getItem('db_habit_activity_log')),
         db_active_category: localStorage.getItem('db_active_category'),
         db_half_day_toggle: localStorage.getItem('db_half_day_toggle'),
-        db_color_labels: JSON.parse(localStorage.getItem('db_color_labels'))
+        db_color_labels: JSON.parse(localStorage.getItem('db_color_labels')),
+        db_calendar_events_v2: JSON.parse(localStorage.getItem('db_calendar_events_v2'))
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
@@ -2633,21 +3290,20 @@
           if (importedData.db_active_category) localStorage.setItem('db_active_category', importedData.db_active_category);
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
           if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
-          
-          alert("Backup data restored successfully.");
+          if (importedData.db_calendar_events_v2) localStorage.setItem('db_calendar_events_v2', JSON.stringify(importedData.db_calendar_events_v2));
+
+          alert("Backup data restoration complete.");
           window.location.reload();
         } catch(err) {
-          alert("Error decoding file stream structure.");
+          alert("Error parsing backup data target source.");
         }
       };
       reader.readAsText(file);
     });
 
-    // App Initialization sequence
+    // Master Engine Startup Sequencing calls
     updateClock();
-    setInterval(updateClock, 1000);
-    setInterval(executeLiveTimelineTrackingUpdates, 30000);
-
+    setInterval(updateClock, 60000);
     drawCategorySelectorsLayoutButtons();
     renderLegend();
     autoRebuildTimelineTrack();
@@ -2655,6 +3311,7 @@
     renderAsNeededMenu();
     renderHobbiesMenu();
     renderPalFishLedger();
+    setInterval(executeLiveTimelineTrackingUpdates, 30000);
   });
 </script>
 </body>
