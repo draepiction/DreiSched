@@ -1345,6 +1345,17 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+
+    // Safely parse LocalStorage Utility
+    function safeGetLS(key, fallback) {
+      try {
+        const val = localStorage.getItem(key);
+        return val ? JSON.parse(val) : fallback;
+      } catch (e) {
+        console.warn(`Error parsing ${key} from localStorage`, e);
+        return fallback;
+      }
+    }
     
     // Constant routine block mappings
     const BASE_DEFAULT_ROUTINE = [
@@ -1516,13 +1527,14 @@
 
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
     let isEditModeActive = false;
+    let currentTimelineSequence = []; // Globally tracked sequence for optimized deletions/updates
 
     // Core Custom Category Color Mappings
-    let colorLabels = JSON.parse(localStorage.getItem('db_color_labels')) || {
+    let colorLabels = safeGetLS('db_color_labels', {
       't-free': 'Free Time', 't-amber': 'Amber', 't-blue': 'Blue', 't-teal': 'Teal',
       't-purple': 'Purple', 't-pink': 'Pink', 't-green': 'Green', 't-orange': 'Orange',
       't-red': 'Red', 't-lavender': 'Lavender'
-    };
+    });
     
     const CAL_COLORS = {
       'c-amber': '#f0c07a', 'c-blue': '#8ec4f0', 'c-teal': '#7ddcb8', 'c-purple': '#b8b4f5',
@@ -1530,25 +1542,32 @@
       'c-lavender': '#e0aaff', 'c-accent': 'var(--accent)'
     };
 
-    let dynamicSchedules = JSON.parse(localStorage.getItem('db_dynamic_schedules'));
-    if (!dynamicSchedules) {
-      dynamicSchedules = {
-        default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)), subcategories: [] },
-        school: {
-          name: "School Mode",
-          dayStart: 330,
-          blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_NORMAL)),
-          subcategories: [
-            { id: "half_day", name: "Half-Day", visible: true, active: (localStorage.getItem('db_half_day_toggle') === 'true'), blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_HALFDAY)) }
-          ]
-        },
-        weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }], subcategories: [] }
-      };
-    }
+    // Engine Safe Initialization - Restore Core Defaults if accidentally purged
+    let dynamicSchedules = safeGetLS('db_dynamic_schedules', null);
+    
+    const CORE_BASE_MAP = {
+      default: { name: "Default", dayStart: 330, blocks: JSON.parse(JSON.stringify(BASE_DEFAULT_ROUTINE)), subcategories: [] },
+      school: {
+        name: "School Mode",
+        dayStart: 330,
+        blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_NORMAL)),
+        subcategories: [
+          { id: "half_day", name: "Half-Day", visible: true, active: (localStorage.getItem('db_half_day_toggle') === 'true'), blocks: JSON.parse(JSON.stringify(STATIC_SCHOOL_HALFDAY)) }
+        ]
+      },
+      weekend: { name: "Weekend", dayStart: 480, blocks: [{ start: 480, end: 1440, name: "Free time", sub: "Weekend freedom window", style: "t-free" }], subcategories: [] }
+    };
 
-    Object.keys(dynamicSchedules).forEach(key => {
-      if (!dynamicSchedules[key].subcategories) dynamicSchedules[key].subcategories = [];
-    });
+    if (!dynamicSchedules) {
+      dynamicSchedules = JSON.parse(JSON.stringify(CORE_BASE_MAP));
+    } else {
+      ['default', 'school', 'weekend'].forEach(key => {
+        if (!dynamicSchedules[key]) dynamicSchedules[key] = JSON.parse(JSON.stringify(CORE_BASE_MAP[key]));
+      });
+      Object.keys(dynamicSchedules).forEach(key => {
+        if (!dynamicSchedules[key].subcategories) dynamicSchedules[key].subcategories = [];
+      });
+    }
 
     function checkWeekendAutomation() {
       const currentDayNum = new Date().getDay(); 
@@ -1566,6 +1585,8 @@
       } else {
         if (currentActiveCategory === 'weekend') {
           currentActiveCategory = lastWeekdayCat;
+          // Verify if fallback exists, else default
+          if(!dynamicSchedules[currentActiveCategory]) currentActiveCategory = 'default';
           localStorage.setItem('db_active_category', currentActiveCategory);
         } else {
           localStorage.setItem('db_last_weekday_category', currentActiveCategory);
@@ -1574,27 +1595,27 @@
     }
     checkWeekendAutomation();
 
-    let habitCustomList = JSON.parse(localStorage.getItem('db_habit_custom_list')) || []; 
+    let habitCustomList = safeGetLS('db_habit_custom_list', []); 
     const todayStr = new Date().toISOString().split('T')[0];
-    let habitActivityLog = JSON.parse(localStorage.getItem('db_habit_activity_log')) || { date: todayStr, checks: {} };
+    let habitActivityLog = safeGetLS('db_habit_activity_log', { date: todayStr, checks: {} });
 
     if (habitActivityLog.date !== todayStr) {
       habitActivityLog = { date: todayStr, checks: {} };
       localStorage.setItem('db_habit_activity_log', JSON.stringify(habitActivityLog));
     }
 
-    let asNeededData = JSON.parse(localStorage.getItem('db_as_needed')) || DEFAULT_AS_NEEDED;
-    let hobbiesData = JSON.parse(localStorage.getItem('db_hobbies')) || DEFAULT_HOBBIES;
-    let savedStates = JSON.parse(localStorage.getItem('dashboardCheckboxes')) || {};
-    let savedPills = JSON.parse(localStorage.getItem('dashboardSubPills')) || {};
-    let completedDates = JSON.parse(localStorage.getItem('dashboardLastCompleted')) || {};
+    let asNeededData = safeGetLS('db_as_needed', DEFAULT_AS_NEEDED);
+    let hobbiesData = safeGetLS('db_hobbies', DEFAULT_HOBBIES);
+    let savedStates = safeGetLS('dashboardCheckboxes', {});
+    let savedPills = safeGetLS('dashboardSubPills', {});
+    let completedDates = safeGetLS('dashboardLastCompleted', {});
 
     /* -------------------------------------------------------------
        CALENDAR MODULE ENGINE V2 (Recurring Events Logic)
        ------------------------------------------------------------- */
-    let calendarEvents = JSON.parse(localStorage.getItem('db_calendar_events_v2'));
+    let calendarEvents = safeGetLS('db_calendar_events_v2', null);
     if (!calendarEvents) {
-      let oldEvents = JSON.parse(localStorage.getItem('db_calendar_events')) || {};
+      let oldEvents = safeGetLS('db_calendar_events', {});
       calendarEvents = [];
       if (!Array.isArray(oldEvents)) {
         Object.keys(oldEvents).forEach(dateStr => {
@@ -1626,14 +1647,12 @@
       if (calendarSelectedDateStr) populateDayEditorList(calendarSelectedDateStr);
     }
 
-    // Engine to generate date instances for all active repeating events
     function generateEventInstances(startDateObj, endDateObj) {
       let instances = [];
       calendarEvents.forEach(evt => {
         let currentObj = new Date(evt.date + 'T00:00:00');
         if (!evt.exceptions) evt.exceptions = [];
         
-        // Fast-forward processing loops
         if (evt.repeat === 'weekly') { while(currentObj < startDateObj) currentObj.setDate(currentObj.getDate() + 7); } 
         else if (evt.repeat === 'biweekly') { while(currentObj < startDateObj) currentObj.setDate(currentObj.getDate() + 14); } 
         else if (evt.repeat === 'monthly') { while(currentObj < startDateObj) currentObj.setMonth(currentObj.getMonth() + 1); } 
@@ -1665,7 +1684,7 @@
       const now = new Date();
       now.setHours(0,0,0,0);
       const limitDate = new Date(now);
-      limitDate.setDate(limitDate.getDate() + 30); // 30 Day Max Preview Window
+      limitDate.setDate(limitDate.getDate() + 30); 
 
       let instances = generateEventInstances(now, limitDate);
       instances.sort((a, b) => a.dateObj - b.dateObj);
@@ -1674,7 +1693,7 @@
       let displayCount = 0;
 
       for (let i = 0; i < instances.length; i++) {
-        if (displayCount >= 3) break; // Hard limit 3 upcoming dates
+        if (displayCount >= 3) break; 
         let inst = instances[i];
 
         const diffTime = inst.dateObj - now;
@@ -1733,7 +1752,6 @@
       const startDate = new Date(year, month, 1);
       const endDate = new Date(year, month + 1, 0);
 
-      // We look slightly ahead to process Prep Window displays
       let extendedEnd = new Date(endDate);
       extendedEnd.setDate(extendedEnd.getDate() + 14);
 
@@ -1778,7 +1796,6 @@
           }
           cell.appendChild(dotsWrap);
         } else {
-          // Verify if it falls under any active prep windows for upcoming items
           let isPrepDay = false;
           gridInstances.forEach(inst => {
             if (inst.event.prepEnabled) {
@@ -1803,7 +1820,7 @@
 
     function selectCalendarGridDate(dateStr) {
       calendarSelectedDateStr = dateStr;
-      renderCalendarGrid(); // Refresh to update selection active class
+      renderCalendarGrid(); 
 
       document.getElementById('selected-date-indicator').textContent = `Events on ${dateStr}`;
       document.getElementById('day-editor-placeholder').style.display = 'none';
@@ -1848,7 +1865,7 @@
     function openEditorForm(eventObj = null) {
       document.getElementById('day-editor-form').style.display = 'block';
       document.getElementById('cal-add-new-btn').style.display = 'none';
-      document.getElementById('day-events-list').innerHTML = ''; // Collapse list while editing
+      document.getElementById('day-events-list').innerHTML = ''; 
 
       const singleBtn = document.getElementById('cal-remove-single-btn');
       const seriesBtn = document.getElementById('cal-remove-series-btn');
@@ -1887,10 +1904,9 @@
       document.getElementById('cal-prep-days-field').style.display = isChecked ? 'flex' : 'none';
     }
 
-    // Modal Interaction Event Listeners
     document.getElementById('open-calendar-modal-btn').addEventListener('click', () => {
       document.getElementById('modal-full-calendar').style.display = 'flex';
-      calendarCurrentDate = new Date(); // Enforce current month load requirement
+      calendarCurrentDate = new Date(); 
       calendarSelectedDateStr = null;
       document.getElementById('day-events-list').innerHTML = '';
       document.getElementById('day-editor-form').style.display = 'none';
@@ -1952,7 +1968,6 @@
       saveCalendarState();
     });
 
-    // Deletion Listeners Route
     document.getElementById('cal-remove-single-btn').addEventListener('click', () => {
        calendarEvents = calendarEvents.filter(e => e.id !== editingEventId);
        document.getElementById('day-editor-form').style.display = 'none';
@@ -1979,7 +1994,6 @@
     });
 
     renderUpcomingDays();
-    /* ---- END OF CALENDAR MODULE ENGINE CORE ---- */
 
     function parseMinutesToTimeStr(totalMinutes) {
       if (totalMinutes === 1440) return "12:00 AM";
@@ -2103,8 +2117,8 @@
       }
 
       let dayStartLimit = 330; 
-      if (dynamicSchedules[currentActiveCategory]) {
-        dayStartLimit = dynamicSchedules[currentActiveCategory].dayStart;
+      if (activeSched) {
+        dayStartLimit = activeSched.dayStart;
       }
 
       let mergedSequence = [];
@@ -2138,6 +2152,7 @@
       }
 
       mergedSequence.sort((a, b) => a.start - b.start);
+      currentTimelineSequence = mergedSequence; // Cache globally for deletions/updates
 
       mergedSequence.forEach((block, idx) => {
         const timeNode = document.createElement('div');
@@ -2150,10 +2165,10 @@
         const contentNode = document.createElement('div');
         contentNode.className = `tl-block ${block.style}`;
         
-        if (!block.isFreeFiller) {
-          contentNode.setAttribute('data-start', block.start);
-          contentNode.setAttribute('data-end', block.end);
-        }
+        // Add data attributes for hyper-optimized tracking
+        contentNode.setAttribute('data-start', block.start);
+        contentNode.setAttribute('data-end', block.end);
+        contentNode.setAttribute('data-title', block.name.replace(/"/g, '&quot;'));
 
         let innerContent = `${block.name}`;
         if (block.sub) innerContent += `<span class="sub">${block.sub}</span>`;
@@ -2164,7 +2179,7 @@
             controlsHTML += `<button class="inline-action-btn add-btn" data-start="${block.start}" data-end="${block.end}">Edit into Block</button>`;
           } else {
             controlsHTML += `
-              <button class="inline-action-btn edit-btn" data-idx="${idx}" data-start="${block.start}">Edit</button>
+              <button class="inline-action-btn edit-btn" data-start="${block.start}">Edit</button>
               <button class="inline-action-btn del-btn" data-start="${block.start}">Delete</button>
               <button class="inline-action-btn up-btn" data-start="${block.start}">▲ Move Up</button>
               <button class="inline-action-btn down-btn" data-start="${block.start}">▼ Move Down</button>
@@ -2180,7 +2195,6 @@
         container.appendChild(blockContainer);
       });
 
-      if (isCurrentTrackEditable) bindEditableBlockListeners(mergedSequence);
       executeLiveTimelineTrackingUpdates();
       renderSubcategoriesPane();
       updateSleepCalculation();
@@ -2189,52 +2203,45 @@
     let selectedGapContext = null; 
     let currentTargetEditingBlockStart = null; 
 
-    function bindEditableBlockListeners(fullTimelineSequence) {
-      document.querySelectorAll('.inline-action-btn.add-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const start = parseInt(btn.getAttribute('data-start'));
-          const end = parseInt(btn.getAttribute('data-end'));
-          selectedGapContext = { start, end };
-          currentTargetEditingBlockStart = null;
-          openBlockEditorModal("Edit Unallocated Window into Block", start, end);
-        });
-      });
+    // Event Delegation: One listener to rule the timeline. Huge perf boost.
+    document.getElementById('master-timeline-track').addEventListener('click', (e) => {
+      if (!isEditModeActive) return;
 
-      document.querySelectorAll('.inline-action-btn.edit-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          const activeSched = dynamicSchedules[currentActiveCategory];
-          let targetBlock = null;
-          const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
-          if (currentActiveSub) {
-            targetBlock = currentActiveSub.blocks.find(b => b.start === startVal);
-          } else {
-            targetBlock = activeSched.blocks.find(b => b.start === startVal);
-          }
-          
-          if (targetBlock) {
-            selectedGapContext = null;
-            currentTargetEditingBlockStart = startVal;
-            openBlockEditorModal("Modify Dynamic Block Parameters", targetBlock.start, targetBlock.end, targetBlock);
-          }
-        });
-      });
-
-      document.querySelectorAll('.inline-action-btn.del-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const startVal = parseInt(btn.getAttribute('data-start'));
-          openDeleteStrategyDispatcher(startVal, fullTimelineSequence);
-        });
-      });
-
-      document.querySelectorAll('.inline-action-btn.up-btn').forEach(btn => {
-        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), -1));
-      });
-
-      document.querySelectorAll('.inline-action-btn.down-btn').forEach(btn => {
-        btn.addEventListener('click', () => executeChronologicalShift(parseInt(btn.getAttribute('data-start')), 1));
-      });
-    }
+      if (e.target.classList.contains('add-btn')) {
+        const start = parseInt(e.target.getAttribute('data-start'));
+        const end = parseInt(e.target.getAttribute('data-end'));
+        selectedGapContext = { start, end };
+        currentTargetEditingBlockStart = null;
+        openBlockEditorModal("Edit Unallocated Window into Block", start, end);
+      } 
+      else if (e.target.classList.contains('edit-btn')) {
+        const startVal = parseInt(e.target.getAttribute('data-start'));
+        const activeSched = dynamicSchedules[currentActiveCategory];
+        let targetBlock = null;
+        const currentActiveSub = activeSched.subcategories ? activeSched.subcategories.find(s => s.active && s.visible) : null;
+        if (currentActiveSub) {
+          targetBlock = currentActiveSub.blocks.find(b => b.start === startVal);
+        } else {
+          targetBlock = activeSched.blocks.find(b => b.start === startVal);
+        }
+        
+        if (targetBlock) {
+          selectedGapContext = null;
+          currentTargetEditingBlockStart = startVal;
+          openBlockEditorModal("Modify Dynamic Block Parameters", targetBlock.start, targetBlock.end, targetBlock);
+        }
+      } 
+      else if (e.target.classList.contains('del-btn')) {
+        const startVal = parseInt(e.target.getAttribute('data-start'));
+        openDeleteStrategyDispatcher(startVal, currentTimelineSequence);
+      } 
+      else if (e.target.classList.contains('up-btn')) {
+        executeChronologicalShift(parseInt(e.target.getAttribute('data-start')), -1);
+      } 
+      else if (e.target.classList.contains('down-btn')) {
+        executeChronologicalShift(parseInt(e.target.getAttribute('data-start')), 1);
+      }
+    });
 
     function openBlockEditorModal(titleText, gapStart, gapEnd, blockData = null) {
       document.getElementById('block-modal-header-title').textContent = titleText;
@@ -3128,45 +3135,40 @@
       }
     }
 
+    // Highly optimized Live Timeline Tracker
     function executeLiveTimelineTrackingUpdates() {
       const now = new Date();
       const currentMinutes = (now.getHours() * 60) + now.getMinutes();
 
+      // Remove previous live tracker visually
       document.querySelectorAll('.tl-block.live-current').forEach(el => el.classList.remove('live-current'));
 
       const blockElements = document.querySelectorAll('#master-timeline-track .tl-block[data-start][data-end]');
-      let todayBlocks = [];
+      let activeBlock = null; 
+      let nextBlock = null;
 
-      blockElements.forEach(el => {
+      // Single iteration reading straight from data attributes (No DOM Cloning)
+      for (let i = 0; i < blockElements.length; i++) {
+        const el = blockElements[i];
         const start = parseInt(el.getAttribute('data-start'));
         const end = parseInt(el.getAttribute('data-end'));
-        const cleanNode = el.cloneNode(true);
-        const sub = cleanNode.querySelector('.sub');
-        if (sub) sub.remove();
-        
-        const ctrls = cleanNode.querySelector('.tl-inline-ctrls');
-        if (ctrls) ctrls.remove();
+        const name = el.getAttribute('data-title');
 
-        const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('-')[0].trim();
-        todayBlocks.push({ element: el, name: parsedTitle, start, end });
-      });
-
-      todayBlocks.sort((a, b) => a.start - b.start);
-
-      let activeBlock = null; let nextBlock = null;
-      for (let i = 0; i < todayBlocks.length; i++) {
-        const b = todayBlocks[i];
-        if (currentMinutes >= b.start && currentMinutes < b.end) {
-          b.element.classList.add('live-current');
-          activeBlock = b;
-          if (i + 1 < todayBlocks.length) nextBlock = todayBlocks[i + 1];
-          break;
-        }
-      }
-
-      if (!activeBlock) {
-        for (let i = 0; i < todayBlocks.length; i++) {
-          if (todayBlocks[i].start > currentMinutes) { nextBlock = todayBlocks[i]; break; }
+        if (currentMinutes >= start && currentMinutes < end) {
+          el.classList.add('live-current');
+          activeBlock = { name, start, end };
+          
+          if (i + 1 < blockElements.length) {
+            const nextEl = blockElements[i + 1];
+            nextBlock = {
+              name: nextEl.getAttribute('data-title'),
+              start: parseInt(nextEl.getAttribute('data-start'))
+            };
+          }
+          break; // Stop parsing once we hit the active block
+        } 
+        else if (start > currentMinutes && !nextBlock) {
+          nextBlock = { name, start, end };
         }
       }
 
@@ -3190,18 +3192,18 @@
 
     exportBtn.addEventListener('click', () => {
       const backupData = {
-        dashboardCheckboxes: JSON.parse(localStorage.getItem('dashboardCheckboxes')),
-        dashboardSubPills: JSON.parse(localStorage.getItem('dashboardSubPills')),
-        dashboardLastCompleted: JSON.parse(localStorage.getItem('dashboardLastCompleted')),
-        db_as_needed: JSON.parse(localStorage.getItem('db_as_needed')),
-        db_hobbies: JSON.parse(localStorage.getItem('db_hobbies')),
-        db_dynamic_schedules: JSON.parse(localStorage.getItem('db_dynamic_schedules')),
-        db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
-        db_habit_activity_log: JSON.parse(localStorage.getItem('db_habit_activity_log')),
+        dashboardCheckboxes: safeGetLS('dashboardCheckboxes', {}),
+        dashboardSubPills: safeGetLS('dashboardSubPills', {}),
+        dashboardLastCompleted: safeGetLS('dashboardLastCompleted', {}),
+        db_as_needed: safeGetLS('db_as_needed', DEFAULT_AS_NEEDED),
+        db_hobbies: safeGetLS('db_hobbies', DEFAULT_HOBBIES),
+        db_dynamic_schedules: safeGetLS('db_dynamic_schedules', CORE_BASE_MAP),
+        db_habit_custom_list: safeGetLS('db_habit_custom_list', []),
+        db_habit_activity_log: safeGetLS('db_habit_activity_log', {}),
         db_active_category: localStorage.getItem('db_active_category'),
         db_half_day_toggle: localStorage.getItem('db_half_day_toggle'),
-        db_color_labels: JSON.parse(localStorage.getItem('db_color_labels')),
-        db_calendar_events_v2: JSON.parse(localStorage.getItem('db_calendar_events_v2'))
+        db_color_labels: safeGetLS('db_color_labels', {}),
+        db_calendar_events_v2: safeGetLS('db_calendar_events_v2', [])
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
