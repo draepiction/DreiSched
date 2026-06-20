@@ -518,59 +518,6 @@
       background: rgba(240, 192, 122, 0.05);
     }
 
-    /* PalFish Track layout */
-    .palfish-ledger {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin: 1.5rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .ledger-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .ledger-counter {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 12px;
-    }
-    .ledger-btn {
-      background: var(--bg3);
-      border: 0.5px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-mono);
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      user-select: none;
-    }
-    .ledger-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    #pf-count {
-      font-weight: 500;
-      font-size: 13px;
-      min-width: 18px;
-      text-align: center;
-    }
-    .ledger-earnings {
-      font-size: 11.5px;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-    }
-
     /* Progress meters */
     .progress-container {
       width: 100%;
@@ -1072,24 +1019,10 @@
 
   <div class="sleep-note">
     <span class="icon">🌙</span>
-    <span>Weekday base sleep: ~5.5 hrs (12:00 AM to 5:30 AM). Friday sleep is later · Clara night. Autopiloting weekend routines when calendar hits Saturday.</span>
+    <span id="dynamic-sleep-calc">Calculating sleep possible...</span>
   </div>
 
   <div class="divider"></div>
-
-  <div class="palfish-ledger">
-    <div class="section-label" style="letter-spacing: 0.08em;">PalFish Volume Ledger</div>
-    <div class="ledger-row">
-      <div class="ledger-counter">
-        <button class="ledger-btn" id="pf-minus">−</button>
-        <span id="pf-count">0</span> classes completed
-        <button class="ledger-btn" id="pf-plus">+</button>
-      </div>
-      <div class="ledger-earnings">
-        Est. Base: <span id="pf-earnings" style="color: var(--accent); font-weight: 500;">0</span> RMB
-      </div>
-    </div>
-  </div>
 
   <div class="menu-header-row">
     <div class="section-label">As-needed menu · pick from any free window</div>
@@ -1420,7 +1353,7 @@
       { start: 360, end: 960, name: "Bonus Day Off", sub: "School is out · complete freedom to rest, tackle projects, or sleep in", style: "t-free" },
       { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
+      { start: 1080, end: 1170, name: "Active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
       { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
@@ -1434,7 +1367,7 @@
       { start: 900, end: 960, name: "Commute home", sub: "", style: "t-blue" },
       { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
+      { start: 1080, end: 1170, name: "Active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
       { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
@@ -1449,7 +1382,7 @@
       { start: 750, end: 960, name: "Bonus Free Window", sub: "Extra Clara window · rest · tackle as-needed list early", style: "t-free" },
       { start: 960, end: 975, name: "Clean litter box", sub: "", style: "t-amber" },
       { start: 975, end: 1080, name: "Free time", sub: "Clara window · laundry · organize · sweep · mop if needed", style: "t-free" },
-      { start: 1080, end: 1170, name: "PalFish · active teaching", sub: "", style: "t-purple" },
+      { start: 1080, end: 1170, name: "Active teaching", sub: "", style: "t-purple" },
       { start: 1170, end: 1410, name: "Free time", sub: "Clara time · personal projects · rest", style: "t-free" },
       { start: 1410, end: 1440, name: "Shower + night skincare", sub: "", style: "t-pink" }
     ];
@@ -2250,6 +2183,7 @@
       if (isCurrentTrackEditable) bindEditableBlockListeners(mergedSequence);
       executeLiveTimelineTrackingUpdates();
       renderSubcategoriesPane();
+      updateSleepCalculation();
     }
 
     let selectedGapContext = null; 
@@ -3151,31 +3085,12 @@
       }
     }
 
-    let pfClassCount = parseInt(localStorage.getItem('palfishClassCount')) || 0;
-    const pfCountEl = document.getElementById('pf-count');
-    const pfEarningsEl = document.getElementById('pf-earnings');
-
-    function renderPalFishLedger() {
-      pfCountEl.textContent = pfClassCount;
-      pfEarningsEl.textContent = pfClassCount * 35;
-    }
-
-    document.getElementById('pf-plus').addEventListener('click', () => {
-      pfClassCount++; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger();
-    });
-
-    document.getElementById('pf-minus').addEventListener('click', () => {
-      if (pfClassCount > 0) { pfClassCount--; localStorage.setItem('palfishClassCount', pfClassCount); renderPalFishLedger(); }
-    });
-
     document.getElementById('reset-week-btn').addEventListener('click', () => {
-      if (confirm('Clear all task selections, completed dates, ledger metrics, and pet pills for the new week?')) {
+      if (confirm('Clear all task selections, completed dates, and pet pills for the new week?')) {
         savedStates = {}; savedPills = {}; completedDates = {};
         localStorage.removeItem('dashboardCheckboxes');
         localStorage.removeItem('dashboardSubPills');
         localStorage.removeItem('dashboardLastCompleted');
-        localStorage.removeItem('palfishClassCount');
-        pfClassCount = 0; renderPalFishLedger();
         renderAsNeededMenu();
         renderHobbiesMenu();
       }
@@ -3186,6 +3101,31 @@
       const optionsDay = { weekday: 'long' };
       const optionsTime = { hour: 'numeric', minute: '2-digit', hour12: true };
       document.getElementById('live-header-meta').textContent = `Drei · ${now.toLocaleDateString('en-US', optionsDay)} · ${now.toLocaleTimeString('en-US', optionsTime)}`;
+      updateSleepCalculation();
+    }
+
+    function updateSleepCalculation() {
+      const activeSched = dynamicSchedules[currentActiveCategory];
+      if (!activeSched) return;
+      const wakeTime = activeSched.dayStart;
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      let sleepMin;
+      if (currentMinutes < wakeTime) {
+        sleepMin = wakeTime - currentMinutes;
+      } else {
+        sleepMin = (1440 - currentMinutes) + wakeTime;
+      }
+
+      const hrs = Math.floor(sleepMin / 60);
+      const mins = sleepMin % 60;
+      const timeString = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+
+      const sleepEl = document.getElementById('dynamic-sleep-calc');
+      if(sleepEl) {
+        sleepEl.innerHTML = `Time until wake up (${parseMinutesToTimeStr(wakeTime)}): <strong style="color:var(--accent);">${timeString}</strong> of possible sleep remaining.`;
+      }
     }
 
     function executeLiveTimelineTrackingUpdates() {
@@ -3203,6 +3143,10 @@
         const cleanNode = el.cloneNode(true);
         const sub = cleanNode.querySelector('.sub');
         if (sub) sub.remove();
+        
+        const ctrls = cleanNode.querySelector('.tl-inline-ctrls');
+        if (ctrls) ctrls.remove();
+
         const parsedTitle = cleanNode.textContent.trim().split('·')[0].split('-')[0].trim();
         todayBlocks.push({ element: el, name: parsedTitle, start, end });
       });
@@ -3251,7 +3195,6 @@
         dashboardLastCompleted: JSON.parse(localStorage.getItem('dashboardLastCompleted')),
         db_as_needed: JSON.parse(localStorage.getItem('db_as_needed')),
         db_hobbies: JSON.parse(localStorage.getItem('db_hobbies')),
-        palfishClassCount: localStorage.getItem('palfishClassCount'),
         db_dynamic_schedules: JSON.parse(localStorage.getItem('db_dynamic_schedules')),
         db_habit_custom_list: JSON.parse(localStorage.getItem('db_habit_custom_list')),
         db_habit_activity_log: JSON.parse(localStorage.getItem('db_habit_activity_log')),
@@ -3283,7 +3226,6 @@
           if (importedData.dashboardLastCompleted) localStorage.setItem('dashboardLastCompleted', JSON.stringify(importedData.dashboardLastCompleted));
           if (importedData.db_as_needed) localStorage.setItem('db_as_needed', JSON.stringify(importedData.db_as_needed));
           if (importedData.db_hobbies) localStorage.setItem('db_hobbies', JSON.stringify(importedData.db_hobbies));
-          if (importedData.palfishClassCount) localStorage.setItem('palfishClassCount', importedData.palfishClassCount);
           if (importedData.db_dynamic_schedules) localStorage.setItem('db_dynamic_schedules', JSON.stringify(importedData.db_dynamic_schedules));
           if (importedData.db_habit_custom_list) localStorage.setItem('db_habit_custom_list', JSON.stringify(importedData.db_habit_custom_list));
           if (importedData.db_habit_activity_log) localStorage.setItem('db_habit_activity_log', JSON.stringify(importedData.db_habit_activity_log));
@@ -3310,7 +3252,6 @@
     renderHabitsMatrixInterfaceTrack();
     renderAsNeededMenu();
     renderHobbiesMenu();
-    renderPalFishLedger();
     setInterval(executeLiveTimelineTrackingUpdates, 30000);
   });
 </script>
