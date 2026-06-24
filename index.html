@@ -1682,6 +1682,18 @@
       let instances = generateEventInstances(now, limitDate);
       instances.sort((a, b) => a.dateObj - b.dateObj);
 
+      // Unique Recurring Filter for List View
+      let recurringSeen = new Set();
+      let uniqueInstances = [];
+      for (let inst of instances) {
+        if (inst.event.repeat !== 'none') {
+          if (recurringSeen.has(inst.event.id)) continue;
+          recurringSeen.add(inst.event.id);
+        }
+        uniqueInstances.push(inst);
+      }
+      instances = uniqueInstances;
+
       if (instances.length === 0) {
         container.innerHTML = '<div style="color:var(--muted); font-size:11px; padding:10px 0; text-align:center;">No upcoming events found for the next year.</div>';
         return;
@@ -1760,6 +1772,18 @@
 
       let instances = generateEventInstances(now, limitDate);
       instances.sort((a, b) => a.dateObj - b.dateObj);
+
+      // Unique Recurring Filter for Main Dashboard View
+      let recurringSeen = new Set();
+      let uniqueInstances = [];
+      for (let inst of instances) {
+        if (inst.event.repeat !== 'none') {
+          if (recurringSeen.has(inst.event.id)) continue;
+          recurringSeen.add(inst.event.id);
+        }
+        uniqueInstances.push(inst);
+      }
+      instances = uniqueInstances;
 
       let activeItems = [];
       let displayCount = 0;
