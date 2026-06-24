@@ -1079,9 +1079,14 @@
 
 <div class="modal-overlay" id="modal-full-calendar">
   <div class="modal-card wide">
-    <div class="modal-title" id="calendar-month-title">Calendar View</div>
+    <div class="modal-title" id="calendar-month-title" style="margin-bottom: 10px; padding-bottom: 10px;">Calendar View</div>
     
-    <div class="calendar-modal-layout">
+    <div style="display: flex; gap: 8px; margin-bottom: 1.5rem;">
+      <button class="cat-btn active" id="tab-cal-grid">Grid View</button>
+      <button class="cat-btn" id="tab-cal-list">All Upcoming</button>
+    </div>
+
+    <div class="calendar-modal-layout" id="cal-view-grid">
       <div>
         <div class="calendar-grid-header">
           <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
@@ -1159,6 +1164,8 @@
         </div>
       </div>
     </div>
+
+    <div id="cal-view-list" style="display:none; max-height: 60vh; overflow-y: auto; padding-right: 4px;"></div>
 
     <div class="modal-actions" style="border-top:0.5px solid var(--border); padding-top:10px; margin-top:1rem;">
       <button class="reset-btn" id="close-calendar-modal-btn">Close View</button>
@@ -1355,6 +1362,14 @@
         console.warn(`Error parsing ${key} from localStorage`, e);
         return fallback;
       }
+    }
+
+    // Timezone safe local date extractor
+    function getLocalDateStr(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
     }
     
     // Constant routine block mappings
@@ -1596,7 +1611,7 @@
     checkWeekendAutomation();
 
     let habitCustomList = safeGetLS('db_habit_custom_list', []); 
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getLocalDateStr(new Date());
     let habitActivityLog = safeGetLS('db_habit_activity_log', { date: todayStr, checks: {} });
 
     if (habitActivityLog.date !== todayStr) {
@@ -1640,6 +1655,63 @@
     let calendarSelectedDateStr = null;
     let editingEventId = null;
 
+    // View All Tab Logic
+    document.getElementById('tab-cal-grid').addEventListener('click', (e) => {
+      e.target.classList.add('active');
+      document.getElementById('tab-cal-list').classList.remove('active');
+      document.getElementById('cal-view-grid').style.display = '';
+      document.getElementById('cal-view-list').style.display = 'none';
+    });
+
+    document.getElementById('tab-cal-list').addEventListener('click', (e) => {
+      e.target.classList.add('active');
+      document.getElementById('tab-cal-grid').classList.remove('active');
+      document.getElementById('cal-view-grid').style.display = 'none';
+      document.getElementById('cal-view-list').style.display = 'block';
+      renderAllUpcomingEvents();
+    });
+
+    function renderAllUpcomingEvents() {
+      const container = document.getElementById('cal-view-list');
+      container.innerHTML = '';
+      const now = new Date();
+      now.setHours(0,0,0,0);
+      const limitDate = new Date(now);
+      limitDate.setFullYear(limitDate.getFullYear() + 1);
+
+      let instances = generateEventInstances(now, limitDate);
+      instances.sort((a, b) => a.dateObj - b.dateObj);
+
+      if (instances.length === 0) {
+        container.innerHTML = '<div style="color:var(--muted); font-size:11px; padding:10px 0; text-align:center;">No upcoming events found for the next year.</div>';
+        return;
+      }
+
+      instances.forEach(inst => {
+        const div = document.createElement('div');
+        div.className = 'day-event-item';
+        div.style.marginBottom = '8px';
+        let repIcon = inst.event.repeat !== 'none' ? ' 🔄' : '';
+        div.innerHTML = `
+          <div>
+             <div class="day-event-item-title">
+               <span class="cell-dot bg-${inst.event.color}"></span>
+               ${inst.event.title}${repIcon}
+             </div>
+             <div class="day-event-item-meta">${getFormattedDate(inst.dateStr)}</div>
+          </div>
+          <span style="font-size:10px; color:var(--muted);">Jump →</span>
+        `;
+        div.addEventListener('click', () => {
+          document.getElementById('tab-cal-grid').click();
+          const [y, m, d] = inst.dateStr.split('-');
+          calendarCurrentDate = new Date(parseInt(y), parseInt(m) - 1, 1);
+          selectCalendarGridDate(inst.dateStr);
+        });
+        container.appendChild(div);
+      });
+    }
+
     function saveCalendarState() {
       localStorage.setItem('db_calendar_events_v2', JSON.stringify(calendarEvents));
       renderUpcomingDays();
@@ -1660,7 +1732,7 @@
 
         let iters = 0;
         while (currentObj <= endDateObj && iters < 800) {
-          let dStr = currentObj.toISOString().split('T')[0];
+          let dStr = getLocalDateStr(currentObj);
           if (currentObj >= startDateObj) {
             if (!evt.exceptions.includes(dStr)) {
               instances.push({ dateStr: dStr, dateObj: new Date(currentObj), event: evt });
@@ -1906,6 +1978,7 @@
 
     document.getElementById('open-calendar-modal-btn').addEventListener('click', () => {
       document.getElementById('modal-full-calendar').style.display = 'flex';
+      document.getElementById('tab-cal-grid').click();
       calendarCurrentDate = new Date(); 
       calendarSelectedDateStr = null;
       document.getElementById('day-events-list').innerHTML = '';
@@ -3209,7 +3282,7 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `dashboard_master_backup_${new Date().toISOString().split('T')[0]}.json`);
+      downloadAnchor.setAttribute("download", `dashboard_master_backup_${getLocalDateStr(new Date())}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click(); downloadAnchor.remove();
     });
