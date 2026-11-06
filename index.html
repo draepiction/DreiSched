@@ -43,6 +43,14 @@
       font-family: var(--font-mono);
       overscroll-behavior-y: contain;
       min-height: 100vh;
+      transition: margin-right 0.3s ease;
+    }
+
+    body.kanban-open {
+      margin-right: 390px;
+    }
+    @media (max-width: 900px) {
+      body.kanban-open { margin-right: 0; }
     }
 
     .wrap {
@@ -58,6 +66,13 @@
       margin-bottom: 2.5rem;
       border-bottom: 0.5px solid var(--border);
       padding-bottom: 1.25rem;
+    }
+    .header-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
     .header-title {
       font-family: var(--font-display);
@@ -76,6 +91,183 @@
       margin-top: 6px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+    }
+    .kanban-toggle-btn {
+      background: var(--bg2);
+      border: 0.5px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .kanban-toggle-btn:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Kanban Sidebar Styling (Completely Independent Engine) */
+    .kanban-sidebar {
+      position: fixed;
+      top: 0; right: -390px; width: 390px; height: 100vh;
+      background: var(--bg2);
+      border-left: 0.5px solid var(--border);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .kanban-sidebar.open {
+      right: 0;
+    }
+    .kanban-sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 0.5px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kanban-sidebar-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--text);
+    }
+    .kanban-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .kanban-close-btn:hover { color: var(--text); }
+
+    .kanban-quick-add-form {
+      padding: 14px 20px;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .kanban-quick-add-form input, .kanban-quick-add-form select {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 6px 8px;
+      width: 100%;
+    }
+    .kanban-quick-add-form input:focus, .kanban-quick-add-form select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .kanban-columns-wrap {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .kanban-col {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .kanban-col-title {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kanban-card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 45px;
+    }
+    .kanban-card {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: 4px;
+      padding: 9px 11px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color 0.2s ease;
+      border-left: 3px solid var(--accent);
+    }
+    .kanban-card:hover {
+      border-color: var(--accent);
+    }
+    .kanban-card-title {
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-word;
+      line-height: 1.4;
+    }
+    .kanban-card-meta {
+      font-size: 9.5px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+    }
+    .kanban-card-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+      border-top: 0.5px solid var(--border);
+      padding-top: 6px;
+    }
+    .kanban-action-btn {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      color: var(--muted);
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+    .kanban-action-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .kanban-del-btn {
+      margin-left: auto;
+      color: #ff5555;
+      border-color: rgba(255,85,85,0.3);
+    }
+    .kanban-del-btn:hover {
+      border-color: #ff5555;
+      color: #ff5555;
+    }
+
+    @media (max-width: 600px) {
+      .kanban-sidebar { width: 100%; right: -100%; }
+      .kanban-sidebar.open { right: 0; }
     }
 
     /* Calendar Integration Styling */
@@ -963,8 +1155,15 @@
 <div class="wrap">
 
   <div class="header">
-    <div class="header-title">Weekly <em>Schedule</em></div>
-    <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
+    <div class="header-top-row">
+      <div>
+        <div class="header-title">Weekly <em>Schedule</em></div>
+        <div class="header-sub" id="live-header-meta">Drei · Loading Clock...</div>
+      </div>
+      <button class="kanban-toggle-btn" id="kanban-toggle-sidebar-btn">
+        <span>☰ Task Kanban</span>
+      </button>
+    </div>
     
     <div class="habit-container" id="habit-container-matrix">
       <div class="habit-group" data-habit="skincare" data-fixed="true">
@@ -1065,6 +1264,52 @@
     </div>
   </div>
 
+</div>
+
+<!-- INDEPENDENT KANBAN SIDEBAR FOR URGENT / PRESENT TASKS -->
+<div class="kanban-sidebar" id="kanban-sidebar">
+  <div class="kanban-sidebar-header">
+    <div class="kanban-sidebar-title">Urgent Tasks Kanban</div>
+    <button class="kanban-close-btn" id="kanban-close-sidebar-btn">×</button>
+  </div>
+
+  <div class="kanban-quick-add-form">
+    <div class="section-label">Quick Add Urgent Task</div>
+    <input type="text" id="kanban-quick-title" placeholder="Task name / priority focus...">
+    <div style="display:flex; gap:6px;">
+      <select id="kanban-quick-urgency">
+        <option value="high">High Priority / Urgent</option>
+        <option value="normal" selected>Normal Focus</option>
+      </select>
+    </div>
+    <button class="reset-btn" id="kanban-quick-submit" style="border-color:var(--accent); color:var(--text); width:100%; margin-top:2px;">+ Add Task</button>
+  </div>
+
+  <div class="kanban-columns-wrap">
+    <div class="kanban-col">
+      <div class="kanban-col-title">
+        <span>📋 To Do</span>
+        <span id="kanban-count-todo" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
+      </div>
+      <div class="kanban-card-list" id="kanban-list-todo"></div>
+    </div>
+
+    <div class="kanban-col">
+      <div class="kanban-col-title">
+        <span>⚡ In Progress</span>
+        <span id="kanban-count-progress" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
+      </div>
+      <div class="kanban-card-list" id="kanban-list-progress"></div>
+    </div>
+
+    <div class="kanban-col">
+      <div class="kanban-col-title">
+        <span>✓ Done</span>
+        <span id="kanban-count-done" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
+      </div>
+      <div class="kanban-card-list" id="kanban-list-done"></div>
+    </div>
+  </div>
 </div>
 
 <div id="next-up-dock">
@@ -1542,7 +1787,7 @@
 
     let currentActiveCategory = localStorage.getItem('db_active_category') || 'default';
     let isEditModeActive = false;
-    let currentTimelineSequence = []; // Globally tracked sequence for optimized deletions/updates
+    let currentTimelineSequence = [];
 
     // Core Custom Category Color Mappings
     let colorLabels = safeGetLS('db_color_labels', {
@@ -1557,7 +1802,6 @@
       'c-lavender': '#e0aaff', 'c-accent': 'var(--accent)'
     };
 
-    // Engine Safe Initialization - Restore Core Defaults if accidentally purged
     let dynamicSchedules = safeGetLS('db_dynamic_schedules', null);
     
     const CORE_BASE_MAP = {
@@ -1600,7 +1844,6 @@
       } else {
         if (currentActiveCategory === 'weekend') {
           currentActiveCategory = lastWeekdayCat;
-          // Verify if fallback exists, else default
           if(!dynamicSchedules[currentActiveCategory]) currentActiveCategory = 'default';
           localStorage.setItem('db_active_category', currentActiveCategory);
         } else {
@@ -1624,6 +1867,114 @@
     let savedStates = safeGetLS('dashboardCheckboxes', {});
     let savedPills = safeGetLS('dashboardSubPills', {});
     let completedDates = safeGetLS('dashboardLastCompleted', {});
+
+    /* -------------------------------------------------------------
+       INDEPENDENT URGENT KANBAN SIDEBAR MODULE
+       ------------------------------------------------------------- */
+    const kanbanSidebar = document.getElementById('kanban-sidebar');
+    const kanbanToggleBtn = document.getElementById('kanban-toggle-sidebar-btn');
+    const kanbanCloseBtn = document.getElementById('kanban-close-sidebar-btn');
+    const kanbanQuickTitle = document.getElementById('kanban-quick-title');
+    const kanbanQuickUrgency = document.getElementById('kanban-quick-urgency');
+    const kanbanQuickSubmit = document.getElementById('kanban-quick-submit');
+
+    kanbanToggleBtn.addEventListener('click', () => {
+      kanbanSidebar.classList.toggle('open');
+      document.body.classList.toggle('kanban-open');
+      renderKanbanBoard();
+    });
+
+    kanbanCloseBtn.addEventListener('click', () => {
+      kanbanSidebar.classList.remove('open');
+      document.body.classList.remove('kanban-open');
+    });
+
+    kanbanQuickSubmit.addEventListener('click', () => {
+      const title = kanbanQuickTitle.value.trim();
+      if (!title) return alert("Please enter a task title.");
+      const urgency = kanbanQuickUrgency.value;
+
+      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
+      urgentTasks.push({
+        id: 'utask_' + Date.now(),
+        title: title,
+        urgency: urgency,
+        status: 'todo' // 'todo' | 'progress' | 'done'
+      });
+
+      localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
+      kanbanQuickTitle.value = '';
+      renderKanbanBoard();
+    });
+
+    function renderKanbanBoard() {
+      const todoList = document.getElementById('kanban-list-todo');
+      const progressList = document.getElementById('kanban-list-progress');
+      const doneList = document.getElementById('kanban-list-done');
+
+      todoList.innerHTML = '';
+      progressList.innerHTML = '';
+      doneList.innerHTML = '';
+
+      let countTodo = 0, countProgress = 0, countDone = 0;
+      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
+
+      if (urgentTasks.length === 0) {
+        todoList.innerHTML = '<div style="font-size:10px; color:var(--muted); text-align:center; padding:10px 0;">No active urgent tasks.</div>';
+      }
+
+      urgentTasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = 'kanban-card';
+        if (task.urgency === 'high') {
+          card.style.borderLeftColor = '#ff7575';
+        }
+
+        let urgencyTag = task.urgency === 'high' ? '<span style="color:#ff7575; font-size:9px;">[URGENT]</span>' : '';
+
+        card.innerHTML = `
+          <div class="kanban-card-title">${urgencyTag} ${task.title}</div>
+          <div class="kanban-card-actions">
+            ${task.status !== 'todo' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'todo')">← To Do</button>` : ''}
+            ${task.status !== 'progress' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'progress')">⚡ Active</button>` : ''}
+            ${task.status !== 'done' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'done')">✓ Done</button>` : ''}
+            <button class="kanban-action-btn kanban-del-btn" onclick="deleteUrgentTask('${task.id}')">×</button>
+          </div>
+        `;
+
+        if (task.status === 'todo') {
+          countTodo++;
+          todoList.appendChild(card);
+        } else if (task.status === 'progress') {
+          countProgress++;
+          progressList.appendChild(card);
+        } else {
+          countDone++;
+          doneList.appendChild(card);
+        }
+      });
+
+      document.getElementById('kanban-count-todo').textContent = countTodo;
+      document.getElementById('kanban-count-progress').textContent = countProgress;
+      document.getElementById('kanban-count-done').textContent = countDone;
+    }
+
+    window.moveUrgentTask = function(taskId, newStatus) {
+      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
+      let t = urgentTasks.find(x => x.id === taskId);
+      if (t) {
+        t.status = newStatus;
+        localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
+        renderKanbanBoard();
+      }
+    };
+
+    window.deleteUrgentTask = function(taskId) {
+      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
+      urgentTasks = urgentTasks.filter(x => x.id !== taskId);
+      localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
+      renderKanbanBoard();
+    };
 
     /* -------------------------------------------------------------
        CALENDAR MODULE ENGINE V2 (Recurring Events Logic)
@@ -1655,7 +2006,6 @@
     let calendarSelectedDateStr = null;
     let editingEventId = null;
 
-    // View All Tab Logic
     document.getElementById('tab-cal-grid').addEventListener('click', (e) => {
       e.target.classList.add('active');
       document.getElementById('tab-cal-list').classList.remove('active');
@@ -1682,7 +2032,6 @@
       let instances = generateEventInstances(now, limitDate);
       instances.sort((a, b) => a.dateObj - b.dateObj);
 
-      // Unique Recurring Filter for List View
       let recurringSeen = new Set();
       let uniqueInstances = [];
       for (let inst of instances) {
@@ -1773,7 +2122,6 @@
       let instances = generateEventInstances(now, limitDate);
       instances.sort((a, b) => a.dateObj - b.dateObj);
 
-      // Unique Recurring Filter for Main Dashboard View
       let recurringSeen = new Set();
       let uniqueInstances = [];
       for (let inst of instances) {
@@ -2037,7 +2385,6 @@
     document.getElementById('cal-save-day-btn').addEventListener('click', () => {
       if (!calendarSelectedDateStr) return;
       const titleVal = document.getElementById('cal-day-title').value.trim();
-      
       if (!titleVal) { return alert("Please enter a valid title."); }
 
       const eventData = {
@@ -2249,7 +2596,7 @@
       }
 
       mergedSequence.sort((a, b) => a.start - b.start);
-      currentTimelineSequence = mergedSequence; // Cache globally for deletions/updates
+      currentTimelineSequence = mergedSequence;
 
       mergedSequence.forEach((block, idx) => {
         const timeNode = document.createElement('div');
@@ -2262,7 +2609,6 @@
         const contentNode = document.createElement('div');
         contentNode.className = `tl-block ${block.style}`;
         
-        // Add data attributes for hyper-optimized tracking
         contentNode.setAttribute('data-start', block.start);
         contentNode.setAttribute('data-end', block.end);
         contentNode.setAttribute('data-title', block.name.replace(/"/g, '&quot;'));
@@ -2300,7 +2646,6 @@
     let selectedGapContext = null; 
     let currentTargetEditingBlockStart = null; 
 
-    // Event Delegation: One listener to rule the timeline. Huge perf boost.
     document.getElementById('master-timeline-track').addEventListener('click', (e) => {
       if (!isEditModeActive) return;
 
@@ -2572,7 +2917,7 @@
           targetBlock.end = targetBlock.start + targetDuration;
         } else {
           targetBlock.start = currentBlock.start;
-          targetBlock.end = targetBlock.start + targetDuration;
+          targetBlock.end = currentBlock.start + targetDuration;
           currentBlock.start = targetBlock.end;
           currentBlock.end = currentBlock.start + currentDuration;
         }
@@ -3232,19 +3577,16 @@
       }
     }
 
-    // Highly optimized Live Timeline Tracker
     function executeLiveTimelineTrackingUpdates() {
       const now = new Date();
       const currentMinutes = (now.getHours() * 60) + now.getMinutes();
 
-      // Remove previous live tracker visually
       document.querySelectorAll('.tl-block.live-current').forEach(el => el.classList.remove('live-current'));
 
       const blockElements = document.querySelectorAll('#master-timeline-track .tl-block[data-start][data-end]');
       let activeBlock = null; 
       let nextBlock = null;
 
-      // Single iteration reading straight from data attributes (No DOM Cloning)
       for (let i = 0; i < blockElements.length; i++) {
         const el = blockElements[i];
         const start = parseInt(el.getAttribute('data-start'));
@@ -3262,7 +3604,7 @@
               start: parseInt(nextEl.getAttribute('data-start'))
             };
           }
-          break; // Stop parsing once we hit the active block
+          break;
         } 
         else if (start > currentMinutes && !nextBlock) {
           nextBlock = { name, start, end };
@@ -3300,7 +3642,8 @@
         db_active_category: localStorage.getItem('db_active_category'),
         db_half_day_toggle: localStorage.getItem('db_half_day_toggle'),
         db_color_labels: safeGetLS('db_color_labels', {}),
-        db_calendar_events_v2: safeGetLS('db_calendar_events_v2', [])
+        db_calendar_events_v2: safeGetLS('db_calendar_events_v2', []),
+        db_urgent_kanban_tasks: safeGetLS('db_urgent_kanban_tasks', [])
       };
 
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
@@ -3332,6 +3675,7 @@
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
           if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
           if (importedData.db_calendar_events_v2) localStorage.setItem('db_calendar_events_v2', JSON.stringify(importedData.db_calendar_events_v2));
+          if (importedData.db_urgent_kanban_tasks) localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(importedData.db_kanban_states));
 
           alert("Backup data restoration complete.");
           window.location.reload();
@@ -3342,7 +3686,6 @@
       reader.readAsText(file);
     });
 
-    // Master Engine Startup Sequencing calls
     updateClock();
     setInterval(updateClock, 60000);
     drawCategorySelectorsLayoutButtons();
@@ -3351,6 +3694,7 @@
     renderHabitsMatrixInterfaceTrack();
     renderAsNeededMenu();
     renderHobbiesMenu();
+    renderKanbanBoard();
     setInterval(executeLiveTimelineTrackingUpdates, 30000);
   });
 </script>
