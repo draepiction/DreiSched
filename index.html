@@ -113,162 +113,53 @@
       color: var(--bg);
     }
 
-    /* Kanban Sidebar Styling (Completely Independent Engine) */
+    /* Upgraded Kanban sidebar */
     .kanban-sidebar {
-      position: fixed;
-      top: 0; right: -390px; width: 390px; height: 100vh;
-      background: var(--bg2);
-      border-left: 0.5px solid var(--border);
-      z-index: 1100;
-      display: flex;
-      flex-direction: column;
-      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      position: fixed; top: 0; right: -430px; width: 430px; height: 100vh;
+      background: var(--bg2); border-left: 1px solid var(--border); z-index: 1100;
+      display: flex; flex-direction: column; transition: right .3s cubic-bezier(.4,0,.2,1);
+      box-shadow: -10px 0 30px rgba(0,0,0,.5); overflow: hidden;
     }
-    .kanban-sidebar.open {
-      right: 0;
-    }
-    .kanban-sidebar-header {
-      padding: 16px 20px;
-      border-bottom: 0.5px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .kanban-sidebar-title {
-      font-family: var(--font-display);
-      font-size: 1.3rem;
-      font-style: italic;
-      color: var(--text);
-    }
-    .kanban-close-btn {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 4px;
-    }
-    .kanban-close-btn:hover { color: var(--text); }
-
-    .kanban-quick-add-form {
-      padding: 14px 20px;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .kanban-quick-add-form input, .kanban-quick-add-form select {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 4px;
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 6px 8px;
-      width: 100%;
-    }
-    .kanban-quick-add-form input:focus, .kanban-quick-add-form select:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .kanban-columns-wrap {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .kanban-col {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      border-radius: 6px;
-      padding: 12px;
-    }
-    .kanban-col-title {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .kanban-card-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 45px;
-    }
-    .kanban-card {
-      background: var(--bg2);
-      border: 0.5px solid var(--border);
-      border-radius: 4px;
-      padding: 9px 11px;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: border-color 0.2s ease;
-      border-left: 3px solid var(--accent);
-    }
-    .kanban-card:hover {
-      border-color: var(--accent);
-    }
-    .kanban-card-title {
-      font-weight: 500;
-      color: var(--text);
-      word-break: break-word;
-      line-height: 1.4;
-    }
-    .kanban-card-meta {
-      font-size: 9.5px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 2px;
-    }
-    .kanban-card-actions {
-      display: flex;
-      gap: 4px;
-      margin-top: 6px;
-      border-top: 0.5px solid var(--border);
-      padding-top: 6px;
-    }
-    .kanban-action-btn {
-      background: var(--bg);
-      border: 0.5px solid var(--border);
-      color: var(--muted);
-      font-size: 9px;
-      padding: 2px 6px;
-      border-radius: 3px;
-      cursor: pointer;
-      font-family: var(--font-mono);
-    }
-    .kanban-action-btn:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-    .kanban-del-btn {
-      margin-left: auto;
-      color: #ff5555;
-      border-color: rgba(255,85,85,0.3);
-    }
-    .kanban-del-btn:hover {
-      border-color: #ff5555;
-      color: #ff5555;
-    }
-
-    @media (max-width: 600px) {
-      .kanban-sidebar { width: 100%; right: -100%; }
-      .kanban-sidebar.open { right: 0; }
-    }
+    .kanban-sidebar.open { right: 0; }
+    .kanban-sidebar-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+    .kanban-sidebar-title { font-family:var(--font-display); font-size:1.3rem; font-style:italic; color:var(--text); }
+    .kanban-close-btn { background:transparent; border:0; color:var(--muted); font-size:20px; cursor:pointer; padding:4px 8px; }
+    .kanban-close-btn:hover { color:var(--text); }
+    .kanban-quick-add-form { padding:13px 18px; border-bottom:1px solid var(--border); background:var(--bg); display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+    .kanban-quick-add-form input,.kanban-quick-add-form select,.kanban-detail-input { background:var(--bg2); border:1px solid var(--border); border-radius:4px; color:var(--text); font-family:var(--font-mono); font-size:11px; padding:8px; width:100%; }
+    .kanban-quick-add-form input:focus,.kanban-quick-add-form select:focus,.kanban-detail-input:focus { border-color:var(--accent); outline:none; }
+    .kanban-add-row { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+    .kanban-columns-wrap { flex:1; min-height:0; overflow-y:auto; padding:14px 16px 24px; display:flex; flex-direction:column; gap:13px; }
+    .kanban-col { background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:11px; transition:border-color .15s,background .15s; }
+    .kanban-col.kanban-drop-target { border-color:var(--accent); background:rgba(201,169,110,.07); }
+    .kanban-col-title { font-size:10px; font-weight:500; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:9px; display:flex; justify-content:space-between; align-items:center; }
+    .kanban-card-list { display:flex; flex-direction:column; gap:8px; min-height:42px; }
+    .kanban-empty { font-size:10px; color:var(--muted); text-align:center; padding:13px 5px; border:1px dashed var(--border); border-radius:5px; }
+    .kanban-card { background:var(--bg2); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:5px; padding:10px; font-size:11px; display:flex; flex-direction:column; gap:7px; transition:opacity .15s,border-color .15s,transform .15s; }
+    .kanban-card[draggable="true"] { cursor:grab; }
+    .kanban-card.dragging { opacity:.4; transform:scale(.985); }
+    .kanban-card:hover { border-color:var(--accent); }
+    .kanban-card-top { display:flex; align-items:flex-start; gap:8px; }
+    .kanban-drag-handle { color:var(--muted); font-size:13px; line-height:1.3; cursor:grab; user-select:none; }
+    .kanban-card-title { flex:1; font-weight:500; color:var(--text); word-break:break-word; line-height:1.45; }
+    .kanban-card-meta { font-size:9px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:6px; }
+    .kanban-priority { font-size:8px; letter-spacing:.06em; text-transform:uppercase; }
+    .kanban-card-actions { display:flex; flex-wrap:wrap; gap:5px; align-items:center; }
+    .kanban-action-btn { background:var(--bg); border:1px solid var(--border); color:var(--muted); font-size:9px; padding:4px 7px; border-radius:3px; cursor:pointer; font-family:var(--font-mono); }
+    .kanban-action-btn:hover { border-color:var(--accent); color:var(--text); }
+    .kanban-del-btn { margin-left:auto; color:#ff7575; border-color:rgba(255,117,117,.3); }
+    .kanban-card-details { display:flex; border-top:1px solid var(--border); padding-top:9px; margin-top:2px; gap:8px; flex-direction:column; }
+    .kanban-progress-track { height:4px; background:#303030; border-radius:5px; overflow:hidden; margin-top:4px; }
+    .kanban-progress-fill { height:100%; width:0; background:var(--accent); transition:width .2s; }
+    .kanban-subtask-list { display:flex; flex-direction:column; gap:6px; }
+    .kanban-subtask { display:flex; align-items:center; gap:7px; color:var(--text); font-size:10px; }
+    .kanban-subtask input { accent-color:var(--accent); }
+    .kanban-subtask.done span { color:var(--muted); text-decoration:line-through; }
+    .kanban-subtask-remove { margin-left:auto; border:0; background:none; color:var(--muted); cursor:pointer; }
+    .kanban-subtask-add { display:flex; gap:5px; }
+    .kanban-subtask-add input { min-width:0; flex:1; }
+    .kanban-notes { min-height:58px; resize:vertical; }
+    @media (max-width:600px) { .kanban-sidebar { width:100%; right:-100%; } .kanban-sidebar.open { right:0; } }
 
     /* Calendar Integration Styling */
     .calendar-preview-section {
@@ -1266,52 +1157,27 @@
 
 </div>
 
-<!-- INDEPENDENT KANBAN SIDEBAR FOR URGENT / PRESENT TASKS -->
+<!-- Upgraded urgent-task Kanban sidebar -->
 <div class="kanban-sidebar" id="kanban-sidebar">
   <div class="kanban-sidebar-header">
-    <div class="kanban-sidebar-title">Urgent Tasks Kanban</div>
-    <button class="kanban-close-btn" id="kanban-close-sidebar-btn">×</button>
+    <div><div class="kanban-sidebar-title">Urgent Tasks Kanban</div><div style="font-size:9px;color:var(--muted);margin-top:3px;">Drag cards between columns · Details and subtasks stay visible</div></div>
+    <button class="kanban-close-btn" id="kanban-close-sidebar-btn" aria-label="Close task board">×</button>
   </div>
-
   <div class="kanban-quick-add-form">
-    <div class="section-label">Quick Add Urgent Task</div>
-    <input type="text" id="kanban-quick-title" placeholder="Task name / priority focus...">
-    <div style="display:flex; gap:6px;">
-      <select id="kanban-quick-urgency">
-        <option value="high">High Priority / Urgent</option>
-        <option value="normal" selected>Normal Focus</option>
-      </select>
+    <div class="section-label">Quick Add Task</div>
+    <input type="text" id="kanban-quick-title" placeholder="What needs to get done?" maxlength="180">
+    <div class="kanban-add-row">
+      <select id="kanban-quick-urgency"><option value="high">High priority</option><option value="normal" selected>Normal priority</option><option value="low">Low priority</option></select>
+      <select id="kanban-quick-status"><option value="todo">To Do</option><option value="progress">In Progress</option><option value="done">Done</option></select>
     </div>
-    <button class="reset-btn" id="kanban-quick-submit" style="border-color:var(--accent); color:var(--text); width:100%; margin-top:2px;">+ Add Task</button>
+    <button class="reset-btn" id="kanban-quick-submit" style="border-color:var(--accent);color:var(--text);width:100%;margin-top:2px;">+ Add Task</button>
   </div>
-
   <div class="kanban-columns-wrap">
-    <div class="kanban-col">
-      <div class="kanban-col-title">
-        <span>📋 To Do</span>
-        <span id="kanban-count-todo" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
-      </div>
-      <div class="kanban-card-list" id="kanban-list-todo"></div>
-    </div>
-
-    <div class="kanban-col">
-      <div class="kanban-col-title">
-        <span>⚡ In Progress</span>
-        <span id="kanban-count-progress" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
-      </div>
-      <div class="kanban-card-list" id="kanban-list-progress"></div>
-    </div>
-
-    <div class="kanban-col">
-      <div class="kanban-col-title">
-        <span>✓ Done</span>
-        <span id="kanban-count-done" style="font-size:9px; background:var(--bg2); padding:1px 5px; border-radius:3px;">0</span>
-      </div>
-      <div class="kanban-card-list" id="kanban-list-done"></div>
-    </div>
+    <div class="kanban-col" data-kanban-status="todo"><div class="kanban-col-title"><span>📋 To Do</span><span id="kanban-count-todo" style="font-size:9px;background:var(--bg2);padding:1px 5px;border-radius:3px;">0</span></div><div class="kanban-card-list" id="kanban-list-todo"></div></div>
+    <div class="kanban-col" data-kanban-status="progress"><div class="kanban-col-title"><span>⚡ In Progress</span><span id="kanban-count-progress" style="font-size:9px;background:var(--bg2);padding:1px 5px;border-radius:3px;">0</span></div><div class="kanban-card-list" id="kanban-list-progress"></div></div>
+    <div class="kanban-col" data-kanban-status="done"><div class="kanban-col-title"><span>✓ Done</span><span id="kanban-count-done" style="font-size:9px;background:var(--bg2);padding:1px 5px;border-radius:3px;">0</span></div><div class="kanban-card-list" id="kanban-list-done"></div></div>
   </div>
 </div>
-
 <div id="next-up-dock">
   <div class="next-dock-inner">
     <div class="next-dock-meta">
@@ -1869,111 +1735,144 @@
     let completedDates = safeGetLS('dashboardLastCompleted', {});
 
     /* -------------------------------------------------------------
-       INDEPENDENT URGENT KANBAN SIDEBAR MODULE
+       UPGRADED URGENT KANBAN MODULE
+       Keeps the original db_urgent_kanban_tasks storage key and
+       preserves legacy task IDs, titles, urgency and status values.
        ------------------------------------------------------------- */
     const kanbanSidebar = document.getElementById('kanban-sidebar');
     const kanbanToggleBtn = document.getElementById('kanban-toggle-sidebar-btn');
     const kanbanCloseBtn = document.getElementById('kanban-close-sidebar-btn');
     const kanbanQuickTitle = document.getElementById('kanban-quick-title');
     const kanbanQuickUrgency = document.getElementById('kanban-quick-urgency');
+    const kanbanQuickStatus = document.getElementById('kanban-quick-status');
     const kanbanQuickSubmit = document.getElementById('kanban-quick-submit');
+    let kanbanDraggedTaskId = null;
 
     kanbanToggleBtn.addEventListener('click', () => {
       kanbanSidebar.classList.toggle('open');
       document.body.classList.toggle('kanban-open');
       renderKanbanBoard();
     });
-
     kanbanCloseBtn.addEventListener('click', () => {
       kanbanSidebar.classList.remove('open');
       document.body.classList.remove('kanban-open');
     });
+    kanbanQuickTitle.addEventListener('keydown', e => { if (e.key === 'Enter') addKanbanTask(); });
+    kanbanQuickSubmit.addEventListener('click', addKanbanTask);
 
-    kanbanQuickSubmit.addEventListener('click', () => {
-      const title = kanbanQuickTitle.value.trim();
-      if (!title) return alert("Please enter a task title.");
-      const urgency = kanbanQuickUrgency.value;
-
-      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
-      urgentTasks.push({
-        id: 'utask_' + Date.now(),
-        title: title,
-        urgency: urgency,
-        status: 'todo' // 'todo' | 'progress' | 'done'
-      });
-
-      localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
-      kanbanQuickTitle.value = '';
-      renderKanbanBoard();
-    });
-
-    function renderKanbanBoard() {
-      const todoList = document.getElementById('kanban-list-todo');
-      const progressList = document.getElementById('kanban-list-progress');
-      const doneList = document.getElementById('kanban-list-done');
-
-      todoList.innerHTML = '';
-      progressList.innerHTML = '';
-      doneList.innerHTML = '';
-
-      let countTodo = 0, countProgress = 0, countDone = 0;
-      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
-
-      if (urgentTasks.length === 0) {
-        todoList.innerHTML = '<div style="font-size:10px; color:var(--muted); text-align:center; padding:10px 0;">No active urgent tasks.</div>';
-      }
-
-      urgentTasks.forEach(task => {
-        const card = document.createElement('div');
-        card.className = 'kanban-card';
-        if (task.urgency === 'high') {
-          card.style.borderLeftColor = '#ff7575';
-        }
-
-        let urgencyTag = task.urgency === 'high' ? '<span style="color:#ff7575; font-size:9px;">[URGENT]</span>' : '';
-
-        card.innerHTML = `
-          <div class="kanban-card-title">${urgencyTag} ${task.title}</div>
-          <div class="kanban-card-actions">
-            ${task.status !== 'todo' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'todo')">← To Do</button>` : ''}
-            ${task.status !== 'progress' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'progress')">⚡ Active</button>` : ''}
-            ${task.status !== 'done' ? `<button class="kanban-action-btn" onclick="moveUrgentTask('${task.id}', 'done')">✓ Done</button>` : ''}
-            <button class="kanban-action-btn kanban-del-btn" onclick="deleteUrgentTask('${task.id}')">×</button>
-          </div>
-        `;
-
-        if (task.status === 'todo') {
-          countTodo++;
-          todoList.appendChild(card);
-        } else if (task.status === 'progress') {
-          countProgress++;
-          progressList.appendChild(card);
-        } else {
-          countDone++;
-          doneList.appendChild(card);
-        }
-      });
-
-      document.getElementById('kanban-count-todo').textContent = countTodo;
-      document.getElementById('kanban-count-progress').textContent = countProgress;
-      document.getElementById('kanban-count-done').textContent = countDone;
+    function getKanbanTasks() {
+      const data = safeGetLS('db_urgent_kanban_tasks', []);
+      return Array.isArray(data) ? data : [];
     }
-
-    window.moveUrgentTask = function(taskId, newStatus) {
-      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
-      let t = urgentTasks.find(x => x.id === taskId);
-      if (t) {
-        t.status = newStatus;
-        localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
-        renderKanbanBoard();
-      }
-    };
-
-    window.deleteUrgentTask = function(taskId) {
-      let urgentTasks = safeGetLS('db_urgent_kanban_tasks', []);
-      urgentTasks = urgentTasks.filter(x => x.id !== taskId);
-      localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(urgentTasks));
+    function saveKanbanTasks(tasks) {
+      localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(tasks));
+    }
+    function addKanbanTask() {
+      const title = kanbanQuickTitle.value.trim();
+      if (!title) { alert('Please enter a task title.'); kanbanQuickTitle.focus(); return; }
+      const tasks = getKanbanTasks();
+      tasks.push({ id:'utask_' + Date.now() + '_' + Math.random().toString(36).slice(2,7), title,
+        urgency:kanbanQuickUrgency.value, status:kanbanQuickStatus.value, notes:'', subtasks:[] });
+      saveKanbanTasks(tasks);
+      kanbanQuickTitle.value = '';
+      kanbanQuickStatus.value = 'todo';
       renderKanbanBoard();
+      kanbanQuickTitle.focus();
+    }
+    function updateKanbanTask(taskId, updater) {
+      const tasks = getKanbanTasks();
+      const task = tasks.find(t => String(t.id) === String(taskId));
+      if (!task) return;
+      updater(task);
+      saveKanbanTasks(tasks);
+      renderKanbanBoard();
+    }
+    function makeKanbanButton(label, action, extraClass='') {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'kanban-action-btn ' + extraClass; btn.textContent = label;
+      btn.addEventListener('click', action); return btn;
+    }
+    function renderKanbanBoard() {
+      const lists = { todo:document.getElementById('kanban-list-todo'), progress:document.getElementById('kanban-list-progress'), done:document.getElementById('kanban-list-done') };
+      Object.values(lists).forEach(el => el.innerHTML = '');
+      const counts = { todo:0, progress:0, done:0 };
+      const tasks = getKanbanTasks();
+      tasks.forEach(task => {
+        if (!['todo','progress','done'].includes(task.status)) task.status = 'todo';
+        task.subtasks = Array.isArray(task.subtasks) ? task.subtasks : [];
+        const card = document.createElement('article');
+        card.className = 'kanban-card'; card.draggable = true; card.dataset.taskId = task.id;
+        if (task.urgency === 'high') card.style.borderLeftColor = '#ff7575';
+        else if (task.urgency === 'low') card.style.borderLeftColor = '#7ddcb8';
+        card.addEventListener('dragstart', e => { kanbanDraggedTaskId = task.id; card.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', String(task.id)); });
+        card.addEventListener('dragend', () => { kanbanDraggedTaskId=null; card.classList.remove('dragging'); document.querySelectorAll('.kanban-col').forEach(c=>c.classList.remove('kanban-drop-target')); });
+
+        const top = document.createElement('div'); top.className='kanban-card-top';
+        const handle = document.createElement('span'); handle.className='kanban-drag-handle'; handle.textContent='⠿'; handle.title='Drag to move';
+        const title = document.createElement('div'); title.className='kanban-card-title'; title.textContent=task.title || 'Untitled task';
+        top.append(handle,title);
+        const priority = document.createElement('span'); priority.className='kanban-priority'; priority.textContent=(task.urgency || 'normal')+' priority';
+        priority.style.color=task.urgency==='high'?'#ff7575':task.urgency==='low'?'#7ddcb8':'var(--muted)';
+        const meta=document.createElement('div'); meta.className='kanban-card-meta';
+        const subDone=task.subtasks.filter(st=>st.done).length;
+        const subInfo=document.createElement('span'); subInfo.textContent=task.subtasks.length ? `${subDone}/${task.subtasks.length} subtasks` : 'No subtasks';
+        meta.append(priority,subInfo);
+        const progressWrap=document.createElement('div');
+        const progressTrack=document.createElement('div'); progressTrack.className='kanban-progress-track';
+        const progressFill=document.createElement('div'); progressFill.className='kanban-progress-fill';
+        const pct=task.subtasks.length ? Math.round(subDone/task.subtasks.length*100) : (task.status==='done'?100:0);
+        progressFill.style.width=pct+'%'; progressTrack.appendChild(progressFill);
+        const progressLabel=document.createElement('div'); progressLabel.className='kanban-card-meta'; progressLabel.textContent=`${pct}% complete`;
+        progressWrap.append(progressTrack,progressLabel);
+        const actions=document.createElement('div'); actions.className='kanban-card-actions';
+        if(task.status!=='todo') actions.append(makeKanbanButton('← To Do',()=>window.moveUrgentTask(task.id,'todo')));
+        if(task.status!=='progress') actions.append(makeKanbanButton('⚡ Active',()=>window.moveUrgentTask(task.id,'progress')));
+        if(task.status!=='done') actions.append(makeKanbanButton('✓ Done',()=>window.moveUrgentTask(task.id,'done')));
+        actions.append(makeKanbanButton('×',()=>window.deleteUrgentTask(task.id),'kanban-del-btn'));
+
+        const details=document.createElement('div'); details.className='kanban-card-details';
+        const notesLabel=document.createElement('div'); notesLabel.className='section-label'; notesLabel.textContent='Task details';
+        const notes=document.createElement('textarea'); notes.className='kanban-detail-input kanban-notes'; notes.placeholder='Add task details, instructions, links, or context…'; notes.value=task.notes||''; notes.setAttribute('aria-label','Task details');
+        notes.addEventListener('change',()=>updateKanbanTask(task.id,t=>t.notes=notes.value));
+        const subHeading=document.createElement('div'); subHeading.className='section-label'; subHeading.textContent='Subtasks';
+        const subList=document.createElement('div'); subList.className='kanban-subtask-list';
+        task.subtasks.forEach((st,index)=>{
+          const row=document.createElement('label'); row.className='kanban-subtask'+(st.done?' done':'');
+          const check=document.createElement('input'); check.type='checkbox'; check.checked=!!st.done;
+          check.addEventListener('change',()=>updateKanbanTask(task.id,t=>{t.subtasks[index].done=check.checked;}));
+          const textSpan=document.createElement('span'); textSpan.textContent=st.text||'Subtask';
+          const remove=document.createElement('button'); remove.type='button'; remove.className='kanban-subtask-remove'; remove.textContent='×'; remove.title='Remove subtask';
+          remove.addEventListener('click',()=>updateKanbanTask(task.id,t=>t.subtasks.splice(index,1)));
+          row.append(check,textSpan,remove); subList.appendChild(row);
+        });
+        const addRow=document.createElement('div'); addRow.className='kanban-subtask-add';
+        const subInput=document.createElement('input'); subInput.className='kanban-detail-input'; subInput.placeholder='Add a subtask…'; subInput.maxLength=160;
+        const addSub=makeKanbanButton('+',()=>{const value=subInput.value.trim();if(!value)return;updateKanbanTask(task.id,t=>t.subtasks.push({text:value,done:false}));});
+        subInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addSub.click();}});
+        addRow.append(subInput,addSub);
+        details.append(notesLabel,notes,subHeading,subList,addRow);
+        card.append(top,meta,progressWrap,actions,details);
+        lists[task.status].appendChild(card); counts[task.status]++;
+      });
+      Object.keys(lists).forEach(status=>{
+        if(!counts[status]) { const empty=document.createElement('div'); empty.className='kanban-empty'; empty.textContent=status==='todo'?'Nothing waiting here.':status==='progress'?'No tasks in progress.':'Completed tasks will appear here.'; lists[status].appendChild(empty); }
+      });
+      document.getElementById('kanban-count-todo').textContent=counts.todo;
+      document.getElementById('kanban-count-progress').textContent=counts.progress;
+      document.getElementById('kanban-count-done').textContent=counts.done;
+    }
+    document.querySelectorAll('.kanban-col').forEach(col=>{
+      col.addEventListener('dragover',e=>{e.preventDefault();col.classList.add('kanban-drop-target');e.dataTransfer.dropEffect='move';});
+      col.addEventListener('dragleave',e=>{if(!col.contains(e.relatedTarget))col.classList.remove('kanban-drop-target');});
+      col.addEventListener('drop',e=>{e.preventDefault();col.classList.remove('kanban-drop-target');const id=e.dataTransfer.getData('text/plain')||kanbanDraggedTaskId;const status=col.dataset.kanbanStatus;if(id&&status)window.moveUrgentTask(id,status);});
+    });
+    window.moveUrgentTask = function(taskId,newStatus) {
+      if(!['todo','progress','done'].includes(newStatus))return;
+      const tasks=getKanbanTasks();const task=tasks.find(t=>String(t.id)===String(taskId));
+      if(task){task.status=newStatus;saveKanbanTasks(tasks);renderKanbanBoard();}
+    };
+    window.deleteUrgentTask = function(taskId) {
+      const tasks=getKanbanTasks().filter(t=>String(t.id)!==String(taskId));saveKanbanTasks(tasks);renderKanbanBoard();
     };
 
     /* -------------------------------------------------------------
@@ -3675,7 +3574,7 @@
           if (importedData.db_half_day_toggle) localStorage.setItem('db_half_day_toggle', importedData.db_half_day_toggle);
           if (importedData.db_color_labels) localStorage.setItem('db_color_labels', JSON.stringify(importedData.db_color_labels));
           if (importedData.db_calendar_events_v2) localStorage.setItem('db_calendar_events_v2', JSON.stringify(importedData.db_calendar_events_v2));
-          if (importedData.db_urgent_kanban_tasks) localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(importedData.db_kanban_states));
+          if (importedData.db_urgent_kanban_tasks) localStorage.setItem('db_urgent_kanban_tasks', JSON.stringify(importedData.db_urgent_kanban_tasks));
 
           alert("Backup data restoration complete.");
           window.location.reload();
